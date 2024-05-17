@@ -11,12 +11,36 @@ class TouristAttractionRepo {
     required this.apiClient,
   });
 
-  Future<Response> getTouristAttractionInfor() async {
-    // print(
-    //   "tourist attraction url: " + AppConstants.TOURIST_ATTRACTION_URL,
-    // );
-    return await apiClient.getData(
-      AppConstants.TOURIST_ATTRACTION_URL,
-    );
+  Future<Response> getTouristAttractionInfor({
+    String? locale,
+    int? paginate,
+    int? page,
+  }) async {
+    Map<String, dynamic> parameters = {};
+    if (locale != null) parameters['language'] = locale;
+    if (paginate != null) parameters['paginate'] = paginate.toString();
+    if (page != null) parameters['page'] = page.toString();
+
+    // Xây dựng URL từ danh sách tham số truy vấn
+    String url = AppConstants.TOURIST_ATTRACTION_URL;
+
+    // Kiểm tra xem URL đã có tham số truy vấn nào chưa
+    bool isFirstParam = true;
+
+    parameters.forEach((key, value) {
+      // Nếu là tham số đầu tiên, thêm dấu ? vào URL, ngược lại thêm dấu &
+      if (isFirstParam) {
+        url += '?';
+        isFirstParam = false;
+      } else {
+        url += '&';
+      }
+
+      // Thêm tham số vào URL
+      url += '$key=$value';
+    });
+
+    // Lấy dữ liệu từ API bằng cách gọi hàm từ ApiClient
+    return await apiClient.getData(url);
   }
 }

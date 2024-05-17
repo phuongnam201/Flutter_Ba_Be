@@ -23,15 +23,12 @@ class ApiClient extends GetConnect implements GetxService {
       'Content-type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
     };
-    //print("Token in api client: " + token);
   }
 
   Future<Response> getData(String uri, {Map<String, String>? headers}) async {
-    //print("header is: " + _mainHeaders.toString());
-    //print("token now is: " + token);
     try {
+      print("uri: " + uri.toString());
       Response response = await get(uri, headers: headers ?? _mainHeaders);
-      //print("content form get method:" + response.toString());
       return response;
     } catch (e) {
       print("false: " + e.toString());
@@ -40,13 +37,10 @@ class ApiClient extends GetConnect implements GetxService {
   }
 
   Future<Response> postData(String uri, dynamic body) async {
-    //print("body" + body.toString());
     try {
       Response response = await post(uri, body, headers: _mainHeaders);
-      // print("ok:" + response.statusCode.toString());
       return response;
     } catch (e) {
-      //  print("False" + e.toString());
       return Response(statusCode: 1, statusText: e.toString());
     }
   }

@@ -4,6 +4,7 @@ import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/controller/post_controller.dart';
 import 'package:flutter_babe/models/post_model.dart';
 import 'package:flutter_babe/pages/news/newspage_tabbar.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
@@ -29,8 +30,6 @@ class _NewPageState extends State<NewPage> {
     pageController.addListener(() {
       setState(() {
         _currentPageValue = pageController.page!;
-
-        //print("curr value" + _currentPageValue.toString());
       });
     });
   }
@@ -141,7 +140,7 @@ Widget PictureWidget(
 Widget _buildPageItem(Post post) {
   return GestureDetector(
     onTap: () {
-      //Get.toNamed(RouteHelper.getNewsDetailPage());
+      Get.toNamed(RouteHelper.getNewsDetailPage(post.id!, "NewsPage"));
     },
     child: Container(
       height: 200,
@@ -157,15 +156,17 @@ Widget _buildPageItem(Post post) {
       child: Stack(
         children: [
           Positioned(
-            bottom: Dimensions.height20,
+            bottom: Dimensions.height30,
             left: 0,
             child: Container(
               padding: EdgeInsets.all(5),
-              margin: EdgeInsets.only(left: 20),
+              width: Dimensions.screenWidth * 0.8,
+              margin: EdgeInsets.only(left: 20, right: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
+                    width: Dimensions.width10 * 10,
                     padding:
                         EdgeInsets.only(left: 20, top: 2, right: 20, bottom: 2),
                     decoration: BoxDecoration(
@@ -185,11 +186,13 @@ Widget _buildPageItem(Post post) {
                     text: post.title!,
                     color: Colors.white,
                     size: Dimensions.font20,
+                    maxLines: 1,
                   ),
                   SmallText(
                     text: post.metaKeywords!,
                     size: Dimensions.font16,
                     color: Colors.white,
+                    maxLines: 1,
                   ),
                 ],
               ),

@@ -28,8 +28,10 @@ class _HighLightTourState extends State<HighLightTour> {
           margin: EdgeInsets.only(
               left: Dimensions.width10, top: Dimensions.height10),
           child: ListView.builder(
+            //physics: NeverScrollableScrollPhysics(),
             itemCount: tourController.tourList.length,
             scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {

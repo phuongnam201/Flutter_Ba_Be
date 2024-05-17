@@ -1,8 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:get/get.dart';
-
 import 'package:flutter_babe/data/api/api_client.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:get/get.dart';
 
 class PostRepo {
   final ApiClient apiClient;
@@ -11,18 +9,32 @@ class PostRepo {
     required this.apiClient,
   });
 
-  Future<Response> getAllPostInfor({String? paramater}) async {
-    // Kiểm tra nếu paramater không được cung cấp, sử dụng chuỗi rỗng
-    paramater ??= "";
+  Future<Response> getAllPostInfor({
+    String? filter,
+    String? locale,
+    int? paginate,
+    int? page,
+  }) async {
+    // Xây dựng danh sách tham số truy vấn từ các đối số được truyền vào
+    Map<String, dynamic> parameters = {};
 
-    //print("setting url: " + AppConstants.POST_URL);
-
-    // Sử dụng paramater trong URL nếu nó được cung cấp
+    if (filter != null) parameters['filter'] = filter;
+    if (locale != null) parameters['language'] = locale;
+    if (paginate != null) parameters['paginate'] = paginate.toString();
+    if (page != null) parameters['page'] = page.toString();
     String url = AppConstants.POST_URL;
-    if (paramater != null && paramater.isNotEmpty) {
-      url += "?filter=" + paramater;
-    }
+    bool isFirstParam = true;
 
+    parameters.forEach((key, value) {
+      if (isFirstParam) {
+        url += '?';
+        isFirstParam = false;
+      } else {
+        url += '&';
+      }
+
+      url += '$key=$value';
+    });
     return await apiClient.getData(url);
   }
 }

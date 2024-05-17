@@ -1,69 +1,48 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/auth_controller.dart';
+import 'package:flutter_babe/models/signup_model.dart';
 import 'package:flutter_babe/pages/auth/sign_in_page.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/app_text_filed.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
+import 'package:flutter_babe/widgets/custom_loader.dart';
 import 'package:flutter_babe/widgets/custom_snackbar.dart';
-
 import 'package:get/get.dart';
+import 'package:get/get_utils/src/get_utils/get_utils.dart';
 
-class SignUpPage extends StatelessWidget {
-  const SignUpPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  late TextEditingController emailController;
+  late TextEditingController nameController;
+  late TextEditingController passwordController;
+  late TextEditingController rePasswordController;
+  var signUpImage = ["facebook.png", "google.png"];
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    nameController = TextEditingController();
+    passwordController = TextEditingController();
+    rePasswordController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var emailController = TextEditingController();
-    var nameController = TextEditingController();
-    var passwordController = TextEditingController();
-    var rePasswordController = TextEditingController();
-    var phoneController = TextEditingController();
-    var signUpImage = ["facebook.png", "google.png"];
-
-    void _registration() {
-      //var authController = Get.find<AuthController>();
-      String name = nameController.text.trim();
-      String phone = phoneController.text.trim();
-      String email = emailController.text.trim();
-      String password = passwordController.text.trim();
-      String rePassword = rePasswordController.text.trim();
-
-      if (name.isEmpty) {
-        CustomSnackBar("Please enter your name!", title: "Name");
-      } else if (email.isEmpty) {
-        CustomSnackBar("Please enter your email!", title: "Email");
-      } else if (!GetUtils.isEmail(email)) {
-        CustomSnackBar("Please enter a valid email!",
-            title: "Email is not valid");
-        CustomSnackBar("Please enter your email!", title: "Email");
-      } else if (password.isEmpty) {
-        CustomSnackBar("Please enter your password!", title: "Password");
-      } else if (password.length <= 5) {
-        CustomSnackBar("Password must have more 6 characters!",
-            title: "Password");
-      } else if (rePassword != password) {
-        CustomSnackBar("Password does not match!", title: "Password");
-      } else if (phone.isEmpty) {
-        CustomSnackBar("Please enter your phone number", title: "Phone");
-      } else {
-        // SignUpBody signUpBody = SignUpBody(
-        //     name: name, email: email, phone: phone, password: password);
-        // //print(signUpBody.toJson());
-        // //print("result" + authController.registration(signUpBody).toString());
-        // authController.registration(signUpBody).then((status) {
-        //   if (status.isSuccess) {
-        //     print("ok");
-        //   } else {
-        //     showCustomSnachBar(status.message);
-        //   }
-        // });
-      }
-    }
-
+    // Your build method code here
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+      body: GetBuilder<AuthController>(builder: (_authController) {
+        return !_authController.isLoading
+            ? SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: [
@@ -76,8 +55,7 @@ class SignUpPage extends StatelessWidget {
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 60,
-                          backgroundImage:
-                              AssetImage("assets/images/logo.png"),
+                          backgroundImage: AssetImage("assets/images/logo.png"),
                         ),
                       ),
                     ),
@@ -108,11 +86,6 @@ class SignUpPage extends StatelessWidget {
                       labelText: "Confirm password",
                       icon: Icons.password,
                       obscureText: true,
-                    ),
-                    AppTextField(
-                      textController: phoneController,
-                      labelText: "Phone",
-                      icon: Icons.phone,
                     ),
                     SizedBox(
                       height: Dimensions.height20,
@@ -194,8 +167,56 @@ class SignUpPage extends StatelessWidget {
                   ],
                 ),
               )
-           
-      
+            : const CustomLoader();
+      }),
     );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    nameController.dispose();
+    passwordController.dispose();
+    rePasswordController.dispose();
+    super.dispose();
+  }
+
+  void _registration() {
+    var authController = Get.find<AuthController>();
+    String name = nameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String rePassword = rePasswordController.text.trim();
+
+    if (name.isEmpty) {
+      CustomSnackBar("Please enter your name!", title: "Name");
+    } else if (email.isEmpty) {
+      CustomSnackBar("Please enter your email!", title: "Email");
+    } else if (!GetUtils.isEmail(email)) {
+      CustomSnackBar("Please enter a valid email!",
+          title: "Email is not valid");
+      CustomSnackBar("Please enter your email!", title: "Email");
+    } else if (password.isEmpty) {
+      CustomSnackBar("Please enter your password!", title: "Password");
+    } else if (password.length <= 5) {
+      CustomSnackBar("Password must have more 6 characters!",
+          title: "Password");
+    } else if (rePassword != password) {
+      CustomSnackBar("Password does not match!", title: "Password");
+    } else {
+      SignUpModel signUpModel =
+          SignUpModel(name: name, email: email, password: password);
+      print(signUpModel.toJson());
+      print("result" + authController.registration(signUpModel).toString());
+      authController.registration(signUpModel).then((status) {
+        if (status.isSuccess) {
+          print("ok");
+        } else {
+          SnackBar(
+            content: Text(status.message),
+          );
+        }
+      });
+    }
   }
 }

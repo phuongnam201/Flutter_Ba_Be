@@ -27,7 +27,7 @@ class _GalleryImageState extends State<GalleryImage> {
     List<String> images =
         Get.find<TourController>().getImageList(widget.tourID);
 
-    print(images);
+    //print(images);
     return Container(
       width: Dimensions.screenWidth,
       margin: EdgeInsets.all(Dimensions.height20),

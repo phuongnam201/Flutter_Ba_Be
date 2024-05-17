@@ -10,18 +10,43 @@ class RestaurantRepo {
     required this.apiClient,
   });
 
-  Future<Response> getAllRestaurantInfor({String? paramater}) async {
-    // Kiểm tra nếu paramater không được cung cấp, sử dụng chuỗi rỗng
-    paramater ??= "";
+  // Future<Response> getAllRestaurantInfor({String? paramater}) async {
+  //   paramater ??= "";
 
-    print("setting url: " + AppConstants.RESTAURANT_URL);
+  //   String url = AppConstants.RESTAURANT_URL;
+  //   if (paramater != null && paramater.isNotEmpty) {
+  //     url += "?filter=" + paramater;
+  //   }
 
-    // Sử dụng paramater trong URL nếu nó được cung cấp
+  //   return await apiClient.getData(url);
+  // }
+
+  Future<Response> getAllRestaurantInfor({
+    String? filter,
+    String? locale,
+    int? paginate,
+    int? page,
+  }) async {
+    // Xây dựng danh sách tham số truy vấn từ các đối số được truyền vào
+    Map<String, dynamic> parameters = {};
+
+    if (filter != null) parameters['filter'] = filter;
+    if (locale != null) parameters['language'] = locale;
+    if (paginate != null) parameters['paginate'] = paginate.toString();
+    if (page != null) parameters['page'] = page.toString();
     String url = AppConstants.RESTAURANT_URL;
-    if (paramater != null && paramater.isNotEmpty) {
-      url += "?filter=" + paramater;
-    }
+    bool isFirstParam = true;
 
+    parameters.forEach((key, value) {
+      if (isFirstParam) {
+        url += '?';
+        isFirstParam = false;
+      } else {
+        url += '&';
+      }
+
+      url += '$key=$value';
+    });
     return await apiClient.getData(url);
   }
 }

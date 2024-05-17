@@ -24,7 +24,7 @@ class SettingController extends GetxController implements GetxService {
   Future<ResponseModel> getSetting() async {
     late ResponseModel responseModel;
     Response response = await settingRepo.getSettingInfor(
-        sharedPreferences.getString(AppConstants.LANGUAGE_CODE)!);
+        sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi');
     if (response.statusCode == 200) {
       _settingModel = SettingModel.fromJson(response.body["results"]);
       _isLoading = true;

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/post_controller.dart';
+import 'package:flutter_babe/models/languages.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,11 @@ class _NewsDetailState extends State<NewsDetail> {
   @override
   Widget build(BuildContext context) {
     var post = Get.find<PostController>().getPostByPostID(widget.postID);
+    int language_index = Get.find<LocalizationController>().selectedIndex;
+    print(language_index);
+    DateTime createdPost = DateTime.parse(post.createdAt!);
+    String formattedDateVi = DateFormat('dd-MM-yyyy').format(createdPost);
+    String formattedDateUs = DateFormat('yyyy-MM-dd').format(createdPost);
     return GetBuilder<LocalizationController>(
         builder: (localizationController) {
       return Scaffold(
@@ -115,7 +121,7 @@ class _NewsDetailState extends State<NewsDetail> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: Dimensions.width20 * 5,
+                      width: Dimensions.width20 * 6,
                       padding: EdgeInsets.only(
                           left: Dimensions.width20,
                           top: Dimensions.height10 / 2,
@@ -166,7 +172,11 @@ class _NewsDetailState extends State<NewsDetail> {
                                 Icons.timer_outlined,
                                 color: Colors.grey,
                               ),
-                              SmallText(text: post.createdAt!, maxLines: 1)
+                              SmallText(
+                                  text: language_index == 1
+                                      ? formattedDateVi
+                                      : formattedDateUs,
+                                  maxLines: 1)
                             ]),
                           )
                         ],
@@ -178,6 +188,7 @@ class _NewsDetailState extends State<NewsDetail> {
                   ],
                 ),
               ),
+              //content
               Container(
                 width: Dimensions.screenWidth,
                 margin: EdgeInsets.only(
@@ -247,7 +258,7 @@ Widget feedBack() {
         itemBuilder: (context, index) {
           return Container(
             width: Dimensions.screenWidth,
-            height: Dimensions.height75,
+            height: Dimensions.height10 * 8,
             decoration: BoxDecoration(
               //color: Colors.amber,
               border: Border(
@@ -276,7 +287,7 @@ Widget feedBack() {
                         width: 100,
                         child: BigText(
                           text: "Nguyen Phuong Nam",
-                          maxLines: 1,
+                          maxLines: 2,
                           size: Dimensions.font16,
                           color: Colors.grey,
                         ),
@@ -314,7 +325,7 @@ Widget feedBack() {
                             color: Colors.grey[600],
                           ),
                           SizedBox(
-                            width: Dimensions.width10 * 2,
+                            width: Dimensions.width10 * 3.5,
                           ),
                           SmallText(text: formattedDate),
                         ],
@@ -324,7 +335,7 @@ Widget feedBack() {
                       ),
                       Container(
                         //color: Colors.blue,
-                        width: 200,
+                        width: Dimensions.width10 * 20,
                         child: SmallText(
                           text:
                               "good good good very. That is the first time i have been there.",

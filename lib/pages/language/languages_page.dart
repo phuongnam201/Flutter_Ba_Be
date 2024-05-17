@@ -117,8 +117,10 @@ class LanguagePage extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber[700],
-                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                  backgroundColor: Colors.blue[300],
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Dimensions.width10 * 10,
+                      vertical: Dimensions.height10 * 1.5),
                 ),
               ),
             ),

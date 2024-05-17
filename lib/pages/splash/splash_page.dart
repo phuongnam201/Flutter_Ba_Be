@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/dimension.dart';
@@ -20,10 +19,9 @@ class SplashScreenState extends State<SplashScreen>
   GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
   // Future<void> _loadResource() async {
-    
+
   // }
 
-  
   @override
   dispose() {
     controller.dispose();
@@ -49,7 +47,7 @@ class SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.green[200],
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -67,8 +65,9 @@ class SplashScreenState extends State<SplashScreen>
             //   "assets/image/.png",
             //   width: Dimensions.splashImg,
             // ),
-            child: Text("Ba Be Tourism",
-            style: TextStyle(fontSize: Dimensions.font16),
+            child: Text(
+              "Ba Be Tourism",
+              style: TextStyle(fontSize: Dimensions.font16),
             ),
           ),
         ],

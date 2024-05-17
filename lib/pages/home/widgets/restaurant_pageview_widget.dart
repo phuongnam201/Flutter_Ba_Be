@@ -21,7 +21,7 @@ class _RestaurantPageviewState extends State<RestaurantPageview> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: Dimensions.height10 * 31,
       margin: EdgeInsets.symmetric(horizontal: Dimensions.width10),
       child: ListView.builder(
         itemCount: widget.restaurantList.length,
@@ -37,8 +37,8 @@ class _RestaurantPageviewState extends State<RestaurantPageview> {
 
 Widget _buildPageItem(Restaurant restaurantList) {
   return Container(
-    height: 312,
-    width: 243,
+    height: Dimensions.height10 * 31,
+    width: Dimensions.width10 * 26,
     margin: EdgeInsets.symmetric(horizontal: 5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(Dimensions.radius10),
@@ -56,6 +56,7 @@ Widget _buildPageItem(Restaurant restaurantList) {
           bottom: Dimensions.height45,
           left: 0,
           child: Container(
+            width: Dimensions.screenWidth * 0.6,
             padding: EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,11 +65,13 @@ Widget _buildPageItem(Restaurant restaurantList) {
                   text: restaurantList.title ?? "",
                   color: Colors.white,
                   size: Dimensions.font26,
+                  maxLines: 1,
                 ),
                 SmallText(
                   text: restaurantList.desc ?? "",
                   size: Dimensions.font16,
                   color: Colors.white,
+                  maxLines: 1,
                 )
               ],
             ),

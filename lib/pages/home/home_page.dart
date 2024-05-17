@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
-import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/pages/home/body_home_page.dart';
 import 'package:flutter_babe/pages/menuSlider/menu_slider.dart';
 import 'package:flutter_babe/routes/router_help.dart';
@@ -15,47 +14,81 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<void> _loadResource() async {
-    await Get.find<TourController>().getTourList();
+    //await Get.find<TourController>().getTourList();
+  }
+
+  ScrollController scrollController = ScrollController();
+  bool showbtn = false;
+
+  @override
+  void initState() {
+    scrollController.addListener(() {
+      double showoffset = 10.0;
+
+      if (scrollController.offset > showoffset) {
+        showbtn = true;
+        setState(() {});
+      } else {
+        showbtn = false;
+        setState(() {});
+      }
+    });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    //height of screen
-    print("current height: " + MediaQuery.of(context).size.height.toString());
-    //witdh
-    print("current width: " + MediaQuery.of(context).size.width.toString());
-
     return GetBuilder<LocalizationController>(
-        builder: (localizationController) {
-      return Scaffold(
-        drawer: MenuSlider(),
-        appBar: AppBar(
-          title: Text("home".tr),
-          actions: [
-            InkWell(
-              onTap: () {
-                Get.toNamed(RouteHelper.getNotificationPage());
+      builder: (localizationController) {
+        return Scaffold(
+          drawer: MenuSlider(),
+          floatingActionButton: AnimatedOpacity(
+            duration: const Duration(milliseconds: 1000),
+            opacity: showbtn ? 1.0 : 0.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                scrollController.animateTo(0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.fastOutSlowIn);
               },
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.notifications),
+              backgroundColor: Colors.blue,
+              child: const Icon(
+                Icons.arrow_upward,
+                color: Colors.white,
               ),
             ),
-          ],
-        ),
-        body: RefreshIndicator(
-            child: Column(
-              children: [
-                //showing the body
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: BodyHomePage(),
-                  ),
-                )
+          ),
+          body: RefreshIndicator(
+            onRefresh: _loadResource,
+            child: NestedScrollView(
+              controller: scrollController,
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverAppBar(
+                  actions: [
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed(RouteHelper.getNotificationPage());
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.notifications),
+                      ),
+                    ),
+                  ],
+                  floating: true,
+                  snap: true,
+                  title: Text("home".tr),
+                ),
               ],
+              body: SingleChildScrollView(
+                //controller: scrollController,
+                child: BodyHomePage(),
+              ),
             ),
-            onRefresh: _loadResource),
-      );
-    });
+          ),
+        );
+      },
+    );
   }
 }

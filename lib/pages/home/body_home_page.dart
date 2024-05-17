@@ -3,6 +3,7 @@ import 'package:flutter_babe/controller/restaurant_controller.dart';
 import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/controller/tourist_attraction_controller.dart';
 import 'package:flutter_babe/models/tour_modal.dart';
+import 'package:flutter_babe/pages/home/widgets/news_pageview_widget.dart';
 import 'package:flutter_babe/pages/home/widgets/restaurant_pageview_widget.dart';
 import 'package:flutter_babe/pages/home/widgets/tour_pageview_widget.dart';
 import 'package:flutter_babe/pages/home/widgets/tourist_attraction_widget.dart';
@@ -39,7 +40,7 @@ class _BodyHomePageState extends State<BodyHomePage> {
         return GetBuilder<RestaurantController>(
             builder: (restaurantController) {
           return Column(
-            //mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
@@ -47,32 +48,30 @@ class _BodyHomePageState extends State<BodyHomePage> {
                 fit: BoxFit.cover,
               ),
               SizedBox(height: Dimensions.height30),
-              _buildSection("Tour du lịch được quan tâm nhiều nhất",
-                  "Nhanh tay đặt ngay. Để mai sẽ lỡ"),
+              _buildSection(
+                  "the_tour_is_of_most_interest".tr, "book_quickly".tr),
               SizedBox(height: Dimensions.height10),
               TourPageview(tourList: tourController.tourList),
               SizedBox(height: Dimensions.height30),
-              _buildSection("Địa điểm du lịch hấp dẫn",
-                  "Thư giãn - Nạp năng lượng - Khám phá mới"),
+              _buildSection("attractive_tourist_destination".tr, "relax".tr),
               SizedBox(height: Dimensions.height10),
               TouristAttractionPageview(
                 touristAttractionList:
                     touristAttractionController.touristAttractionList,
               ),
               SizedBox(height: Dimensions.height30),
-              _buildSection("Cơ sở lưu trú", "Tận hưởng khoảnh khắc thư giãn"),
+              _buildSection("accommodation_facility".tr, "enjoy".tr),
               SizedBox(height: Dimensions.height10),
               StaggeredScreen(),
               SizedBox(height: Dimensions.height30),
-              _buildSection(
-                  "Khám phá ẩm thực", "Vô vàn món ăn ngon và hấp dẫn"),
+              _buildSection("explore_cuisine".tr, "countless_etc".tr),
               SizedBox(height: Dimensions.height10),
               RestaurantPageview(
                 restaurantList: restaurantController.restaurantList,
               ),
               SizedBox(height: Dimensions.height30),
-              _buildSection("Tin tức bài viết", ""),
-              _buildNewsPage(),
+              _buildSection("news_event".tr, ""),
+              NewsPageviewWiget(),
               SizedBox(height: Dimensions.height10),
               //SizedBox(height: Dimensions.height30),
             ],

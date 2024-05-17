@@ -11,7 +11,8 @@ class AboutUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LocalizationController>(builder: (localizationController){
+    return GetBuilder<LocalizationController>(
+        builder: (localizationController) {
       return Scaffold(
         appBar: AppBar(
           title: Text("about_us".tr),
@@ -24,7 +25,9 @@ class AboutUsPage extends StatelessWidget {
                 width: Dimensions.screenWidth,
                 //margin: EdgeInsets.only(left: 5, right: 5),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(Dimensions.radius20), bottomRight: Radius.circular(Dimensions.radius20) ),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(Dimensions.radius20),
+                      bottomRight: Radius.circular(Dimensions.radius20)),
                   image: DecorationImage(
                     image: AssetImage('assets/images/ho_ba_be.jpg'),
                     fit: BoxFit.cover,
@@ -56,27 +59,55 @@ class AboutUsPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: Dimensions.height30,),
-              BigText(text: "our_mission".tr, size: Dimensions.font26, color: Colors.blue,),
-              SizedBox(height: Dimensions.height30,),
+              SizedBox(
+                height: Dimensions.height30,
+              ),
+              BigText(
+                text: "our_mission".tr,
+                size: Dimensions.font26,
+                color: Colors.blue,
+              ),
+              SizedBox(
+                height: Dimensions.height30,
+              ),
               Container(
-                margin: EdgeInsets.only(left: Dimensions.width30, right: Dimensions.width30),
-                
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ExpandableTextWidget(text: "Chúng tôi là một công ty du lịch hàng đầu, tập trung vào việc cung cấp những trải nghiệm du lịch độc đáo và không quên được cho khách hàng. Với đội ngũ nhân viên chuyên nghiệp và niềm đam mê không ngừng, chúng tôi cam kết mang lại dịch vụ chất lượng cao và những kỷ niệm đáng nhớ cho mỗi chuyến hành trình của bạn.", showSeeLessOrMore: true,),
-                    SizedBox(height: 20,),
-                    ExpandableTextWidget(text: "Chúng tôi là một công ty du lịch hàng đầu, tập trung vào việc cung cấp những trải nghiệm du lịch độc đáo và không quên được cho khách hàng. Với đội ngũ nhân viên chuyên nghiệp và niềm đam mê không ngừng, chúng tôi cam kết mang lại dịch vụ chất lượng cao và những kỷ niệm đáng nhớ cho mỗi chuyến hành trình của bạn.", showSeeLessOrMore: true,),
-                    SizedBox(height: 20,),
-                    SmallText(text: "Vui lòng liên hệ: 0999999999", color: Colors.grey,)
-                  ],
-                ))
+                  margin: EdgeInsets.only(
+                      left: Dimensions.width30, right: Dimensions.width30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ExpandableTextWidget(
+                      //   text:
+                      //       "Chúng tôi là một công ty du lịch hàng đầu, tập trung vào việc cung cấp những trải nghiệm du lịch độc đáo và không quên được cho khách hàng. Với đội ngũ nhân viên chuyên nghiệp và niềm đam mê không ngừng, chúng tôi cam kết mang lại dịch vụ chất lượng cao và những kỷ niệm đáng nhớ cho mỗi chuyến hành trình của bạn.",
+                      //   showSeeLessOrMore: true,
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // ExpandableTextWidget(
+                      //   text:
+                      //       ,
+                      //   showSeeLessOrMore: false,
+                      // ),
+                      SmallText(
+                        text:
+                            "Chúng tôi là một công ty du lịch hàng đầu, tập trung vào việc cung cấp những trải nghiệm du lịch độc đáo và không quên được cho khách hàng. Với đội ngũ nhân viên chuyên nghiệp và niềm đam mê không ngừng, chúng tôi cam kết mang lại dịch vụ chất lượng cao và những kỷ niệm đáng nhớ cho mỗi chuyến hành trình của bạn.",
+                        size: Dimensions.font16,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      SmallText(
+                        text: "Vui lòng liên hệ: 0999999999",
+                        color: Colors.grey[600],
+                        size: Dimensions.font16,
+                      )
+                    ],
+                  ))
             ],
           ),
         ),
       );
     });
-
   }
 }

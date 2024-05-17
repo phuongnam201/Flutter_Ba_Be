@@ -62,7 +62,7 @@ class _TourDetailState extends State<TourDetail> {
                     ),
                   ),
                   Positioned(
-                    bottom: Dimensions.height20,
+                    bottom: Dimensions.height20 * 2.5,
                     left: Dimensions.width20,
                     child: Container(
                       padding: EdgeInsets.all(8),
@@ -281,12 +281,13 @@ Widget feedBack() {
   return Container(
     width: Dimensions.screenWidth,
     child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
         itemCount: 4,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Container(
             width: Dimensions.screenWidth,
-            height: 75,
+            height: Dimensions.height10 * 8,
             decoration: BoxDecoration(
               //color: Colors.amber,
               border: Border(
@@ -353,7 +354,7 @@ Widget feedBack() {
                             color: Colors.grey[600],
                           ),
                           SizedBox(
-                            width: Dimensions.width10 * 2,
+                            width: Dimensions.width10 * 3.5,
                           ),
                           SmallText(text: formattedDate),
                         ],
@@ -363,7 +364,7 @@ Widget feedBack() {
                       ),
                       Container(
                         //color: Colors.blue,
-                        width: 200,
+                        width: Dimensions.width10 * 20,
                         child: SmallText(
                           text:
                               "good good good very. That is the first time i have been there.",

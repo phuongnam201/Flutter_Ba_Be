@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_babe/models/tourist_attraction_model.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
@@ -24,9 +22,15 @@ class TouristAttractionPageview extends StatefulWidget {
 
 class _TouristAttractionPageviewState extends State<TouristAttractionPageview> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: Dimensions.height10 * 31,
       margin: EdgeInsets.symmetric(horizontal: Dimensions.width10),
       child: ListView.builder(
         itemCount: widget.touristAttractionList.length,
@@ -47,8 +51,8 @@ Widget _buildPageItem(TouristAttraction touristAttraction) {
           touristAttraction.id!, "homePage"));
     },
     child: Container(
-      height: 312,
-      width: 243,
+      height: Dimensions.height10 * 31,
+      width: Dimensions.width10 * 26,
       margin: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Dimensions.radius10),
@@ -68,7 +72,7 @@ Widget _buildPageItem(TouristAttraction touristAttraction) {
             child: Container(
               padding: EdgeInsets.all(8),
               child: Container(
-                width: Dimensions.screenWidth * 0.5,
+                width: Dimensions.screenWidth * 0.55,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

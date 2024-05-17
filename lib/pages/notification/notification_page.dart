@@ -62,18 +62,26 @@ class _NotificationPageState extends State<NotificationPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            // Container(
+            //   height: 50,
+            //   width: 50,
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(Dimensions.radius10*5),
+            //     image: DecorationImage(
+            //       image: imageLink.isNotEmpty
+            //           ? NetworkImage(imageLink)
+            //           : AssetImage("assets/images/notification.png")
+            //               as ImageProvider,
+            //       fit: BoxFit.cover,
+            //     ),
+            //   ),
+            // ),
             Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.radius30),
-                image: DecorationImage(
-                  image: imageLink.isNotEmpty
-                      ? NetworkImage(imageLink)
-                      : AssetImage("assets/images/notification.png")
-                          as ImageProvider,
-                  fit: BoxFit.cover,
-                ),
+              height: Dimensions.height10 * 5,
+              width: Dimensions.width10 * 5,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(imageLink),
+                //radius: 50,
               ),
             ),
             SizedBox(

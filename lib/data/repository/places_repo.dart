@@ -9,16 +9,38 @@ class PlacesRepo {
     required this.apiClient,
   });
 
-  Future<Response> getAllPlaceInfor({String? paramater}) async {
-    paramater ??= "";
+  // Future<Response> getAllPlaceInfor({String paramater}) async {
+  //   String url = AppConstants.PLACES_URL;
 
-    // print("setting url: " + AppConstants.PLACES_URL);
+  //   return await apiClient.getData(url + paramater);
+  // }
 
+  Future<Response> getAllPlaceInfor({
+    String? filter,
+    String? locale,
+    int? paginate,
+    int? page,
+  }) async {
+    // Xây dựng danh sách tham số truy vấn từ các đối số được truyền vào
+    Map<String, dynamic> parameters = {};
+
+    if (filter != null) parameters['filter'] = filter;
+    if (locale != null) parameters['language'] = locale;
+    if (paginate != null) parameters['paginate'] = paginate.toString();
+    if (page != null) parameters['page'] = page.toString();
     String url = AppConstants.PLACES_URL;
-    if (paramater != null && paramater.isNotEmpty) {
-      url += "?filter=" + paramater;
-    }
+    bool isFirstParam = true;
 
+    parameters.forEach((key, value) {
+      if (isFirstParam) {
+        url += '?';
+        isFirstParam = false;
+      } else {
+        url += '&';
+      }
+
+      url += '$key=$value';
+    });
     return await apiClient.getData(url);
   }
 }

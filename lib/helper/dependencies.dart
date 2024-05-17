@@ -1,3 +1,4 @@
+import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/places_controller.dart';
 import 'package:flutter_babe/controller/post_controller.dart';
 import 'package:flutter_babe/controller/restaurant_controller.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_babe/controller/setting_controller.dart';
 import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/controller/tourist_attraction_controller.dart';
 import 'package:flutter_babe/data/api/api_client.dart';
+import 'package:flutter_babe/data/repository/auth_repo.dart';
 import 'package:flutter_babe/data/repository/places_repo.dart';
 import 'package:flutter_babe/data/repository/post_repo.dart';
 import 'package:flutter_babe/data/repository/restaurant_repo.dart';
@@ -31,16 +33,21 @@ Future<void> init() async {
   Get.lazyPut(() => PostRepo(apiClient: Get.find()));
   Get.lazyPut(() => PlacesRepo(apiClient: Get.find()));
   Get.lazyPut(() => RestaurantRepo(apiClient: Get.find()));
+  Get.lazyPut(
+      () => AuthRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
 
   //controller
   Get.lazyPut(() => SettingController(
       settingRepo: Get.find(), sharedPreferences: Get.find()));
-  Get.lazyPut(() => TourController(tourRepo: Get.find()));
-  Get.lazyPut(
-      () => TouristAttractionController(touristAttractionRepo: Get.find()));
-  Get.lazyPut(() => PostController(postRepo: Get.find()));
+  Get.lazyPut(() =>
+      TourController(tourRepo: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => TouristAttractionController(
+      touristAttractionRepo: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() =>
+      PostController(postRepo: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() =>
       PlacesController(placesRepo: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => RestaurantController(
       restaurantRepo: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => AuthController(authRepo: Get.find()));
 }

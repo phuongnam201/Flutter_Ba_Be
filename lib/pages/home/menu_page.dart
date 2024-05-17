@@ -1,23 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
+import 'package:flutter_babe/pages/auth/sign_in_page.dart';
+import 'package:flutter_babe/pages/auth/sign_up_page.dart';
 import 'package:flutter_babe/pages/home/home_page.dart';
 import 'package:flutter_babe/pages/search/search_page.dart';
 import 'package:flutter_babe/pages/test_callController/test_page.dart';
 import 'package:flutter_babe/pages/tour/tour_page.dart';
 import 'package:flutter_babe/pages/tourist_attraction/tourist_attraction.dart';
+import 'package:flutter_babe/pages/vr360/VR360_webview.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-class MenuPage extends StatelessWidget {
+class MenuPage extends StatefulWidget {
+  @override
+  State<MenuPage> createState() => _MenuPageState();
+}
+
+class _MenuPageState extends State<MenuPage> {
   final _controller = PersistentTabController(initialIndex: 0);
+  bool _isTabSelected = false;
+
+  void _handleTabChange(int index) {
+    setState(() {
+      _isTabSelected = index == 4;
+      print(_isTabSelected); // Check if VR360WebView tab is selected
+    });
+  }
 
   List<Widget> pages() {
     return [
       HomePage(),
+      //SignUpPage(),
       TourPage(),
       TouristAttractionPage(),
       SearchPage(),
-      TestPage(),
+      VR360WebView(
+        isTabSelected: _isTabSelected,
+      ),
     ];
   }
 
@@ -70,6 +89,7 @@ class MenuPage extends StatelessWidget {
         decoration: NavBarDecoration(
           borderRadius: BorderRadius.circular(2),
         ),
+        onItemSelected: _handleTabChange,
       );
     }));
   }

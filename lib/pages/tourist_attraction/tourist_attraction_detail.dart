@@ -68,7 +68,7 @@ class _TouristAttractionDetailPageState
                         ),
                         IconAndTextWidget(
                           icon: Icons.location_on,
-                          text: "lorem",
+                          text: tour.address!,
                           textColor: Colors.white,
                           iconColor: Colors.white,
                           iconSize: Dimensions.iconSize16,
@@ -164,7 +164,7 @@ class _TouristAttractionDetailPageState
                                     color: Colors.blue,
                                     image: DecorationImage(
                                       image: NetworkImage(
-                                        "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+                                        "https://images.pexels.com/photos/358457/pexels-photo-358457.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                                       ),
                                       fit: BoxFit.cover,
                                     ),

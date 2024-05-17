@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:flutter_babe/models/tour_modal.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
@@ -26,9 +23,10 @@ class _TourPageviewState extends State<TourPageview> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: Dimensions.height10 * 31,
       margin: EdgeInsets.symmetric(horizontal: Dimensions.width10),
       child: ListView.builder(
+        padding: EdgeInsets.zero,
         itemCount: widget.tourList.length,
         scrollDirection: Axis.horizontal,
         shrinkWrap: false,
@@ -46,8 +44,8 @@ Widget _buildPageItem(Tour tour) {
       Get.toNamed(RouteHelper.getTourDetailPage(tour.id!, "homePage"));
     },
     child: Container(
-      height: 312,
-      width: 243,
+      height: Dimensions.height10 * 30, // theo thiet ke se la 312
+      width: Dimensions.width10 * 26, //243
       margin: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Dimensions.radius10),
@@ -65,6 +63,7 @@ Widget _buildPageItem(Tour tour) {
             bottom: Dimensions.height45,
             left: 0,
             child: Container(
+              width: Dimensions.screenWidth * 0.6,
               padding: EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,11 +72,13 @@ Widget _buildPageItem(Tour tour) {
                     text: tour.title ?? "",
                     color: Colors.white,
                     size: Dimensions.font26,
+                    maxLines: 1,
                   ),
                   SmallText(
                     text: tour.desc ?? "",
                     size: Dimensions.font16,
                     color: Colors.white,
+                    maxLines: 1,
                   )
                 ],
               ),

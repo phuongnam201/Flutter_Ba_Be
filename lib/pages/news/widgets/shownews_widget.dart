@@ -21,6 +21,7 @@ class _ShowNewsState extends State<ShowNews> {
 Widget showNews() {
   return Container(
     child: ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
       itemCount: 10,
       //scrollDirection: Axis.vertical,
       shrinkWrap: true,
@@ -35,7 +36,7 @@ Widget _buildItemNews(int index) {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('dd-MM-yyyy').format(now);
   return Container(
-    height: 120,
+    height: Dimensions.height10 * 12,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(Dimensions.radius10),
       color: Colors.white,
@@ -47,8 +48,8 @@ Widget _buildItemNews(int index) {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          height: 120,
-          width: 120,
+          height: Dimensions.height10 * 12,
+          width: Dimensions.width10 * 12,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(Dimensions.radius10),
@@ -66,7 +67,7 @@ Widget _buildItemNews(int index) {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              width: 220,
+              width: Dimensions.width10 * 23,
               margin: EdgeInsets.only(top: Dimensions.height10),
               //color: Colors.red,
               child: Row(
@@ -98,10 +99,10 @@ Widget _buildItemNews(int index) {
               ),
             ),
             SizedBox(
-              height: 10,
+              height: Dimensions.height10,
             ),
             Container(
-              width: 220,
+              width: Dimensions.width10 * 23,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

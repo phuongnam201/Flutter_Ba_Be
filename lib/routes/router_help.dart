@@ -51,7 +51,7 @@ class RouteHelper {
   static String getTourPage() => '$tourPage';
   static String getContactPage() => '$contactPage';
   static String getTourDetailPage(int tourID, String pageID) =>
-      '$tourDetailPage?tourID=$tourID&pageID=&pageID';
+      '$tourDetailPage?tourID=$tourID&pageID=$pageID';
   static String getNewsDetailPage(int postID, String pageID) =>
       '$newsDetailPage?postID=$postID&pageID=$pageID';
   static String getTouristAttractionPage() => '$touristAttractionPage';

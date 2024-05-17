@@ -11,12 +11,32 @@ class TourRepo {
     required this.apiClient,
   });
 
-  Future<Response> getTourInfor() async {
-    // print(
-    //   "setting url: " + AppConstants.TOUR_URL,
-    // );
-    return await apiClient.getData(
-      AppConstants.TOUR_URL,
-    );
+  Future<Response> getTourInfor({
+    String? filter,
+    String? locale,
+    int? paginate,
+    int? page,
+  }) async {
+    // Xây dựng danh sách tham số truy vấn từ các đối số được truyền vào
+    Map<String, dynamic> parameters = {};
+
+    if (filter != null) parameters['filter'] = filter;
+    if (locale != null) parameters['language'] = locale;
+    if (paginate != null) parameters['paginate'] = paginate.toString();
+    if (page != null) parameters['page'] = page.toString();
+    String url = AppConstants.TOUR_URL;
+    bool isFirstParam = true;
+
+    parameters.forEach((key, value) {
+      if (isFirstParam) {
+        url += '?';
+        isFirstParam = false;
+      } else {
+        url += '&';
+      }
+
+      url += '$key=$value';
+    });
+    return await apiClient.getData(url);
   }
 }

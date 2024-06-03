@@ -14,6 +14,9 @@ class PostController extends GetxController implements GetxService {
   List<Post> _postListFilter = [];
   List<Post> get postListFilter => _postListFilter;
 
+  List<Post> _featurePostList = [];
+  List<Post> get featurePostList => _featurePostList;
+
   // List<Post> _filterDayPostList = [];
   // List<Post> get filterdayPostList => _filterDayPostList;
 
@@ -42,7 +45,7 @@ class PostController extends GetxController implements GetxService {
       }
     } catch (e) {
       // Handle exceptions or errors
-      print("Error in getTourList: $e");
+      print("Error in getAllPostList: $e");
     }
   }
 
@@ -65,39 +68,59 @@ class PostController extends GetxController implements GetxService {
       } else {}
     } catch (e) {
       // Handle exceptions or errors
-      print("Error in getTourList: $e");
+      print("Error in getPostListByFilter: $e");
     }
     _isLoading = false;
     update();
   }
 
-  Post getPostByPostID(int postID) {
-    for (Post post in _postList) {
-      if (post.id == postID) {
-        return post;
-      }
+  Future<void> getFeaturePostList() async {
+    _isLoading = true;
+    String? language =
+        sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
+    try {
+      Response response = await postRepo.getAllPostInfor(locale: language);
+      if (response.statusCode == 200) {
+        _featurePostList.clear();
+        update();
+        List<dynamic> dataList = response.body["results"];
+        dataList.forEach((postData) async {
+          Post post = Post.fromJson(postData);
+          if (post.featured == 1) {
+            _featurePostList.add(post);
+          }
+          //print("check data: " + _featurePostList.toString());
+        });
+        update();
+      } else {}
+    } catch (e) {
+      // Handle exceptions or errors
+      print("Error in getFeaturePostList: $e");
     }
-    return Post();
+    _isLoading = false;
+    update();
   }
 
-  // if something went wrong, you have to get post by filter according to this way
-
-  // Future<void> getFilterPostByDayList() async {
-  //   try {
-  //     Response response = await postRepo.getAllPostInfor(paramater: "day");
-  //     if (response.statusCode == 200) {
-  //       _isLoaded = true;
-  //       _filterDayPostList.clear();
-  //       List<dynamic> dataList = response.body["results"];
-  //       dataList.forEach((postData) {
-  //         Post post = Post.fromJson(postData);
-  //         _filterDayPostList.add(post);
-  //       });
-  //       update();
-  //     } else {}
-  //   } catch (e) {
-  //     // Handle exceptions or errors
-  //     print("Error in getTourList: $e");
-  //   }
-  // }
+  Future<Post?> getPostDetail(int postID) async {
+    _isLoading = true;
+    Post? post;
+    String? language =
+        sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
+    try {
+      Response response =
+          await postRepo.getPostDetail(postID: postID, language: language);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> postDetail = response.body["results"];
+        post = Post.fromJson(postDetail);
+      } else {
+        print("Error at postcontroller: ${response.statusCode}");
+      }
+    } catch (e) {
+      // Handle exceptions or errors
+      print("Error in get Post detail: $e");
+    }
+    _isLoading = false;
+    update();
+    return post;
+  }
 }

@@ -42,5 +42,19 @@
   "enjoy": "Enjoy a relaxing moment",
   "explore_cuisine": "Explore cuisine",
   "countless_etc": "Countless delicious and attractive dishes",
-  "news_event": "News - Event"
+  "news_event": "News - Event",
+  "Ba_Be_Tourism": "Ba Be Tourism",
+  "restaurant_detail": "Restaurant detail",
+  "book_table": "Book table",
+  "address": "Address",
+  "book_room": "Book room",
+  "accommodation_facility_detail": "Accommodation facility details",
+  "share": "Share",
+  "booking_history": "Booking history",
+  "profile": "Profile",
+  "change_password": "Change password",
+  "password": "Password",
+  "current_password": "Current password",
+  "new_password": "New password",
+  "re_password": "Re-enter password"
 }

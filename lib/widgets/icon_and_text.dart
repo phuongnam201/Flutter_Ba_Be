@@ -32,11 +32,13 @@ class IconAndTextWidget extends StatelessWidget {
         SizedBox(
           width: Dimensions.height10 / 2,
         ),
-        SmallText(
-          text: text,
-          color: textColor ?? Colors.black87,
-          size: textSize ?? Dimensions.font16,
-          maxLines: 1,
+        Container(
+          child: SmallText(
+            text: text,
+            color: textColor ?? Colors.black87,
+            size: textSize ?? Dimensions.font16,
+            maxLines: 1,
+          ),
         ),
       ],
     );

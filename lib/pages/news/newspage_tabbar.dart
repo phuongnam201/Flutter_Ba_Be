@@ -74,7 +74,7 @@ class _NewsContentTabBarState extends State<NewsContentTabBar>
   Widget build(BuildContext context) {
     return GetBuilder<PostController>(builder: (postController) {
       return Container(
-        height: Dimensions.screenHeight * 0.9,
+        height: Dimensions.screenHeight * .9,
         width: Dimensions.screenWidth,
         margin: EdgeInsets.only(right: Dimensions.width15),
         child: Column(
@@ -126,7 +126,7 @@ Widget showNews() {
   return GetBuilder<PostController>(builder: (controller) {
     return ListView.builder(
       itemCount: controller.postListFilter.length,
-      physics: NeverScrollableScrollPhysics(),
+      physics: AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
         return _buildItemNews(controller.postListFilter[index]);

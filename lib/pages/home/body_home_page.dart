@@ -43,16 +43,21 @@ class _BodyHomePageState extends State<BodyHomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              //banner
               Image.asset(
                 'assets/images/banner.png',
                 fit: BoxFit.cover,
               ),
+
+              //tour
               SizedBox(height: Dimensions.height30),
               _buildSection(
                   "the_tour_is_of_most_interest".tr, "book_quickly".tr),
               SizedBox(height: Dimensions.height10),
               TourPageview(tourList: tourController.tourList),
               SizedBox(height: Dimensions.height30),
+
+              //tourist attraction
               _buildSection("attractive_tourist_destination".tr, "relax".tr),
               SizedBox(height: Dimensions.height10),
               TouristAttractionPageview(
@@ -60,16 +65,22 @@ class _BodyHomePageState extends State<BodyHomePage> {
                     touristAttractionController.touristAttractionList,
               ),
               SizedBox(height: Dimensions.height30),
+
+              //places
               _buildSection("accommodation_facility".tr, "enjoy".tr),
               SizedBox(height: Dimensions.height10),
               StaggeredScreen(),
               SizedBox(height: Dimensions.height30),
+
+              //explore cuisine
               _buildSection("explore_cuisine".tr, "countless_etc".tr),
               SizedBox(height: Dimensions.height10),
               RestaurantPageview(
                 restaurantList: restaurantController.restaurantList,
               ),
               SizedBox(height: Dimensions.height30),
+
+              //news
               _buildSection("news_event".tr, ""),
               NewsPageviewWiget(),
               SizedBox(height: Dimensions.height10),

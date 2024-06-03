@@ -55,20 +55,26 @@ class SplashScreenState extends State<SplashScreen>
             scale: animation,
             child: Center(
               child: Image.asset(
-                "assets/images/logo.png",
+                "assets/images/logobabe.png",
                 width: Dimensions.splashImg,
               ),
             ),
+          ),
+          SizedBox(
+            height: Dimensions.height20,
           ),
           Center(
             // child: Image.asset(
             //   "assets/image/.png",
             //   width: Dimensions.splashImg,
             // ),
-            child: Text(
-              "Ba Be Tourism",
-              style: TextStyle(fontSize: Dimensions.font16),
-            ),
+            child: Text("Ba_Be_Tourism".tr,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: Dimensions.font26,
+                  fontFamily: 'Times New Roman',
+                  color: Colors.white,
+                )),
           ),
         ],
       ),

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/places_controller.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -36,6 +37,8 @@ class StaggeredScreen extends StatelessWidget {
                 onTap: () {
                   print("you just clicked on placesID: " +
                       placesController.placesList[index].id!.toString());
+                  Get.toNamed(RouteHelper.getPlaceDetail(
+                      placesController.placesList[index].id!, "homePage"));
                 },
                 child: Stack(
                   children: [

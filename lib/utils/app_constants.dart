@@ -8,11 +8,15 @@ class AppConstants {
   //no auth
   static const String SETTING_URL = "api/v1/settings?language=";
   static const String CONTACT_URL = "api/v1/contacts";
-  static const String TOUR_URL = "api/v1/tours/";
+  static const String TOUR_URL = "api/v1/tours";
   static const String TOURIST_ATTRACTION_URL = "api/v1/locations";
   static const String POST_URL = "api/v1/posts";
   static const String PLACES_URL = "api/v1/places";
   static const String RESTAURANT_URL = "api/v1/restaurants";
+  static const String ROOM_URL = "api/v1/rooms";
+  static const String DISH_URL = "api/v1/dishes";
+  static const String ABOUT_US_URL = "api/v1/pages/ve-chung-toi";
+  static const String USER_INFORMATION_URL = "api/v1/customer";
 
   //auth
   static const String REGISTER_URL = "api/v1/auth/register";

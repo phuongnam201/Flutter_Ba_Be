@@ -6,9 +6,14 @@ import 'package:flutter_babe/pages/tour/widgets/normal_tour.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:get/get.dart';
 
-class TourPage extends StatelessWidget {
+class TourPage extends StatefulWidget {
   const TourPage({super.key});
 
+  @override
+  State<TourPage> createState() => _TourPageState();
+}
+
+class _TourPageState extends State<TourPage> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<LocalizationController>(

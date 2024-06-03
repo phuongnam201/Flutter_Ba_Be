@@ -36,7 +36,7 @@ class SignInPage extends StatelessWidget {
       } else {
         authController.login(email, password).then((status) {
           if (status.isSuccess) {
-            CustomSnackBar(status.message!);
+            Get.snackbar("Success", "Welcome");
             Get.toNamed(RouteHelper.getMenuPage());
             print("login ok");
           } else {
@@ -47,6 +47,9 @@ class SignInPage extends StatelessWidget {
     }
 
     return Scaffold(
+        appBar: AppBar(
+          title: Text("login".tr),
+        ),
         backgroundColor: Colors.white,
         body: GetBuilder<AuthController>(builder: (controller) {
           return Container(
@@ -62,7 +65,8 @@ class SignInPage extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 60,
-                        backgroundImage: AssetImage("assets/images/logo.png"),
+                        backgroundImage:
+                            AssetImage("assets/images/logobabe.png"),
                       ),
                     ),
                   ),

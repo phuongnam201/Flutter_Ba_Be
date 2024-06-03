@@ -27,7 +27,7 @@ class _NewsWidgetState extends State<NewsWidget> {
               border: Border.all(color: Colors.black, width: 1),
               //borderRadius: BorderRadius.circular(Dimensions.radius10),
             ),
-            height: 350,
+            height: Dimensions.height10 * 35,
             width: Dimensions.screenWidth,
             child: Column(
               children: [

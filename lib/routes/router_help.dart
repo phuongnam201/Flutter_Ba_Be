@@ -9,6 +9,9 @@ import 'package:flutter_babe/pages/map/map_page.dart';
 import 'package:flutter_babe/pages/news/news_detail/news_detail.dart';
 import 'package:flutter_babe/pages/news/news_page.dart';
 import 'package:flutter_babe/pages/notification/notification_page.dart';
+import 'package:flutter_babe/pages/places/place_detail.dart';
+import 'package:flutter_babe/pages/profile/profile_page.dart';
+import 'package:flutter_babe/pages/restaurant/restaurant_detail.dart';
 import 'package:flutter_babe/pages/search/search_page.dart';
 import 'package:flutter_babe/pages/splash/splash_page.dart';
 import 'package:flutter_babe/pages/tour/tour_detail/tour_detail.dart';
@@ -36,6 +39,9 @@ class RouteHelper {
   static const String touristAttractionPage = "/touristAttraction-page";
   static const String touristAttractionDetailPage =
       "/touristAttractionDetail-page";
+  static const String placeDetail = "/place-page";
+  static const String restaurantDetail = "/restaurant-page";
+  static const String profile = "/profile-page";
 
   static String getSplashPage() => '$splashPage';
   static String getMenuPage() => '$menuPage';
@@ -58,6 +64,11 @@ class RouteHelper {
   static String getTouristAttractionDetailPage(
           int tourAttractionID, String pageID) =>
       '$touristAttractionDetailPage?tourAttractionID=$tourAttractionID&pageID=$pageID';
+  static String getPlaceDetail(int placeID, String pageID) =>
+      '$placeDetail?placeID=$placeID&pageID=$pageID';
+  static String getRestaurantDetail(int restaurantID, String pageID) =>
+      '$restaurantDetail?restaurantID=$restaurantID&pageID=$pageID';
+  static String getProfile() => '$profile';
 
   static List<GetPage> routes = [
     GetPage(name: splashPage, page: () => SplashScreen()),
@@ -72,6 +83,7 @@ class RouteHelper {
     GetPage(name: newsPage, page: () => SearchPage()),
     GetPage(name: tourPage, page: () => TourPage()),
     GetPage(name: contactPage, page: () => ContactPage()),
+    GetPage(name: profile, page: () => ProfilePage()),
     GetPage(
         name: tourDetailPage,
         page: () {
@@ -94,6 +106,26 @@ class RouteHelper {
           var pageID = Get.parameters['pageID'];
           return TouristAttractionDetailPage(
             tourAttractionID: int.parse(tourAttractionID!),
+            pageID: pageID!,
+          );
+        }),
+    GetPage(
+        name: restaurantDetail,
+        page: () {
+          var restaurantID = Get.parameters['restaurantID'];
+          var pageID = Get.parameters['pageID'];
+          return RestaurantDetail(
+            restaurantID: int.parse(restaurantID!),
+            pageID: pageID!,
+          );
+        }),
+    GetPage(
+        name: placeDetail,
+        page: () {
+          var placeID = Get.parameters['placeID'];
+          var pageID = Get.parameters['pageID'];
+          return PlaceDetail(
+            placeID: int.parse(placeID!),
             pageID: pageID!,
           );
         }),

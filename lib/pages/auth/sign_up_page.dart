@@ -10,7 +10,6 @@ import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
 import 'package:flutter_babe/widgets/custom_snackbar.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/get_utils/get_utils.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -39,6 +38,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     // Your build method code here
     return Scaffold(
+      appBar: AppBar(title: Text("signup".tr)),
       backgroundColor: Colors.white,
       body: GetBuilder<AuthController>(builder: (_authController) {
         return !_authController.isLoading
@@ -55,7 +55,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 60,
-                          backgroundImage: AssetImage("assets/images/logo.png"),
+                          backgroundImage:
+                              AssetImage("assets/images/logobabe.png"),
                         ),
                       ),
                     ),
@@ -211,10 +212,9 @@ class _SignUpPageState extends State<SignUpPage> {
       authController.registration(signUpModel).then((status) {
         if (status.isSuccess) {
           print("ok");
+          Get.snackbar("Success", "Registered successfully");
         } else {
-          SnackBar(
-            content: Text(status.message),
-          );
+          CustomSnackBar(status.message!);
         }
       });
     }

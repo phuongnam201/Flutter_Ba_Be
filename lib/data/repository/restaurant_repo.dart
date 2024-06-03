@@ -10,17 +10,6 @@ class RestaurantRepo {
     required this.apiClient,
   });
 
-  // Future<Response> getAllRestaurantInfor({String? paramater}) async {
-  //   paramater ??= "";
-
-  //   String url = AppConstants.RESTAURANT_URL;
-  //   if (paramater != null && paramater.isNotEmpty) {
-  //     url += "?filter=" + paramater;
-  //   }
-
-  //   return await apiClient.getData(url);
-  // }
-
   Future<Response> getAllRestaurantInfor({
     String? filter,
     String? locale,
@@ -44,9 +33,20 @@ class RestaurantRepo {
       } else {
         url += '&';
       }
-
       url += '$key=$value';
     });
+    return await apiClient.getData(url);
+  }
+
+  Future<Response> getRestaurantDetail(
+      {int? restaurantID, String? language}) async {
+    language ??= "";
+
+    String url = AppConstants.RESTAURANT_URL + "/${restaurantID}";
+    if (language != null && language.isNotEmpty) {
+      url += "?language=" + language;
+    }
+
     return await apiClient.getData(url);
   }
 }

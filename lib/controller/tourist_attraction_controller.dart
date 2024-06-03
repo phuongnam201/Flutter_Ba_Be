@@ -14,8 +14,17 @@ class TouristAttractionController extends GetxController
     required this.sharedPreferences,
   });
 
+  int _currentPage = 1;
+  int get currentPage => _currentPage;
+
+  int _totalPage = 1;
+  int get totalPage => _totalPage;
+
   List<TouristAttraction> _touristAttractionList = [];
   List<TouristAttraction> get touristAttractionList => _touristAttractionList;
+
+  List<TouristAttraction> _touristAttractionOther = [];
+  List<TouristAttraction> get touristAttractionOther => _touristAttractionOther;
 
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
@@ -40,7 +49,35 @@ class TouristAttractionController extends GetxController
       } else {}
     } catch (e) {
       // Handle exceptions or errors
-      print("Error in getTourList: $e");
+      print("Error in getTouristAttractionList: $e");
+    }
+  }
+
+  Future<void> getTourAttractListPGN(int? paginate, int? page) async {
+    try {
+      String? language =
+          sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
+      Response response = await touristAttractionRepo.getTouristAttractionInfor(
+          locale: language, paginate: paginate, page: page);
+      if (response.statusCode == 200) {
+        _isLoaded = true;
+        _touristAttractionOther.clear();
+        List<dynamic> dataList = response.body["results"];
+        dataList.forEach((tourData) {
+          TouristAttraction touristAttraction =
+              TouristAttraction.fromJson(tourData);
+          _touristAttractionOther.add(touristAttraction);
+        });
+        //_isLoaded = false;
+
+        _currentPage = page!;
+        print("check pgn at tourAttract: " +
+            _touristAttractionOther.length.toString());
+        update();
+      } else {}
+    } catch (e) {
+      // Handle exceptions or errors
+      print("Error in getTourAttractListPGN: $e");
     }
   }
 

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:get/get.dart';
-
 import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 
@@ -37,7 +36,7 @@ class _GalleryImageState extends State<GalleryImage> {
         child: Column(
           children: [
             Container(
-              height: 200,
+              height: Dimensions.height100 * 2,
               width: Dimensions.screenWidth,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.radius20),
@@ -57,7 +56,8 @@ class _GalleryImageState extends State<GalleryImage> {
             ),
             Container(
               // color: Colors.amber,
-              height: 60, // Adjust the height of the thumbnail images container
+              height: Dimensions.height10 *
+                  6, // Adjust the height of the thumbnail images container
               child: ListView.builder(
                 itemCount: images.length,
                 scrollDirection: Axis.horizontal,

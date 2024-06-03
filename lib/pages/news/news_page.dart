@@ -24,8 +24,22 @@ class _NewPageState extends State<NewPage> {
   //double _scaleFactor = 0.8;
   //double _height = Dimensions.pageViewContainer;
 
+  ScrollController scrollController = ScrollController();
+  bool showbtn = false;
+
   @override
   void initState() {
+    scrollController.addListener(() {
+      double showoffset = 10.0;
+
+      if (scrollController.offset > showoffset) {
+        showbtn = true;
+        setState(() {});
+      } else {
+        showbtn = false;
+        setState(() {});
+      }
+    });
     super.initState();
     pageController.addListener(() {
       setState(() {
@@ -50,7 +64,24 @@ class _NewPageState extends State<NewPage> {
               title: Text("news".tr),
             ),
             backgroundColor: Colors.grey[200],
+            floatingActionButton: AnimatedOpacity(
+              duration: const Duration(milliseconds: 1000),
+              opacity: showbtn ? 1.0 : 0.0,
+              child: FloatingActionButton(
+                onPressed: () {
+                  scrollController.animateTo(0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.fastOutSlowIn);
+                },
+                backgroundColor: Colors.blue,
+                child: const Icon(
+                  Icons.arrow_upward,
+                  color: Colors.white,
+                ),
+              ),
+            ),
             body: SingleChildScrollView(
+              controller: scrollController,
               child: Container(
                 //color: Colors.amber,
                 width: Dimensions.screenWidth,
@@ -77,7 +108,7 @@ class _NewPageState extends State<NewPage> {
                             height: Dimensions.height15,
                           ),
                           PictureWidget(pageController, _currentPageValue,
-                              postController.postList),
+                              postController.featurePostList),
                           //SizedBox(height: Dimensions.height10,),
                           NewsContentTabBar(),
                           SizedBox(
@@ -95,8 +126,8 @@ class _NewPageState extends State<NewPage> {
   }
 }
 
-Widget PictureWidget(
-    PageController pageController, var _currentPageValue, List<Post> postList) {
+Widget PictureWidget(PageController pageController, var _currentPageValue,
+    List<Post> postFeatureList) {
   return Stack(
     children: [
       Container(
@@ -104,12 +135,12 @@ Widget PictureWidget(
         height: Dimensions.height200,
         width: Dimensions.screenWidth,
         child: PageView.builder(
-          itemCount: postList.length,
+          itemCount: postFeatureList.length,
           controller: pageController,
           scrollDirection: Axis.horizontal,
           padEnds: false,
           itemBuilder: (context, index) {
-            return _buildPageItem(postList[index]);
+            return _buildPageItem(postFeatureList[index]);
           },
         ),
       ),
@@ -121,7 +152,7 @@ Widget PictureWidget(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             DotsIndicator(
-              dotsCount: postList.length,
+              dotsCount: postFeatureList.length,
               position: _currentPageValue,
               decorator: const DotsDecorator(
                 color: Colors.white, // Inactive color

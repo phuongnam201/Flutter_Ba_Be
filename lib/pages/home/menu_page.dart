@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
-import 'package:flutter_babe/pages/auth/sign_in_page.dart';
-import 'package:flutter_babe/pages/auth/sign_up_page.dart';
 import 'package:flutter_babe/pages/home/home_page.dart';
 import 'package:flutter_babe/pages/search/search_page.dart';
-import 'package:flutter_babe/pages/test_callController/test_page.dart';
 import 'package:flutter_babe/pages/tour/tour_page.dart';
 import 'package:flutter_babe/pages/tourist_attraction/tourist_attraction.dart';
 import 'package:flutter_babe/pages/vr360/VR360_webview.dart';

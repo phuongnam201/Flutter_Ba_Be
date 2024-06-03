@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/contact_controller.dart';
 import 'package:flutter_babe/controller/setting_controller.dart';
+import 'package:flutter_babe/models/contact_model.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:flutter_babe/widgets/custom_snackbar.dart';
+import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/utils/dimension.dart';
@@ -24,10 +28,45 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController fullName = TextEditingController();
-    TextEditingController email = TextEditingController();
-    TextEditingController phone = TextEditingController();
-    TextEditingController message = TextEditingController();
+    TextEditingController fullNameController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController phoneController = TextEditingController();
+    TextEditingController messageController = TextEditingController();
+
+    void _sendContact() {
+      var contactController = Get.find<ContactController>();
+
+      String fullName = fullNameController.text.trim();
+      String email = emailController.text.trim();
+      String phone = phoneController.text.trim();
+      String message = messageController.text.trim();
+
+      if (fullName.isEmpty) {
+        CustomSnackBar("Please enter your full name", title: "Ops");
+      } else if (!GetUtils.isEmail(email)) {
+        CustomSnackBar("Please enter a valid email", title: "Ops");
+      } else if (!GetUtils.isPhoneNumber(phone)) {
+        CustomSnackBar("Please enter a valid phone number!", title: "Ops");
+      } else if (message.isEmpty) {
+        CustomSnackBar("Please enter your message!", title: "Ops");
+      } else {
+        ContactModel contactModel = ContactModel(
+            name: fullName, phone: phone, email: email, message: message);
+        print(contactModel.toJson());
+        contactController.sendContact(contactModel).then((status) {
+          if (status.isSuccess) {
+            fullNameController.clear();
+            emailController.clear();
+            phoneController.clear();
+            messageController.clear();
+            Get.snackbar("Success", "Your message was sent to Admin",
+                backgroundColor: Colors.lightBlue);
+          } else {
+            CustomSnackBar(status.message!);
+          }
+        });
+      }
+    }
 
     return GetBuilder<SettingController>(builder: (settingController) {
       return GetBuilder<LocalizationController>(
@@ -51,7 +90,7 @@ class _ContactPageState extends State<ContactPage> {
                           image: NetworkImage(AppConstants.BASE_URL +
                               "storage/" +
                               settingController.settingModel!.siteLogo!),
-                          fit: BoxFit.cover)),
+                          fit: BoxFit.contain)),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: Dimensions.height20),
@@ -102,7 +141,7 @@ class _ContactPageState extends State<ContactPage> {
                                 ),
                                 TextField(
                                   keyboardType: TextInputType.name,
-                                  controller: fullName,
+                                  controller: fullNameController,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     border: OutlineInputBorder(
@@ -120,7 +159,7 @@ class _ContactPageState extends State<ContactPage> {
                                 ),
                                 TextField(
                                   keyboardType: TextInputType.phone,
-                                  controller: phone,
+                                  controller: phoneController,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     border: OutlineInputBorder(),
@@ -136,7 +175,7 @@ class _ContactPageState extends State<ContactPage> {
                                 ),
                                 TextField(
                                   keyboardType: TextInputType.emailAddress,
-                                  controller: email,
+                                  controller: emailController,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     border: OutlineInputBorder(),
@@ -151,7 +190,7 @@ class _ContactPageState extends State<ContactPage> {
                                   height: Dimensions.height10 / 2,
                                 ),
                                 TextField(
-                                  controller: message,
+                                  controller: messageController,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     border: OutlineInputBorder(),
@@ -167,12 +206,7 @@ class _ContactPageState extends State<ContactPage> {
                                   child: ElevatedButton(
                                     child: Text('send'.tr),
                                     onPressed: () {
-                                      print("Full name: " +
-                                          fullName.text.toString());
-                                      print("Phone: " + phone.text.toString());
-                                      print("Email: " + email.text.toString());
-                                      print("Message: " +
-                                          message.text.toString());
+                                      _sendContact();
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.amber[700],
@@ -203,11 +237,28 @@ class _ContactPageState extends State<ContactPage> {
                             SizedBox(
                               height: Dimensions.height10,
                             ),
-                            IconAndTextWidget(
-                                icon: Icons.location_on,
-                                text:
-                                    settingController.settingModel!.siteEmail!,
-                                iconColor: Colors.amber),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Colors.amber,
+                                ),
+                                SizedBox(
+                                  width: Dimensions.height10 / 2,
+                                ),
+                                Container(
+                                  width: Dimensions.screenWidth * .75,
+                                  child: SmallText(
+                                    text: "address".tr +
+                                        ": " +
+                                        settingController
+                                            .settingModel!.siteAddress!,
+                                    size: Dimensions.font16,
+                                    color: Colors.black87,
+                                  ),
+                                )
+                              ],
+                            ),
                             SizedBox(
                               height: Dimensions.height10,
                             ),

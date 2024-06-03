@@ -11,13 +11,12 @@ import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/messages.dart';
 import 'package:get/get.dart';
 import 'package:flutter_babe/routes/router_help.dart';
-import 'package:flutter_babe/helper/dependency.dart' as languages;
 import 'package:flutter_babe/helper/dependencies.dart' as dep;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dep.init();
-  Map<String, Map<String, String>> _languages = await languages.init();
+  //await dep.init();
+  Map<String, Map<String, String>> _languages = await dep.init();
   runApp(MyApp(languages: _languages));
 }
 
@@ -30,13 +29,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.find<PostController>().getAllPostList();
+    Get.find<PostController>().getFeaturePostList();
     Get.find<RestaurantController>().getAllRestaurantList();
     Get.find<PlacesController>().getAllPlacesList();
     Get.find<TourController>().getTourList();
     Get.find<SettingController>().getSetting();
-    //Get.find<PostController>().getPostListByFilter("");
     Get.find<TouristAttractionController>()
         .getTouristAttractionList(null, null);
+    Get.find<TouristAttractionController>().getTourAttractListPGN(null, null);
     return GetBuilder<LocalizationController>(
         builder: (localizationController) {
       return GetBuilder<TourController>(builder: (_) {

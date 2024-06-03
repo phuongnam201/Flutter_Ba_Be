@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/pages/tour/widgets/gallery_image.dart';
@@ -44,6 +43,7 @@ class _TourDetailState extends State<TourDetail> {
           child: Column(
             //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /*
               Stack(
                 children: [
                   Container(
@@ -54,11 +54,11 @@ class _TourDetailState extends State<TourDetail> {
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(Dimensions.radius20),
                           bottomRight: Radius.circular(Dimensions.radius20)),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                            AppConstants.BASE_URL + "storage/" + tour.image!),
-                        fit: BoxFit.cover,
-                      ),
+                      // image: DecorationImage(
+                      //   image: NetworkImage(
+                      //       AppConstants.BASE_URL + "storage/" + tour.image!),
+                      //   fit: BoxFit.cover,
+                      // ),
                     ),
                   ),
                   Positioned(
@@ -71,14 +71,14 @@ class _TourDetailState extends State<TourDetail> {
                         children: [
                           BigText(
                             text: tour.title!,
-                            color: Colors.white,
+                            color: Theme.of(context).disabledColor,
                             size: Dimensions.font26,
                           ),
                           IconAndTextWidget(
                             text: tour.address!,
                             icon: Icons.location_on,
-                            textColor: Colors.white,
-                            iconColor: Colors.white,
+                            textColor: Theme.of(context).disabledColor,
+                            iconColor: Theme.of(context).disabledColor,
                             iconSize: Dimensions.iconSize16,
                           )
                         ],
@@ -159,11 +159,99 @@ class _TourDetailState extends State<TourDetail> {
                     ),
                   ),
                 ],
-              ),
-              SizedBox(
-                height: Dimensions.height15,
-              ),
+              ), */
 
+              Container(
+                margin: EdgeInsets.all(20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: Dimensions.screenWidth * 0.65,
+                          child: BigText(
+                              text: tour.title!, color: Colors.blue[800]),
+                        ),
+                        SizedBox(
+                          height: Dimensions.height10 / 2,
+                        ),
+                        Container(
+                          width: Dimensions.screenWidth * 0.65,
+                          child: SmallText(
+                              text: "address".tr + ": " + tour.address!,
+                              size: Dimensions.font16),
+                        ),
+                        SizedBox(
+                          height: Dimensions.height10 / 2,
+                        ),
+                        Container(
+                          width: Dimensions.screenWidth * 0.6,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SmallText(
+                                text: "share".tr + ": ",
+                                color: Colors.grey,
+                                size: Dimensions.font20,
+                              ),
+                              FaIcon(
+                                FontAwesomeIcons.facebook,
+                                // size: Dimensions.font16,
+                                color: Colors.blue,
+                              ),
+                              FaIcon(
+                                FontAwesomeIcons.xTwitter,
+                                // size: Dimensions.font16,
+                                //color: Colors.,
+                              ),
+                              FaIcon(
+                                FontAwesomeIcons.linkedin,
+                                // size: Dimensions.font16,
+                                color: Colors.red,
+                              ),
+                              FaIcon(
+                                FontAwesomeIcons.googlePlus,
+                                // size: Dimensions.font16,
+                                color: Color(0xFF4285F4),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        print("you have just clicked on button");
+                      },
+                      child: Container(
+                        width: Dimensions.screenWidth * 0.2,
+                        decoration: BoxDecoration(
+                            color: Colors.amber[600],
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius10)),
+                        padding: EdgeInsets.only(
+                            top: 10, left: 10, right: 10, bottom: 10),
+                        child: Center(
+                          child: Text(
+                            "Liên hệ tư vấn",
+                            //maxLines: 2,
+                            //textAlign: TextAlign.justify,
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: Dimensions.font16),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
               //gallery
               GalleryImage(
                 tourID: widget.tourID,

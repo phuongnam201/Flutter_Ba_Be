@@ -43,4 +43,52 @@ class RestaurantController extends GetxController implements GetxService {
       print("Error in get Restaurant List: $e");
     }
   }
+
+  Future<Restaurant?> getRestaurantDetail(int restaurantID) async {
+    Restaurant? restaurant;
+    String? language =
+        sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
+    try {
+      Response response = await restaurantRepo.getRestaurantDetail(
+          restaurantID: restaurantID, language: language);
+      if (response.statusCode == 200) {
+        _isLoaded = true;
+        Map<String, dynamic> restaurantData = response.body["results"];
+        restaurant = Restaurant.fromJson(restaurantData);
+        update();
+      } else {
+        // Xử lý trường hợp phản hồi không thành công ở đây
+        print("Error at restaurant: ${response.statusCode}");
+      }
+    } catch (e) {
+      // Xử lý lỗi khác, chẳng hạn như lỗi kết nối
+      print("Error in get Restaurant Detail: $e");
+    }
+    return restaurant;
+  }
+
+  Future<List<String>> getImageList(int restaurantID) async {
+    List<String> images = [];
+    try {
+      // Chờ hàm getRestaurantDetail hoàn thành và trả về một đối tượng Restaurant
+      Restaurant? restaurant = await getRestaurantDetail(restaurantID);
+
+      if (restaurant != null) {
+        String? multiimage = restaurant.multiimage;
+        if (multiimage != null) {
+          multiimage = multiimage.substring(1, multiimage.length - 1);
+          List<String> imageUrls = multiimage.split("\",\"");
+          for (String imageUrl in imageUrls) {
+            imageUrl = imageUrl.replaceAll('"', '');
+            images.add(imageUrl);
+          }
+        } else {
+          images.add(restaurant.image!);
+        }
+      }
+    } catch (e) {
+      print("Error in getImageList: $e");
+    }
+    return images;
+  }
 }

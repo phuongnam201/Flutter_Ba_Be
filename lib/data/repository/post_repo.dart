@@ -37,4 +37,15 @@ class PostRepo {
     });
     return await apiClient.getData(url);
   }
+
+  Future<Response> getPostDetail({int? postID, String? language}) async {
+    language ??= "";
+
+    String url = AppConstants.POST_URL + "/${postID}";
+    if (language != null && language.isNotEmpty) {
+      url += "?language=" + language;
+    }
+
+    return await apiClient.getData(url);
+  }
 }

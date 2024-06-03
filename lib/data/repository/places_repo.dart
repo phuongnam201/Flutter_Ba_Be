@@ -43,4 +43,15 @@ class PlacesRepo {
     });
     return await apiClient.getData(url);
   }
+
+  Future<Response> getPlaceDetail({int? placeID, String? language}) async {
+    language ??= "";
+
+    String url = AppConstants.PLACES_URL + "/${placeID}";
+    if (language != null && language.isNotEmpty) {
+      url += "?language=" + language;
+    }
+
+    return await apiClient.getData(url);
+  }
 }

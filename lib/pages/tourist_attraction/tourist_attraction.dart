@@ -7,6 +7,7 @@ import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
+import 'package:number_pagination/number_pagination.dart';
 
 class TouristAttractionPage extends StatefulWidget {
   const TouristAttractionPage({super.key});
@@ -39,6 +40,7 @@ class _TouristAttractionPageState extends State<TouristAttractionPage> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<TouristAttractionController>(builder: (controller) {
+      var selectedPageNumber = 1;
       return Scaffold(
         appBar: AppBar(
           title: Text("tourist_attraction".tr),
@@ -81,8 +83,8 @@ class _TouristAttractionPageState extends State<TouristAttractionPage> {
                   itemCount: controller.touristAttractionList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     mainAxisExtent: 250,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
                     crossAxisCount: 2,
                   ),
                   itemBuilder: (context, index) {
@@ -118,7 +120,7 @@ class _TouristAttractionPageState extends State<TouristAttractionPage> {
                         child: Column(
                           children: [
                             Container(
-                              height: 150,
+                              height: Dimensions.height10 * 15,
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 //borderRadius: BorderRadius.circular(20),
@@ -188,6 +190,21 @@ class _TouristAttractionPageState extends State<TouristAttractionPage> {
                     );
                   },
                 ),
+              ),
+              NumberPagination(
+                onPageChanged: (int pageNumber) {
+                  setState(() {
+                    // Gọi phương thức để chuyển đến trang mới
+                    selectedPageNumber = pageNumber;
+                    controller.getTouristAttractionList(8, pageNumber);
+                  });
+                },
+                threshold: 2,
+                pageTotal: (controller.touristAttractionList.length / 8).ceil(),
+                pageInit:
+                    controller.currentPage, // picked number when init page
+                colorPrimary: Colors.blue,
+                colorSub: Colors.white,
               ),
             ],
           ),

@@ -15,6 +15,7 @@ class NewsPageviewWiget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<PostController>(builder: (controller) {
       return Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
         height: Dimensions.height10 * 35,
         margin: EdgeInsets.only(right: Dimensions.width10),
         child: ListView.builder(
@@ -38,7 +39,8 @@ class NewsPageviewWiget extends StatelessWidget {
                           left: Dimensions.width10, right: Dimensions.width10),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black54, width: 1),
-                        //borderRadius: BorderRadius.circular(Dimensions.radius10),
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius10),
                       ),
                       height: Dimensions.height10 * 35,
                       width: Dimensions.screenWidth,
@@ -47,6 +49,8 @@ class NewsPageviewWiget extends StatelessWidget {
                           Container(
                             height: Dimensions.height10 * 25,
                             decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(Dimensions.radius10),
                               image: DecorationImage(
                                 image: NetworkImage(AppConstants.BASE_URL +
                                     '/storage/' +
@@ -68,8 +72,7 @@ class NewsPageviewWiget extends StatelessWidget {
                                   color: Colors.blue[700],
                                 ),
                                 SmallText(
-                                  text: controller
-                                      .postList[index].metaDescription!,
+                                  text: controller.postList[index].excerpt!,
                                   size: Dimensions.font20,
                                   maxLines: 2,
                                 ),

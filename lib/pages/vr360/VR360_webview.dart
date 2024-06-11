@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_babe/utils/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:flutter_babe/utils/dimension.dart';

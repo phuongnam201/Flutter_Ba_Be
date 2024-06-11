@@ -29,7 +29,11 @@ class TouristAttractionController extends GetxController
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   Future<void> getTouristAttractionList(int? paginate, int? page) async {
+    _isLoading = true;
     try {
       String? language =
           sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
@@ -44,13 +48,15 @@ class TouristAttractionController extends GetxController
               TouristAttraction.fromJson(tourData);
           _touristAttractionList.add(touristAttraction);
         });
-        //_isLoaded = false;
+        _isLoading = false;
         update();
       } else {}
     } catch (e) {
       // Handle exceptions or errors
       print("Error in getTouristAttractionList: $e");
     }
+    _isLoading = false;
+    update();
   }
 
   Future<void> getTourAttractListPGN(int? paginate, int? page) async {
@@ -81,12 +87,27 @@ class TouristAttractionController extends GetxController
     }
   }
 
-  TouristAttraction getTouristAttraction(int id) {
-    for (TouristAttraction tour in _touristAttractionList) {
-      if (tour.id == id) {
-        return tour;
+  Future<TouristAttraction?> getTourDetail(int tourID) async {
+    _isLoading = true;
+    TouristAttraction? tour;
+    String? language =
+        sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
+    try {
+      Response response = await touristAttractionRepo
+          .getTouristAttractionDetail(tourID: tourID, language: language);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> tourDetail = response.body["results"];
+        tour = TouristAttraction.fromJson(tourDetail);
+      } else {
+        print(
+            "Error at get tour detail at tour controller: ${response.statusCode}");
       }
+    } catch (e) {
+      // Handle exceptions or errors
+      print("Error in get Tour detail: $e");
     }
-    return TouristAttraction();
+    _isLoading = false;
+    update();
+    return tour;
   }
 }

@@ -43,4 +43,13 @@ class TouristAttractionRepo {
     // Lấy dữ liệu từ API bằng cách gọi hàm từ ApiClient
     return await apiClient.getData(url);
   }
+
+  Future<Response> getTouristAttractionDetail(
+      {int? tourID, String? language}) async {
+    String url = AppConstants.TOURIST_ATTRACTION_URL + "/${tourID}";
+    if (language != null && language.isNotEmpty) {
+      url += "?language=" + language;
+    }
+    return await apiClient.getData(url);
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 
 class CustomLoader extends StatelessWidget {
@@ -9,11 +8,11 @@ class CustomLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: Dimensions.height20 * 5,
-        width: Dimensions.width20 * 5,
+        height: Dimensions.height20 * 4,
+        width: Dimensions.width20 * 4,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Dimensions.height20 * 5 / 2),
-          color: AppColors.mainColor,
+          color: Colors.lightBlue,
         ),
         alignment: Alignment.center,
         child: CircularProgressIndicator(

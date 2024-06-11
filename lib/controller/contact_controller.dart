@@ -16,8 +16,8 @@ class ContactController extends GetxController implements GetxService {
     update();
     late ResponseModel responseModel;
     Response response = await contactRepo.sendContact(contactModel);
-    print("check status code at contact controller: " +
-        response.statusCode.toString());
+    // print("check status code at contact controller: " +
+    //     response.statusCode.toString());
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"]);
     } else {

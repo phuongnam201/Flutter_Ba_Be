@@ -39,4 +39,12 @@ class TourRepo {
     });
     return await apiClient.getData(url);
   }
+
+  Future<Response> getTourDetail({int? tourID, String? language}) async {
+    String url = AppConstants.TOUR_URL + "/${tourID}";
+    if (language != null && language.isNotEmpty) {
+      url += "?language=" + language;
+    }
+    return await apiClient.getData(url);
+  }
 }

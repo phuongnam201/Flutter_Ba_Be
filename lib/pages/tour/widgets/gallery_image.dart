@@ -21,72 +21,91 @@ class GalleryImage extends StatefulWidget {
 int selectedImageIndex = 0;
 
 class _GalleryImageState extends State<GalleryImage> {
+  late Future<List<String>> _imageListFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _imageListFuture = Get.find<TourController>().getImageList(widget.tourID);
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<String> images =
-        Get.find<TourController>().getImageList(widget.tourID);
-
-    //print(images);
-    return Container(
-      width: Dimensions.screenWidth,
-      margin: EdgeInsets.all(Dimensions.height20),
-      child: Container(
-        //color: Colors.red,
-        width: Dimensions.screenWidth,
-        child: Column(
-          children: [
-            Container(
-              height: Dimensions.height100 * 2,
+    return FutureBuilder(
+        future: _imageListFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error at gallery places: ${snapshot.error}');
+          } else {
+            List<String> images = snapshot.data ?? [];
+            return Container(
               width: Dimensions.screenWidth,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.radius20),
-                image: selectedImageIndex < images.length
-                    ? DecorationImage(
-                        image: NetworkImage(AppConstants.BASE_URL +
-                            "storage/" +
-                            images[selectedImageIndex]),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
-              ),
-              // Adjust the height of the large image container
-            ),
-            SizedBox(
-              height: Dimensions.height10 / 3,
-            ),
-            Container(
-              // color: Colors.amber,
-              height: Dimensions.height10 *
-                  6, // Adjust the height of the thumbnail images container
-              child: ListView.builder(
-                itemCount: images.length,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedImageIndex = index;
-                      });
-                    },
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      child: Padding(
-                        padding: EdgeInsets.all(2.0),
-                        child: Image.network(
-                          AppConstants.BASE_URL + "storage/" + images[index],
-                          fit: BoxFit.cover,
-                        ),
+              margin: EdgeInsets.all(Dimensions.height20),
+              child: Container(
+                //color: Colors.red,
+                width: Dimensions.screenWidth,
+                child: Column(
+                  children: [
+                    Container(
+                      height: Dimensions.height100 * 2,
+                      width: Dimensions.screenWidth,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        image: selectedImageIndex < images.length
+                            ? DecorationImage(
+                                image: NetworkImage(AppConstants.BASE_URL +
+                                    "storage/" +
+                                    images[selectedImageIndex]),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      // Adjust the height of the large image container
+                    ),
+                    SizedBox(
+                      height: Dimensions.height10 / 3,
+                    ),
+                    Container(
+                      // color: Colors.amber,
+                      height: Dimensions.height10 *
+                          6, // Adjust the height of the thumbnail images container
+                      child: ListView.builder(
+                        itemCount: images.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedImageIndex = index;
+                              });
+                            },
+                            child: Container(
+                              height: 60,
+                              width: 60,
+                              child: Padding(
+                                padding: EdgeInsets.all(2.0),
+                                child: Image.network(
+                                  AppConstants.BASE_URL +
+                                      "storage/" +
+                                      images[index],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            );
+          }
+        });
   }
 }

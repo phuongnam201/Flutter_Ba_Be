@@ -1,3 +1,4 @@
+import 'package:flutter_babe/models/update_password_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_babe/data/api/api_client.dart';
@@ -22,6 +23,8 @@ class UserRepo {
         Uri.parse(AppConstants.BASE_URL + AppConstants.USER_INFORMATION_URL);
     var request = http.MultipartRequest('POST', uri);
 
+    //  print("check image: " + userModel.avatar.toString());
+
     request.fields['name'] = userModel.name ?? '';
     request.fields['email'] = userModel.email ?? '';
     if (userModel.password != null) {
@@ -44,5 +47,11 @@ class UserRepo {
     var streamedResponse = await request.send();
     print(streamedResponse.statusCode);
     return await http.Response.fromStream(streamedResponse);
+  }
+
+  Future<Response> updatePassword(
+      UpdatePasswordModel updatePasswordModel) async {
+    String url = AppConstants.UPDATE_PASSWORD_URL;
+    return await apiClient.postData(url, updatePasswordModel.toJson());
   }
 }

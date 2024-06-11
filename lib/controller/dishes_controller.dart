@@ -16,7 +16,7 @@ class DishesController extends GetxController implements GetxService {
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
-  Future<void> getAllDishes() async {
+  Future<void> getAllDishes(int owner_id) async {
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
     try {
@@ -26,11 +26,10 @@ class DishesController extends GetxController implements GetxService {
         _dishesList.clear();
         List<dynamic> dataList = response.body['results']['data'];
         //print("check data: " + dataList[0].toString());
-        for (int i = 0; i < dataList.length; i++) {
-          Dish dish = Dish.fromJson(dataList[i]);
-          //print(dish.title);
-          _dishesList.add(dish);
-        }
+        _dishesList = dataList
+            .where((element) => element['owner_id'] == owner_id)
+            .map((element) => Dish.fromJson(element))
+            .toList();
       }
       update();
     } catch (e) {
@@ -60,5 +59,30 @@ class DishesController extends GetxController implements GetxService {
       print("Error in get dishes Detail: $e");
     }
     return dish;
+  }
+
+  Future<List<String>> getImageList(int restaurantID) async {
+    List<String> images = [];
+    try {
+      // Chờ hàm getRestaurantDetail hoàn thành và trả về một đối tượng Restaurant
+      Dish? dish = await getDishDetail(restaurantID);
+
+      if (dish != null) {
+        String? multiimage = dish.multiimage;
+        if (multiimage != null) {
+          multiimage = multiimage.substring(1, multiimage.length - 1);
+          List<String> imageUrls = multiimage.split("\",\"");
+          for (String imageUrl in imageUrls) {
+            imageUrl = imageUrl.replaceAll('"', '');
+            images.add(imageUrl);
+          }
+        } else {
+          images.add(dish.image!);
+        }
+      }
+    } catch (e) {
+      print("Error in getImageList: $e");
+    }
+    return images;
   }
 }

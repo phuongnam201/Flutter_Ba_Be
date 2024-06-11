@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
     Get.find<SettingController>().getSetting();
     Get.find<TouristAttractionController>()
         .getTouristAttractionList(null, null);
-    Get.find<TouristAttractionController>().getTourAttractListPGN(null, null);
     return GetBuilder<LocalizationController>(
         builder: (localizationController) {
       return GetBuilder<TourController>(builder: (_) {
@@ -47,7 +46,6 @@ class MyApp extends StatelessWidget {
             primaryColor: AppColors.mainColor,
             fontFamily: "Lato",
           ),
-
           //home: Page(),
           locale: localizationController.locale,
           translations: Messages(languages: languages),

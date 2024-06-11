@@ -1,55 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/user_controller.dart';
+import 'package:flutter_babe/models/user_model.dart';
 import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
 
-class MenuSlider extends StatelessWidget {
+class MenuSlider extends StatefulWidget {
   const MenuSlider({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var auth = Get.find<AuthController>().userLoggedIn();
+  State<MenuSlider> createState() => _MenuSliderState();
+}
 
+class _MenuSliderState extends State<MenuSlider> {
+  var auth = Get.find<AuthController>().userLoggedIn();
+  late UserController userController;
+  UserModel? userModel;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (auth) {
+      userController = Get.find<UserController>();
+      userController.getUserInfo();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Drawer(
         child: auth
             ? ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  UserAccountsDrawerHeader(
-                    accountName: BigText(
-                      text: "coming soon",
-                      color: Colors.white,
-                    ),
-                    accountEmail: SmallText(
-                      text: "admin@admin.com",
-                      color: Colors.white,
-                      size: Dimensions.font16,
-                    ),
-                    currentAccountPicture: CircleAvatar(
-                      child: ClipOval(
-                        child: Container(
-                          height: 90,
-                          width: 90,
-                          child: Image.asset(
-                            "assets/images/user.jpg",
-                            fit: BoxFit.cover,
+                  GetBuilder<UserController>(builder: (controller) {
+                    return UserAccountsDrawerHeader(
+                      accountName: BigText(
+                        text: controller.userModel?.name ?? "loading",
+                        color: Colors.white,
+                      ),
+                      accountEmail: SmallText(
+                        text: controller.userModel?.email ?? "loading",
+                        color: Colors.white,
+                        size: Dimensions.font16,
+                      ),
+                      currentAccountPicture: CircleAvatar(
+                        child: ClipOval(
+                          child: Container(
+                            height: 90,
+                            width: 90,
+                            child: controller.userModel?.avatar != null
+                                ? Image.network(
+                                    AppConstants.BASE_URL +
+                                        "storage/" +
+                                        controller.userModel!.avatar!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                          "assets/images/user.jpg");
+                                    },
+                                  )
+                                : Image.asset("assets/images/user.jpg"),
                           ),
                         ),
                       ),
-                    ),
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image:
-                            AssetImage("assets/images/ho_ba_be_tren_cao.jpg"),
-                        fit: BoxFit.cover,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image:
+                              AssetImage("assets/images/ho_ba_be_tren_cao.jpg"),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                   ListTile(
                     leading: Icon(
                       Icons.home,
@@ -118,9 +146,10 @@ class MenuSlider extends StatelessWidget {
                       color: AppColors.mainBlackColor,
                     ),
                     onTap: () {
-                      Get.snackbar("Ba_Be_Tourism".tr, "coming soon!",
-                          colorText: Colors.white,
-                          backgroundColor: Colors.blue);
+                      Get.toNamed(RouteHelper.getHistoryBook());
+                      // Get.snackbar("Ba_Be_Tourism".tr, "coming soon!",
+                      //     colorText: Colors.white,
+                      //     backgroundColor: Colors.blue);
                     },
                   ),
                   ListTile(
@@ -165,6 +194,7 @@ class MenuSlider extends StatelessWidget {
                       Get.toNamed(RouteHelper.getContactPage());
                     },
                   ),
+                  //logout
                   ListTile(
                     leading: Icon(
                       Icons.logout,
@@ -176,7 +206,10 @@ class MenuSlider extends StatelessWidget {
                       color: AppColors.mainBlackColor,
                     ),
                     onTap: () {
-                      Get.toNamed(RouteHelper.getSignInPage());
+                      Get.find<AuthController>().clearShareData();
+                      Navigator.pop(context);
+                      Get.snackbar(":((", "You logged out!, See you later",
+                          backgroundColor: Colors.amber[300]);
                     },
                   ),
                 ],
@@ -193,7 +226,7 @@ class MenuSlider extends StatelessWidget {
                     SizedBox(
                       height: Dimensions.height10,
                     ),
-                    BigText(text: "Vui lòng đăng nhập"),
+                    BigText(text: "please_login".tr),
                     SizedBox(
                       height: Dimensions.height10,
                     ),
@@ -214,7 +247,7 @@ class MenuSlider extends StatelessWidget {
                         ),
                         child: Center(
                           child: BigText(
-                            text: "Login",
+                            text: "login".tr,
                             color: Colors.white,
                           ),
                         ),

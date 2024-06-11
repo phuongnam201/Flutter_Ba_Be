@@ -22,6 +22,7 @@ class _TourPageState extends State<TourPage> {
         return Scaffold(
           appBar: AppBar(
             title: Text("tour".tr),
+            centerTitle: true,
           ),
           backgroundColor: Colors.grey[200],
           body: SingleChildScrollView(

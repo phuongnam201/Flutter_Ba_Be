@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter_babe/data/repository/user_repo.dart';
 import 'package:flutter_babe/models/response_model.dart';
+import 'package:flutter_babe/models/update_password_model.dart';
 import 'package:flutter_babe/models/update_user_model.dart';
 import 'package:flutter_babe/models/user_model.dart';
 import 'package:get/get.dart';
@@ -14,12 +15,12 @@ class UserController extends GetxController implements GetxService {
   });
 
   bool _isLoading = false;
-  UserModel? _userModel = null;
-  File? _pickedImage;
-
   bool get isLoading => _isLoading;
+
+  UserModel? _userModel = null;
   UserModel? get userModel => _userModel;
 
+  File? _pickedImage;
   File? get pickedImage => _pickedImage;
 
   Future<ResponseModel> getUserInfo() async {
@@ -28,8 +29,8 @@ class UserController extends GetxController implements GetxService {
 
     print("code: " + response.statusCode.toString());
     if (response.statusCode == 200) {
-      _userModel = UserModel.fromJson(response.body["results"]);
       _isLoading = true;
+      _userModel = UserModel.fromJson(response.body["results"]);
       responseModel = ResponseModel(true, "Successfully");
     } else {
       print("false at usercontroller");
@@ -40,7 +41,7 @@ class UserController extends GetxController implements GetxService {
     return responseModel;
   }
 
-  Future<void> updateUserInfo(
+  Future<ResponseModel> updateUserInfo(
       String name, String email, String? password) async {
     _isLoading = true;
     update();
@@ -52,19 +53,27 @@ class UserController extends GetxController implements GetxService {
     );
 
     var response = await userRepo.updateUserInformation(updatedUser);
+    late ResponseModel responseModel;
     if (response.statusCode == 200) {
       // Update local user model with new data
       _userModel = UserModel(
         id: _userModel?.id,
         name: name,
         email: email,
-        avatar: _pickedImage?.path.split('/').last,
+        avatar: _pickedImage != null
+            ? _pickedImage?.path.split('/').last
+            : _userModel?.avatar,
         createdAt: _userModel?.createdAt,
         updatedAt: DateTime.now().toString(),
       );
+      responseModel = ResponseModel(true, response.body[0].toString());
+    } else {
+      responseModel = ResponseModel(false, response.body[0]);
+      print("loi:" + response.statusCode.toString());
     }
     _isLoading = false;
     update();
+    return responseModel;
   }
 
   Future<void> pickImage() async {
@@ -74,5 +83,28 @@ class UserController extends GetxController implements GetxService {
       _pickedImage = File(pickedFile.path);
     }
     update();
+  }
+
+  Future<ResponseModel> updatePassword(
+      String password, String new_password, String confirm_password) async {
+    _isLoading = true;
+    update();
+    UpdatePasswordModel updatePasswordModel = UpdatePasswordModel(
+      password: password,
+      new_password: new_password,
+      confirm_password: confirm_password,
+    );
+
+    var response = await userRepo.updatePassword(updatePasswordModel);
+    late ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      responseModel = ResponseModel(true, response.body["message"].toString());
+    } else {
+      responseModel = ResponseModel(false, response.body["message"]);
+      print("loi:" + response.statusCode.toString());
+    }
+    _isLoading = false;
+    update();
+    return responseModel;
   }
 }

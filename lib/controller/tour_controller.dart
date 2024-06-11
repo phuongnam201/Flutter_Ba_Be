@@ -18,6 +18,9 @@ class TourController extends GetxController implements GetxService {
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   Future<void> getTourList() async {
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
@@ -40,29 +43,49 @@ class TourController extends GetxController implements GetxService {
     }
   }
 
-  Tour getTourDetail(int tourID) {
-    for (Tour tour in _tourList) {
-      if (tour.id == tourID) {
-        return tour;
+  Future<Tour?> getTourDetail(int tourID) async {
+    _isLoading = true;
+    Tour? tour;
+    String? language =
+        sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
+    try {
+      Response response =
+          await tourRepo.getTourDetail(tourID: tourID, language: language);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> tourDetail = response.body["results"];
+        tour = Tour.fromJson(tourDetail);
+      } else {
+        print(
+            "Error at get tour detail at tour controller: ${response.statusCode}");
       }
+    } catch (e) {
+      // Handle exceptions or errors
+      print("Error in get Tour detail: $e");
     }
-    return Tour();
+    _isLoading = false;
+    update();
+    return tour;
   }
 
-  List<String> getImageList(int tourID) {
-    Tour tour = getTourDetail(tourID);
+  Future<List<String>> getImageList(int restaurantID) async {
     List<String> images = [];
-
-    if (tour != null) {
-      String? multiimage = tour.multiimage;
-      if (multiimage != null) {
-        multiimage = multiimage.substring(1, multiimage.length - 1);
-        List<String> imageUrls = multiimage.split("\",\"");
-        for (String imageUrl in imageUrls) {
-          imageUrl = imageUrl.replaceAll('"', '');
-          images.add(imageUrl);
+    try {
+      Tour? tour = await getTourDetail(restaurantID);
+      if (tour != null) {
+        String? multiimage = tour.multiimage;
+        if (multiimage != null) {
+          multiimage = multiimage.substring(1, multiimage.length - 1);
+          List<String> imageUrls = multiimage.split("\",\"");
+          for (String imageUrl in imageUrls) {
+            imageUrl = imageUrl.replaceAll('"', '');
+            images.add(imageUrl);
+          }
+        } else {
+          images.add(tour.image!);
         }
       }
+    } catch (e) {
+      print("Error in getImageList: $e");
     }
     return images;
   }

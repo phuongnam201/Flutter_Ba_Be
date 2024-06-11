@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/dimension.dart';
+import 'package:flutter_babe/widgets/languagues_widget.dart';
 import 'package:get/get.dart';
-
-import '../../utils/app_constants.dart';
-import '../../widgets/languagues_widget.dart';
 
 class LanguagePage extends StatelessWidget {
   final bool fromMenu;
@@ -17,6 +16,7 @@ class LanguagePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("languages".tr),
+        centerTitle: true,
       ),
       backgroundColor: Colors.white,
       body: SafeArea(

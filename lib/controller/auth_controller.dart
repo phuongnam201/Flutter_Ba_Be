@@ -12,7 +12,7 @@ class AuthController extends GetxController implements GetxService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  Future<ResponseModel> registration(SignUpModel signUpModel) async {
+  Future<ResponseModel> signUp(SignUpModel signUpModel) async {
     _isLoading = true;
     update();
     Response response = await authRepo.registration(signUpModel);
@@ -22,7 +22,7 @@ class AuthController extends GetxController implements GetxService {
     if (response.statusCode == 200) {
       print("success");
       print("token: " + response.body["newUserToken"]);
-      authRepo.saveUserToken(response.body["newUserToken"]);
+      //authRepo.saveUserToken(response.body["newUserToken"]);
       responseModel = ResponseModel(true, response.body["newUserToken"]);
       print("status model:" + responseModel.isSuccess.toString());
     } else {
@@ -46,7 +46,7 @@ class AuthController extends GetxController implements GetxService {
       authRepo.saveUserToken(response.body["token"]);
       responseModel = ResponseModel(true, response.body["token"]);
     } else {
-      responseModel = ResponseModel(false, response.statusText!);
+      responseModel = ResponseModel(false, "Email hoặc mật khẩu không đúng!");
       print("loi:" + response.statusCode.toString());
     }
     _isLoading = false;

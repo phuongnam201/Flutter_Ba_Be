@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
+import 'package:flutter_babe/controller/search_controller.dart';
+import 'package:flutter_babe/models/places_model.dart';
+import 'package:flutter_babe/models/post_model.dart';
+import 'package:flutter_babe/models/tour_modal.dart';
+import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/app_text_filed.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+enum RadioOptions { tours, news, places }
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,14 +24,16 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   var textController = TextEditingController();
+  final SearchResultController searchResultController =
+      Get.find<SearchResultController>();
   ScrollController scrollController = ScrollController();
   bool showbtn = false;
+  RadioOptions _selectedOption = RadioOptions.tours;
 
   @override
   void initState() {
     scrollController.addListener(() {
       double showoffset = 10.0;
-
       if (scrollController.offset > showoffset) {
         showbtn = true;
         setState(() {});
@@ -32,6 +42,7 @@ class _SearchPageState extends State<SearchPage> {
         setState(() {});
       }
     });
+
     super.initState();
   }
 
@@ -42,15 +53,13 @@ class _SearchPageState extends State<SearchPage> {
       return Scaffold(
         appBar: AppBar(
           title: Text("search".tr),
-          // leading: IconButton(
-          //     icon: Icon(Icons.arrow_back_ios),
-          //     onPressed: () => Get.toNamed(RouteHelper.getMenuPage()),
-          // ),
+          centerTitle: true,
         ),
         floatingActionButton: AnimatedOpacity(
           duration: const Duration(milliseconds: 1000),
           opacity: showbtn ? 1.0 : 0.0,
           child: FloatingActionButton(
+            heroTag: 'searchPageFAB', // Add a unique heroTag
             onPressed: () {
               scrollController.animateTo(0,
                   duration: const Duration(milliseconds: 500),
@@ -67,42 +76,161 @@ class _SearchPageState extends State<SearchPage> {
           controller: scrollController,
           child: Column(
             children: [
-              Stack(
-                children: [
-                  Image.asset(
-                    'assets/images/banner.png',
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 85),
-                    //height: Dimensions.screenHeight,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(Dimensions.radius20),
-                          topRight: Radius.circular(Dimensions.radius20),
-                        )),
-                    child: Column(
+              Image.asset(
+                'assets/images/banner.png',
+                fit: BoxFit.cover,
+              ),
+              Container(
+                height: Dimensions.screenHeight,
+                decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(Dimensions.radius20),
+                      topRight: Radius.circular(Dimensions.radius20),
+                    )),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AppTextField(
+                      textController: textController,
+                      labelText: "search".tr,
+                      icon: Icons.search,
+                      onChanged: (value) async {
+                        //print();
+                        print(value);
+                        String selectedOptionValue =
+                            _selectedOption.toString().split('.')[1];
+
+                        if (!value.isEmpty) {
+                          await searchResultController.getResultSearch(
+                              selectedOptionValue.toString(), value.trim());
+                        }
+                        setState(() {});
+                      },
+                    ),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppTextField(
-                            textController: textController,
-                            labelText: "search".tr,
-                            icon: Icons.search),
-                        SizedBox(
-                          height: Dimensions.height20,
-                        ),
                         Container(
-                          //height: Dimensions.screenHeight,
-                          child: showNews(),
+                            margin: EdgeInsets.only(left: Dimensions.width20),
+                            child: BigText(text: "search_results_by".tr)),
+                        Container(
+                          //color: Colors.amber,
+                          margin: EdgeInsets.only(
+                              left: Dimensions.width20,
+                              right: Dimensions.width20),
+                          width: Dimensions.screenWidth,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: RadioListTile<RadioOptions>(
+                                  title: Text('tour'.tr),
+                                  value: RadioOptions.tours,
+                                  groupValue: _selectedOption,
+                                  onChanged: (RadioOptions? value) {
+                                    setState(() {
+                                      _selectedOption = value!;
+                                    });
+                                    String selectedOptionValue = _selectedOption
+                                        .toString()
+                                        .split('.')[1];
+
+                                    if (!textController.text.isEmpty) {
+                                      searchResultController.getResultSearch(
+                                          selectedOptionValue.toString(),
+                                          textController.text.trim());
+                                    }
+                                    setState(() {});
+                                  },
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 0),
+                                ),
+                              ),
+                              Expanded(
+                                child: RadioListTile<RadioOptions>(
+                                  title: Text('news'.tr),
+                                  value: RadioOptions.news,
+                                  groupValue: _selectedOption,
+                                  onChanged: (RadioOptions? value) {
+                                    setState(() {
+                                      _selectedOption = value!;
+                                    });
+                                    String selectedOptionValue = _selectedOption
+                                        .toString()
+                                        .split('.')[1];
+
+                                    if (!textController.text.isEmpty) {
+                                      searchResultController.getResultSearch(
+                                          selectedOptionValue.toString(),
+                                          textController.text.trim());
+                                    }
+                                    setState(() {});
+                                  },
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 0),
+                                ),
+                              ),
+                              Expanded(
+                                child: RadioListTile<RadioOptions>(
+                                  title: Text('accommodation_facility'.tr),
+                                  value: RadioOptions.places,
+                                  groupValue: _selectedOption,
+                                  onChanged: (RadioOptions? value) {
+                                    setState(() {
+                                      _selectedOption = value!;
+                                    });
+                                    String selectedOptionValue = _selectedOption
+                                        .toString()
+                                        .split('.')[1];
+
+                                    if (!textController.text.isEmpty) {
+                                      searchResultController.getResultSearch(
+                                          selectedOptionValue.toString(),
+                                          textController.text.trim());
+                                    }
+                                    setState(() {});
+                                  },
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 0),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  )
-                ],
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
+                    Expanded(
+                      child: GetBuilder<SearchResultController>(
+                        builder: (controller) {
+                          if (!controller.isLoaded) {
+                            return Container(
+                                child: SmallText(
+                              text: "Không có kết quả tìm kiếm",
+                              size: Dimensions.font16,
+                            ));
+                          }
+                          if (_selectedOption == RadioOptions.tours) {
+                            return showResults(controller.tours);
+                          } else if (_selectedOption == RadioOptions.news) {
+                            return showResults(controller.post);
+                          } else {
+                            return showResults(controller.places);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
               )
             ],
           ),
@@ -112,123 +240,149 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-Widget showNews() {
+Widget showResults(List<dynamic> results) {
   return Container(
+    //height: Dimensions.screenHeight,
     child: ListView.builder(
-      itemCount: 10,
+      itemCount: results.length,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        return _buildItemNews(index);
+        return _buildItem(results[index]);
       },
     ),
   );
 }
 
-Widget _buildItemNews(int index) {
+Widget _buildItem(dynamic item) {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('dd-MM-yyyy').format(now);
-  return Container(
-    height: Dimensions.height10 * 12,
-    width: Dimensions.screenWidth,
-    margin: EdgeInsets.only(
-        left: Dimensions.width20,
-        right: Dimensions.width20,
-        bottom: Dimensions.height10),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(Dimensions.radius10),
-      color: Colors.white,
-    ),
-    //width: 350,
-    //color: Colors.amber,
 
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          height: Dimensions.height10 * 12,
-          width: Dimensions.screenWidth * 0.3,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(Dimensions.radius10),
-                bottomLeft: Radius.circular(Dimensions.radius10)),
-            image: DecorationImage(
-                image: AssetImage("assets/images/ho_ba_be.jpg"),
-                fit: BoxFit.cover),
-          ),
-        ),
-        Container(
-          width: Dimensions.screenWidth * 0.55,
-          margin: EdgeInsets.only(
-              left: Dimensions.width10, right: Dimensions.width10),
-          decoration: BoxDecoration(
-              //color: Colors.amber,
+  String title = "";
+  String description = "";
+  String image = "";
+
+  if (item is Tour) {
+    title = item.title!;
+    description = item.metaDescription ?? "";
+    image = item.image!;
+  } else if (item is Post) {
+    title = item.title!;
+    description = item.metaDescription ?? "";
+    image = item.image!;
+  } else if (item is Places) {
+    title = item.title!;
+    description = item.metaDescription ?? "";
+    image = item.image!;
+  }
+
+  return GestureDetector(
+    onTap: () {
+      if (item is Tour) {
+        Get.toNamed(RouteHelper.getTourDetailPage(item.id!, "searchPage"));
+      } else if (item is Post) {
+        Get.toNamed(RouteHelper.getNewsDetailPage(item.id!, "searchPage"));
+      } else if (item is Places) {
+        Get.toNamed(RouteHelper.getPlaceDetail(item.id!, "searchPage"));
+      }
+    },
+    child: Container(
+      height: Dimensions.height10 * 12,
+      width: Dimensions.screenWidth,
+      margin: EdgeInsets.only(
+          left: Dimensions.width20,
+          right: Dimensions.width20,
+          bottom: Dimensions.height10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(Dimensions.radius10),
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            height: Dimensions.height10 * 12,
+            width: Dimensions.screenWidth * 0.3,
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(Dimensions.radius10),
-                  bottomRight: Radius.circular(Dimensions.radius10))),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                width: Dimensions.width10 * 23,
-                margin: EdgeInsets.only(top: Dimensions.height10),
-                //color: Colors.red,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(
-                          left: 10, top: 2, right: 10, bottom: 2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.amber[600],
-                      ),
-                      child: Center(
-                        child: BigText(
-                          text: "New",
-                          color: Colors.white,
-                          size: Dimensions.font16,
+                  topLeft: Radius.circular(Dimensions.radius10),
+                  bottomLeft: Radius.circular(Dimensions.radius10)),
+              image: DecorationImage(
+                  image:
+                      NetworkImage(AppConstants.BASE_URL + "storage/" + image),
+                  fit: BoxFit.cover),
+            ),
+          ),
+          Container(
+            width: Dimensions.screenWidth * 0.55,
+            margin: EdgeInsets.only(
+                left: Dimensions.width10, right: Dimensions.width10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(Dimensions.radius10),
+                    bottomRight: Radius.circular(Dimensions.radius10))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: Dimensions.width10 * 23,
+                  margin: EdgeInsets.only(top: Dimensions.height10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.amber[600],
+                        ),
+                        child: Center(
+                          child: BigText(
+                            text: "New",
+                            color: Colors.white,
+                            size: Dimensions.font16,
+                          ),
                         ),
                       ),
-                    ),
-                    SmallText(
-                      text: formattedDate,
-                      color: Colors.grey,
-                    )
-                  ],
+                      SmallText(
+                        text: formattedDate,
+                        color: Colors.grey,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: Dimensions.width10 * 23,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BigText(
-                      text: "This is title of the news",
-                      size: Dimensions.font16,
-                      color: Colors.blue[600],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    SmallText(
-                      text:
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce auctor metus eu turpis cursus, eget vestibulum nunc varius. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin eget convallis libero. Donec non velit a velit bibendum finibus. Nullam euismod consequat libero, eget pulvinar velit fermentum vel. Nulla eget purus at magna convallis sollicitudin. Integer id lectus eget nibh posuere sodales.",
-                      maxLines: 2,
-                      size: Dimensions.font16,
-                      color: Colors.black54,
-                    ),
-                  ],
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-            ],
-          ),
-        )
-      ],
+                Container(
+                  width: Dimensions.width10 * 23,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BigText(
+                        text: title,
+                        size: Dimensions.font16,
+                        color: Colors.blue[600],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      SmallText(
+                        text: description,
+                        maxLines: 2,
+                        size: Dimensions.font16,
+                        color: Colors.black54,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     ),
   );
 }

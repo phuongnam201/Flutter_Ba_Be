@@ -2,20 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 
-class AppTextField extends StatelessWidget {
+class AppTextField extends StatefulWidget {
   final TextEditingController textController;
-  //final String hinText;
   final String labelText;
   final IconData icon;
-  final bool? obscureText;
+  final bool obscureText;
+  final ValueChanged<String>? onChanged;
 
   const AppTextField({
     super.key,
     required this.textController,
     required this.labelText,
     required this.icon,
-    this.obscureText,
+    this.obscureText = false,
+    this.onChanged,
   });
+
+  @override
+  _AppTextFieldState createState() => _AppTextFieldState();
+}
+
+class _AppTextFieldState extends State<AppTextField> {
+  bool _obscureText = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscureText = widget.obscureText;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,29 +52,39 @@ class AppTextField extends StatelessWidget {
             ),
             blurRadius: 10.0,
             spreadRadius: 2.0,
-          ), //BoxShadow
+          ),
           BoxShadow(
             color: Colors.white,
             offset: const Offset(0.0, 0.0),
             blurRadius: 0.0,
             spreadRadius: 0.0,
-          ), //BoxShadow
+          ),
         ],
       ),
       child: TextField(
-        obscureText: obscureText ?? false,
-        controller: textController,
+        obscureText: _obscureText,
+        controller: widget.textController,
+        onChanged: widget.onChanged,
         decoration: InputDecoration(
-          labelText: labelText,
-          //prefix
-
+          labelText: widget.labelText,
           prefixIcon: Icon(
-            icon,
+            widget.icon,
             color: AppColors.mainColor,
             size: Dimensions.iconSize16,
           ),
-
-          //enable border
+          suffixIcon: widget.obscureText
+              ? IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                )
+              : null,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius10),
             borderSide: BorderSide(
@@ -68,8 +92,6 @@ class AppTextField extends StatelessWidget {
               color: Colors.grey,
             ),
           ),
-
-          //focus
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius10),
             borderSide: BorderSide(
@@ -77,13 +99,9 @@ class AppTextField extends StatelessWidget {
               color: AppColors.mainColor,
             ),
           ),
-
-          //border
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(Dimensions.radius10),
           ),
-
-          //label style
         ),
       ),
     );

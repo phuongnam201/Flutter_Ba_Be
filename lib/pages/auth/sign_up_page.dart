@@ -61,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     Text(
-                      "Sign Up",
+                      "signup".tr,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 24),
                     ),
@@ -70,7 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     AppTextField(
                         textController: nameController,
-                        labelText: "Name",
+                        labelText: "fullname".tr,
                         icon: Icons.person),
                     AppTextField(
                         textController: emailController,
@@ -78,13 +78,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         icon: Icons.email),
                     AppTextField(
                       textController: passwordController,
-                      labelText: "Password",
+                      labelText: "password".tr,
                       icon: Icons.password,
                       obscureText: true,
                     ),
                     AppTextField(
                       textController: rePasswordController,
-                      labelText: "Confirm password",
+                      labelText: "confirm_password".tr,
                       icon: Icons.password,
                       obscureText: true,
                     ),
@@ -108,20 +108,20 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         child: Center(
                           child: BigText(
-                            text: "Register",
+                            text: "signup".tr,
                             color: Colors.white,
                           ),
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: Dimensions.height10,
+                      height: Dimensions.height10 * 2,
                     ),
                     RichText(
                       text: TextSpan(
                         //recognizer: TapGestureRecognizer()
                         // ..onTap = () => Get.to(() => SignInPage()),
-                        text: "Have an account already? ",
+                        text: "have_an_account_already".tr,
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: Dimensions.font16,
@@ -130,7 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           TextSpan(
                             recognizer: TapGestureRecognizer()
                               ..onTap = () => Get.to(() => SignInPage()),
-                            text: "Sign In",
+                            text: "login".tr,
                             style: TextStyle(
                               color: AppColors.mainColor,
                               fontSize: Dimensions.font16,
@@ -142,29 +142,29 @@ class _SignUpPageState extends State<SignUpPage> {
                     SizedBox(
                       height: Dimensions.screenHeight * 0.05,
                     ),
-                    RichText(
-                      text: TextSpan(
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () => Get.back(),
-                        text: "Sign up using one of the following methods",
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: Dimensions.font16,
-                        ),
-                      ),
-                    ),
-                    Wrap(
-                      children: List.generate(
-                          signUpImage.length,
-                          (index) => Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: CircleAvatar(
-                                  radius: Dimensions.radius20,
-                                  backgroundImage: AssetImage(
-                                      "assets/images/" + signUpImage[index]),
-                                ),
-                              )),
-                    ),
+                    // RichText(
+                    //   text: TextSpan(
+                    //     recognizer: TapGestureRecognizer()
+                    //       ..onTap = () => Get.back(),
+                    //     text: "Sign up using one of the following methods",
+                    //     style: TextStyle(
+                    //       color: Colors.grey[500],
+                    //       fontSize: Dimensions.font16,
+                    //     ),
+                    //   ),
+                    // ),
+                    // Wrap(
+                    //   children: List.generate(
+                    //       signUpImage.length,
+                    //       (index) => Padding(
+                    //             padding: EdgeInsets.all(10.0),
+                    //             child: CircleAvatar(
+                    //               radius: Dimensions.radius20,
+                    //               backgroundImage: AssetImage(
+                    //                   "assets/images/" + signUpImage[index]),
+                    //             ),
+                    //           )),
+                    // ),
                   ],
                 ),
               )
@@ -207,9 +207,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } else {
       SignUpModel signUpModel =
           SignUpModel(name: name, email: email, password: password);
-      print(signUpModel.toJson());
-      print("result" + authController.registration(signUpModel).toString());
-      authController.registration(signUpModel).then((status) {
+      authController.signUp(signUpModel).then((status) {
         if (status.isSuccess) {
           print("ok");
           Get.snackbar("Success", "Registered successfully");

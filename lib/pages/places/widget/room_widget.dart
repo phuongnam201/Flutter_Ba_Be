@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/book_room_controller.dart';
 import 'package:flutter_babe/controller/room_controller.dart';
-import 'package:flutter_babe/models/room_model.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class RoomWidget extends StatefulWidget {
-  const RoomWidget({Key? key}) : super(key: key);
+  final int placeID;
+  final int ownerID;
+  RoomWidget({Key? key, required this.ownerID, required this.placeID})
+      : super(key: key);
 
   @override
   State<RoomWidget> createState() => _RoomWidgetState();
@@ -16,6 +21,7 @@ class RoomWidget extends StatefulWidget {
 
 class _RoomWidgetState extends State<RoomWidget> {
   late RoomsController roomsController;
+  final BookRoomController bookRoomController = Get.find<BookRoomController>();
 
   @override
   void initState() {
@@ -23,7 +29,7 @@ class _RoomWidgetState extends State<RoomWidget> {
     // Tạo một đối tượng RoomsController
     roomsController = Get.find<RoomsController>();
     // Gọi hàm để lấy danh sách phòng
-    roomsController.getAllRoom();
+    roomsController.getAllRoom(widget.ownerID);
   }
 
   @override
@@ -42,7 +48,8 @@ class _RoomWidgetState extends State<RoomWidget> {
               // Hiển thị thông tin về từng phòng
               return GestureDetector(
                 onTap: () {
-                  print("you have just clicked on room ${index + 1}");
+                  Get.toNamed(RouteHelper.getRoomDetail(
+                      controller.roomList[index].id!, "hotelDetail"));
                 },
                 child: Container(
                   //padding: EdgeInsets.all(10),
@@ -81,6 +88,15 @@ class _RoomWidgetState extends State<RoomWidget> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            BigText(
+                              text: "price".tr +
+                                  _formatCurrency(
+                                      controller.roomList[index].price!),
+                              color: Colors.lightBlue,
+                            ),
+                            SizedBox(
+                              height: Dimensions.height10,
+                            ),
                             SmallText(
                               text: controller.roomList[index].desc!,
                               color: Colors.blue[800],
@@ -90,7 +106,7 @@ class _RoomWidgetState extends State<RoomWidget> {
                               height: Dimensions.height10,
                             ),
                             SmallText(
-                              text: "Số giường ngủ: " +
+                              text: "number_of_bed".tr +
                                   controller.roomList[index].numberOfBeds
                                       .toString(),
                               color: Colors.blue[800],
@@ -102,18 +118,26 @@ class _RoomWidgetState extends State<RoomWidget> {
                       SizedBox(
                         height: Dimensions.height10,
                       ),
-                      Container(
-                        height: Dimensions.height10 * 5,
-                        width: Dimensions.screenWidth,
-                        decoration: BoxDecoration(
-                            color: Colors.amber[600],
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius10)),
-                        child: Center(
-                            child: BigText(
-                          text: "Đặt ngay",
-                          color: Colors.white,
-                        )),
+                      InkWell(
+                        onTap: () {
+                          bookRoomController.addRoomToSelection(
+                              controller.roomList[index].id.toString(), "1");
+                          Get.toNamed(RouteHelper.getBookRoomPage(
+                              widget.placeID, "placeDetail"));
+                        },
+                        child: Container(
+                          height: Dimensions.height10 * 5,
+                          width: Dimensions.screenWidth,
+                          decoration: BoxDecoration(
+                              color: Colors.amber[600],
+                              borderRadius:
+                                  BorderRadius.circular(Dimensions.radius10)),
+                          child: Center(
+                              child: BigText(
+                            text: "Đặt ngay",
+                            color: Colors.white,
+                          )),
+                        ),
                       ),
                       SizedBox(
                         height: Dimensions.height10,
@@ -127,5 +151,10 @@ class _RoomWidgetState extends State<RoomWidget> {
         );
       }
     });
+  }
+
+  String _formatCurrency(num price) {
+    final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+    return formatCurrency.format(price);
   }
 }

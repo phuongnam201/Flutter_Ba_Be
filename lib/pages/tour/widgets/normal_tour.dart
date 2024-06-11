@@ -7,6 +7,7 @@ import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/icon_and_text.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NormalTour extends StatefulWidget {
@@ -118,10 +119,8 @@ class _NormalTourState extends State<NormalTour> {
                                       ),
                                       //sale price
                                       BigText(
-                                        text: tourController
-                                                .tourList[index].price
-                                                .toString() +
-                                            " VND",
+                                        text: _formatCurrency(tourController
+                                            .tourList[index].price!),
                                         color: Colors.amber[700],
                                         size: Dimensions.font20,
                                       ),
@@ -165,5 +164,10 @@ class _NormalTourState extends State<NormalTour> {
         );
       });
     });
+  }
+
+  String _formatCurrency(num price) {
+    final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+    return formatCurrency.format(price);
   }
 }

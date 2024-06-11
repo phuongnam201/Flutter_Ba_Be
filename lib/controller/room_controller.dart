@@ -13,10 +13,13 @@ class RoomsController extends GetxController implements GetxService {
   List<Room> _roomList = [];
   List<Room> get roomList => _roomList;
 
+  List<Room> _roomListByOwnerID = [];
+  List<Room> get roomListByOwnerID => _roomListByOwnerID;
+
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
-  Future<void> getAllRoom() async {
+  Future<void> getAllRoom(int ownerID) async {
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
     try {
@@ -27,7 +30,9 @@ class RoomsController extends GetxController implements GetxService {
         List<dynamic> dataList = response.body['results'];
         dataList.forEach((element) {
           Room room = Room.fromJson(element);
-          _roomList.add(room);
+          if (room.ownerId == ownerID) {
+            _roomList.add(room);
+          }
         });
       }
       update();
@@ -36,7 +41,7 @@ class RoomsController extends GetxController implements GetxService {
     }
   }
 
-  Future<Room?> getPlaceDetail(int roomID) async {
+  Future<Room?> getRoomDetail(int roomID) async {
     Room? room;
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
@@ -58,5 +63,30 @@ class RoomsController extends GetxController implements GetxService {
       print("Error in get Restaurant Detail: $e");
     }
     return room;
+  }
+
+  Future<List<String>> getImageList(int restaurantID) async {
+    List<String> images = [];
+    try {
+      // Chờ hàm getRestaurantDetail hoàn thành và trả về một đối tượng Restaurant
+      Room? room = await getRoomDetail(restaurantID);
+
+      if (room != null) {
+        String? multiimage = room.multiimage;
+        if (multiimage != null) {
+          multiimage = multiimage.substring(1, multiimage.length - 1);
+          List<String> imageUrls = multiimage.split("\",\"");
+          for (String imageUrl in imageUrls) {
+            imageUrl = imageUrl.replaceAll('"', '');
+            images.add(imageUrl);
+          }
+        } else {
+          images.add(room.image!);
+        }
+      }
+    } catch (e) {
+      print("Error in getImageList: $e");
+    }
+    return images;
   }
 }

@@ -62,6 +62,7 @@ class _NewPageState extends State<NewPage> {
         return Scaffold(
             appBar: AppBar(
               title: Text("news".tr),
+              centerTitle: true,
             ),
             backgroundColor: Colors.grey[200],
             floatingActionButton: AnimatedOpacity(
@@ -96,20 +97,14 @@ class _NewPageState extends State<NewPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // BigText(
-                          //     text: "news".tr,
-                          //     size: Dimensions.font20,
-                          //     color: Colors.blue),
-                          // SmallText(
-                          //   text: "Lorem",
-                          //   color: Colors.blue,
-                          // ),
                           SizedBox(
                             height: Dimensions.height15,
                           ),
+                          //high light post
                           PictureWidget(pageController, _currentPageValue,
                               postController.featurePostList),
                           //SizedBox(height: Dimensions.height10,),
+                          //tab view post
                           NewsContentTabBar(),
                           SizedBox(
                             height: 10,

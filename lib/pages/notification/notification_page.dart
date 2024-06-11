@@ -21,6 +21,7 @@ class _NotificationPageState extends State<NotificationPage> {
       return Scaffold(
         appBar: AppBar(
           title: Text("notification".tr),
+          centerTitle: true,
           // leading: IconButton(
           //   icon: Icon(Icons.arrow_back_ios),
           //   onPressed: () => Get.back(),

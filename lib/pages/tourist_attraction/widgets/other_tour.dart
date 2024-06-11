@@ -16,14 +16,16 @@ class OtherTourWidget extends StatefulWidget {
 }
 
 class _OtherTourWidgetState extends State<OtherTourWidget> {
-  late TouristAttractionController touristAttractionController;
-  //
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   touristAttractionController = Get.find<TouristAttractionController>();
-  // }
+  final TouristAttractionController touristAttractionController =
+      Get.find<TouristAttractionController>();
+
+  @override
+  void initState() {
+    super.initState();
+    touristAttractionController.getTourAttractListPGN(2, null).then((value) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,8 @@ class _OtherTourWidgetState extends State<OtherTourWidget> {
     return GetBuilder<TouristAttractionController>(builder: (controller) {
       if (!controller.isLoaded) {
         return CircularProgressIndicator();
+      } else if (controller.touristAttractionOther.isEmpty) {
+        return Center(child: Text("No tours available"));
       } else {
         return Container(
           margin: EdgeInsets.only(top: Dimensions.height20),
@@ -51,7 +55,7 @@ class _OtherTourWidgetState extends State<OtherTourWidget> {
                         NeverScrollableScrollPhysics(), // Disable GridView's scrolling
                     shrinkWrap:
                         true, // Wrap the GridView inside SingleChildScrollView
-                    itemCount: 2,
+                    itemCount: controller.touristAttractionOther.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       mainAxisExtent: 250,
                       mainAxisSpacing: 10,
@@ -60,27 +64,22 @@ class _OtherTourWidgetState extends State<OtherTourWidget> {
                     ),
                     itemBuilder: (context, index) {
                       return Container(
-                        //height: 200, // Độ cao của container
-                        width: double.infinity, // Chiều rộng mở rộng toàn bộ
-                        // Padding cho container
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
                               color: Color.fromARGB(255, 211, 201, 201),
-                              offset: const Offset(
-                                1.5,
-                                1.5,
-                              ),
+                              offset: const Offset(1.5, 1.5),
                               blurRadius: 2.0,
                               spreadRadius: 1.0,
-                            ), //BoxShadow
+                            ),
                             BoxShadow(
                               color: Colors.white,
                               offset: const Offset(0.0, 0.0),
                               blurRadius: 0.0,
                               spreadRadius: 0.0,
-                            ), //BoxShadow
+                            ),
                           ],
                         ),
                         child: Column(
@@ -89,7 +88,6 @@ class _OtherTourWidgetState extends State<OtherTourWidget> {
                               height: 150,
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                //borderRadius: BorderRadius.circular(20),
                                 color: Colors.blue,
                                 image: DecorationImage(
                                   image: NetworkImage(
@@ -137,7 +135,7 @@ class _OtherTourWidgetState extends State<OtherTourWidget> {
                                             color:
                                                 Theme.of(context).disabledColor,
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -149,7 +147,7 @@ class _OtherTourWidgetState extends State<OtherTourWidget> {
                                   )
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
                       );
@@ -160,7 +158,6 @@ class _OtherTourWidgetState extends State<OtherTourWidget> {
               NumberPagination(
                 onPageChanged: (int pageNumber) {
                   setState(() {
-                    // Gọi phương thức để chuyển đến trang mới
                     selectedPageNumber = pageNumber;
                     controller.getTourAttractListPGN(2, pageNumber);
                   });

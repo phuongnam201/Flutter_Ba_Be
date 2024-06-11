@@ -44,6 +44,7 @@ class _TouristAttractionPageState extends State<TouristAttractionPage> {
       return Scaffold(
         appBar: AppBar(
           title: Text("tourist_attraction".tr),
+          centerTitle: true,
         ),
         backgroundColor: Colors.grey[200],
         body: SingleChildScrollView(

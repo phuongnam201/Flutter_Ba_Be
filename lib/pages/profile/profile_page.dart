@@ -4,8 +4,11 @@ import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/user_controller.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
+import 'package:flutter_babe/widgets/custom_loader.dart';
+import 'package:flutter_babe/widgets/custom_snackbar.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -25,6 +28,10 @@ class _ProfilePageState extends State<ProfilePage> {
   late UserController userController;
   late AuthController authController;
 
+  bool _obscureCurrentPassword = true;
+  bool _obscureNewPassword = true;
+  bool _obscureReEnterPassword = true;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +49,9 @@ class _ProfilePageState extends State<ProfilePage> {
   void dispose() {
     fullName.dispose();
     email.dispose();
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    reEnterPasswordController.dispose();
     super.dispose();
   }
 
@@ -56,13 +66,15 @@ class _ProfilePageState extends State<ProfilePage> {
         return Scaffold(
           appBar: AppBar(
             title: Text("profile".tr),
+            centerTitle: true,
           ),
-          body: controller.userModel != null
+          body: !controller.isLoading
               ? Container(
                   margin: EdgeInsets.all(20),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
+                        // name & email
                         Container(
                           child: Column(
                             children: [
@@ -197,8 +209,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: ElevatedButton(
                                   child: Text('save'.tr),
                                   onPressed: () {
-                                    controller.updateUserInfo(
-                                        fullName.text, email.text, null);
+                                    controller
+                                        .updateUserInfo(
+                                            fullName.text, email.text, null)
+                                        .then((status) => {
+                                              if (status.isSuccess)
+                                                {
+                                                  Get.snackbar("Update",
+                                                      "Updated Successfully")
+                                                }
+                                              else
+                                                {
+                                                  CustomSnackBar(
+                                                      status.message!)
+                                                }
+                                            });
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.amber[700],
@@ -255,9 +280,24 @@ class _ProfilePageState extends State<ProfilePage> {
                               TextField(
                                 keyboardType: TextInputType.name,
                                 controller: currentPasswordController,
+                                obscureText: _obscureCurrentPassword,
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
                                   border: OutlineInputBorder(),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscureCurrentPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureCurrentPassword =
+                                            !_obscureCurrentPassword;
+                                      });
+                                    },
+                                  ),
                                 ),
                               ),
                               SizedBox(
@@ -271,9 +311,24 @@ class _ProfilePageState extends State<ProfilePage> {
                               TextField(
                                 keyboardType: TextInputType.emailAddress,
                                 controller: newPasswordController,
+                                obscureText: _obscureNewPassword,
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
                                   border: OutlineInputBorder(),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscureNewPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureNewPassword =
+                                            !_obscureNewPassword;
+                                      });
+                                    },
+                                  ),
                                 ),
                               ),
                               SizedBox(
@@ -287,9 +342,24 @@ class _ProfilePageState extends State<ProfilePage> {
                               TextField(
                                 keyboardType: TextInputType.emailAddress,
                                 controller: reEnterPasswordController,
+                                obscureText: _obscureReEnterPassword,
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
                                   border: OutlineInputBorder(),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscureReEnterPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureReEnterPassword =
+                                            !_obscureReEnterPassword;
+                                      });
+                                    },
+                                  ),
                                 ),
                               ),
                               SizedBox(
@@ -301,7 +371,30 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: ElevatedButton(
                                   child: Text('save'.tr),
                                   onPressed: () {
-                                    // Implement password update logic
+                                    controller
+                                        .updatePassword(
+                                            currentPasswordController.text
+                                                .trim(),
+                                            newPasswordController.text.trim(),
+                                            reEnterPasswordController.text
+                                                .trim())
+                                        .then((status) => {
+                                              if (status.isSuccess)
+                                                {
+                                                  currentPasswordController
+                                                      .clear(),
+                                                  newPasswordController.clear(),
+                                                  reEnterPasswordController
+                                                      .clear(),
+                                                  Get.snackbar("Update",
+                                                      "Updated Successfully")
+                                                }
+                                              else
+                                                {
+                                                  CustomSnackBar(
+                                                      status.message!)
+                                                }
+                                            });
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.amber[700],
@@ -320,7 +413,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 )
-              : Center(child: CircularProgressIndicator()),
+              : Center(child: CustomLoader()),
         );
       });
     } else {
@@ -329,7 +422,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
       return Scaffold(
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CustomLoader(),
         ),
       );
     }

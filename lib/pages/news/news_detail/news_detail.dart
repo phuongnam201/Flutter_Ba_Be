@@ -57,6 +57,7 @@ class _NewsDetailState extends State<NewsDetail> {
         return Scaffold(
           appBar: AppBar(
             title: Text("news_detail".tr),
+            centerTitle: true,
           ),
           backgroundColor: Colors.white,
           body: post != null

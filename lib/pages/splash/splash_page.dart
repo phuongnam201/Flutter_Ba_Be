@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,6 +18,8 @@ class SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
+  late SharedPreferences sharedPreference;
+
   GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
   // Future<void> _loadResource() async {
@@ -32,16 +36,25 @@ class SplashScreenState extends State<SplashScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
+    sharedPreference = Get.find();
+    var language = sharedPreference.getString(AppConstants.LANGUAGE_CODE);
     controller =
         AnimationController(vsync: this, duration: Duration(seconds: 1))
           ..forward();
 
     animation = CurvedAnimation(parent: controller, curve: Curves.linear);
 
-    Timer(
-      Duration(seconds: 3),
-      () => Get.offNamed(RouteHelper.getMenuPage()),
-    );
+    if (language == "vi" || language == "en") {
+      Timer(
+        Duration(seconds: 3),
+        () => Get.offNamed(RouteHelper.getMenuPage()),
+      );
+    } else {
+      Timer(
+        Duration(seconds: 3),
+        () => Get.toNamed(RouteHelper.getLanguageRoute()),
+      );
+    }
   }
 
   @override

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/restaurant_controller.dart';
 import 'package:flutter_babe/models/restaurant_model.dart';
 import 'package:flutter_babe/pages/restaurant/widgets/dishes_widget.dart';
 import 'package:flutter_babe/pages/restaurant/widgets/gallery_image.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
@@ -41,9 +43,11 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLogin = Get.find<AuthController>().userLoggedIn();
     return Scaffold(
       appBar: AppBar(
         title: Text("restaurant_detail".tr),
+        centerTitle: true,
       ),
       body: restaurant != null
           ? Container(
@@ -53,6 +57,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,6 +66,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                               width: Dimensions.screenWidth * 0.65,
                               child: BigText(
                                 text: restaurant!.title!,
+                                maxLines: 2,
                                 color: Colors.blue[800],
                               ),
                             ),
@@ -117,18 +123,29 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                             )
                           ],
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.amber,
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.radius10)),
-                          padding: EdgeInsets.only(
-                              top: 10, left: 15, right: 15, bottom: 10),
-                          child: Text(
-                            "book_table".tr,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                        GestureDetector(
+                          onTap: () {
+                            if (isLogin) {
+                              Get.toNamed(RouteHelper.getBookTablePage(
+                                  widget.restaurantID, widget.pageID));
+                            } else {
+                              Get.snackbar("Ops", "Please login in advance!");
+                              Get.toNamed(RouteHelper.getSignInPage());
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.amber,
+                                borderRadius:
+                                    BorderRadius.circular(Dimensions.radius10)),
+                            padding: EdgeInsets.only(
+                                top: 10, left: 20, right: 20, bottom: 10),
+                            child: Text(
+                              "book_table".tr,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         )
                       ],
@@ -142,7 +159,10 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                     HtmlWidget(restaurant!.content!),
 
                     //dish
-                    DishesWidget(),
+                    DishesWidget(
+                      owner_id: restaurant!.ownerId!,
+                      restaurantID: restaurant!.id!,
+                    ),
                   ],
                 ),
               ),

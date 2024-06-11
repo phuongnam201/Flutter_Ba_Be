@@ -79,6 +79,7 @@ class _HomePageState extends State<HomePage> {
                   floating: true,
                   snap: true,
                   title: Text("home".tr),
+                  centerTitle: true,
                 ),
               ],
               body: SingleChildScrollView(

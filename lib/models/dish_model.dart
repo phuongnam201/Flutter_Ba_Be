@@ -89,7 +89,7 @@ class Restaurants {
   String? updatedAt;
   String? multiimage;
   int? ownerId;
-  Null? calcRoute;
+  String? calcRoute;
   Pivot? pivot;
 
   Restaurants(

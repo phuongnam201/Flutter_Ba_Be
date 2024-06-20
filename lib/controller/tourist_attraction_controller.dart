@@ -17,11 +17,21 @@ class TouristAttractionController extends GetxController
   int _currentPage = 1;
   int get currentPage => _currentPage;
 
-  int _totalPage = 1;
+  late int _totalPage = 1;
   int get totalPage => _totalPage;
+
+  bool _hasNextPage = false;
+  bool get hasNextPage => _hasNextPage;
+
+  bool _isLastPage = false;
+  bool get isLastPage => _isLastPage;
 
   List<TouristAttraction> _touristAttractionList = [];
   List<TouristAttraction> get touristAttractionList => _touristAttractionList;
+
+  List<TouristAttraction> _outstandingTouristAttractionList = [];
+  List<TouristAttraction> get outstandingTouristAttractionList =>
+      _outstandingTouristAttractionList;
 
   List<TouristAttraction> _touristAttractionOther = [];
   List<TouristAttraction> get touristAttractionOther => _touristAttractionOther;
@@ -33,24 +43,47 @@ class TouristAttractionController extends GetxController
   bool get isLoading => _isLoading;
 
   Future<void> getTouristAttractionList(int? paginate, int? page) async {
+    if (paginate == null) {
+      paginate = 8;
+    }
     _isLoading = true;
     try {
       String? language =
           sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
       Response response = await touristAttractionRepo.getTouristAttractionInfor(
           locale: language, paginate: paginate, page: page);
+
       if (response.statusCode == 200) {
         _isLoaded = true;
-        _touristAttractionList.clear();
         List<dynamic> dataList = response.body["results"];
-        dataList.forEach((tourData) {
-          TouristAttraction touristAttraction =
-              TouristAttraction.fromJson(tourData);
-          _touristAttractionList.add(touristAttraction);
-        });
-        _isLoading = false;
+        if (dataList.isEmpty) {
+          _hasNextPage = false;
+          _isLastPage = true;
+        } else {
+          if (page == 1) {
+            _touristAttractionList.clear();
+            _outstandingTouristAttractionList.clear();
+            _isLastPage = false;
+          }
+          dataList.forEach((tourData) {
+            TouristAttraction touristAttraction =
+                TouristAttraction.fromJson(tourData);
+            _touristAttractionList.add(touristAttraction);
+            if (touristAttraction.featured == 1) {
+              _outstandingTouristAttractionList.add(touristAttraction);
+            }
+          });
+          if (dataList.length < paginate) {
+            _isLastPage = true;
+          } else {
+            _hasNextPage = true;
+          }
+          _isLoading = false;
+        }
         update();
-      } else {}
+      } else {
+        // Handle non-200 response codes
+      }
     } catch (e) {
       // Handle exceptions or errors
       print("Error in getTouristAttractionList: $e");
@@ -59,33 +92,20 @@ class TouristAttractionController extends GetxController
     update();
   }
 
-  Future<void> getTourAttractListPGN(int? paginate, int? page) async {
-    try {
-      String? language =
-          sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
-      Response response = await touristAttractionRepo.getTouristAttractionInfor(
-          locale: language, paginate: paginate, page: page);
-      if (response.statusCode == 200) {
-        _isLoaded = true;
-        _touristAttractionOther.clear();
-        List<dynamic> dataList = response.body["results"];
-        dataList.forEach((tourData) {
-          TouristAttraction touristAttraction =
-              TouristAttraction.fromJson(tourData);
-          _touristAttractionOther.add(touristAttraction);
-        });
-        //_isLoaded = false;
-
-        _currentPage = page!;
-        print("check pgn at tourAttract: " +
-            _touristAttractionOther.length.toString());
-        update();
-      } else {}
-    } catch (e) {
-      // Handle exceptions or errors
-      print("Error in getTourAttractListPGN: $e");
-    }
-  }
+  // Future<void> getLengthOfList() async {
+  //   try {
+  //     String? language =
+  //         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
+  //     Response response = await touristAttractionRepo.getTouristAttractionInfor(
+  //         locale: language, paginate: 1, page: 1);
+  //     if (response.statusCode == 200) {
+  //       _totalPage = response.body["totalPages"];
+  //     }
+  //   } catch (e) {
+  //     print("Error in getLengthOfList: $e");
+  //   }
+  //   update();
+  // }
 
   Future<TouristAttraction?> getTourDetail(int tourID) async {
     _isLoading = true;
@@ -95,6 +115,7 @@ class TouristAttractionController extends GetxController
     try {
       Response response = await touristAttractionRepo
           .getTouristAttractionDetail(tourID: tourID, language: language);
+
       if (response.statusCode == 200) {
         Map<String, dynamic> tourDetail = response.body["results"];
         tour = TouristAttraction.fromJson(tourDetail);
@@ -109,5 +130,42 @@ class TouristAttractionController extends GetxController
     _isLoading = false;
     update();
     return tour;
+  }
+
+  Future<void> getTourAttractListPGN(int? paginate, int? page) async {
+    try {
+      String? language =
+          sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
+      Response response = await touristAttractionRepo.getTouristAttractionInfor(
+          locale: language, paginate: paginate, page: page);
+      if (response.statusCode == 200) {
+        _isLoaded = true;
+        //_touristAttractionOther.clear();
+        List<dynamic> dataList = response.body["results"];
+        if (dataList.isEmpty) {
+          _hasNextPage = false;
+          _isLastPage = true;
+        } else {
+          if (page == 1) {
+            touristAttractionOther.clear();
+          }
+          dataList.forEach((tourData) {
+            TouristAttraction touristAttraction =
+                TouristAttraction.fromJson(tourData);
+            _touristAttractionOther.add(touristAttraction);
+          });
+          _hasNextPage = true;
+          _isLastPage = false;
+          _isLoading = false;
+          print("check paginate at tourAttract: " + paginate.toString());
+          update();
+        }
+      } else {
+        // Xử lý khi không nhận được mã trạng thái 200
+      }
+    } catch (e) {
+      // Xử lý ngoại lệ hoặc lỗi
+      print("Error in getTourAttractListPGN: $e");
+    }
   }
 }

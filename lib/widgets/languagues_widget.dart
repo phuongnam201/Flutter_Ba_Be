@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/models/languages.dart';
+import 'package:flutter_babe/utils/colors.dart';
+import 'package:flutter_babe/utils/dimension.dart';
+import 'package:flutter_babe/widgets/big_text.dart';
+import 'package:flutter_babe/widgets/small_text.dart';
 
 import '../utils/app_constants.dart';
 
@@ -24,42 +28,42 @@ class LanguageWidget extends StatelessWidget {
         localizationController.setSelectIndex(index);
       },
       child: Container(
-        padding: EdgeInsets.all(10),
+        //padding: EdgeInsets.all(10),
         margin: EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
-            BoxShadow(color: Colors.grey[200]!, blurRadius: 5, spreadRadius: 1)
+            BoxShadow(color: Colors.grey[200]!, blurRadius: 10, spreadRadius: 2)
           ],
         ),
-        child: Stack(children: [
-          Center(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              SizedBox(height: 5),
-              Text(
-                languageModel.languageName,
-              ),
-            ]),
-          ),
-          localizationController.selectedIndex == index
-              ? Positioned(
-                  top: 0,
-                  right: 0,
-                  left: 0,
-                  bottom: 50,
-                  child: Icon(Icons.check_circle,
-                      color: Theme.of(context).primaryColor, size: 25),
-                )
-              : Positioned(
-                  top: 0,
-                  right: 0,
-                  left: 0,
-                  bottom: 50,
-                  child: Icon(Icons.check_circle,
-                      color: Theme.of(context).disabledColor, size: 25),
-                ),
-        ]),
+        child: Center(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            languageModel.languageName.contains("Việt Nam")
+                ? Image.asset("assets/images/vi.png",
+                    width: 100, height: 70, fit: BoxFit.cover)
+                : Image.asset(
+                    "assets/images/en.png",
+                    width: 100,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
+            SizedBox(height: Dimensions.height10),
+            SmallText(
+              text: languageModel.languageName,
+              size: Dimensions.font16,
+              color: localizationController.selectedIndex == index
+                  ? AppColors.textColorLightBlue
+                  : Theme.of(context).disabledColor,
+            ),
+            SizedBox(height: Dimensions.height10),
+            localizationController.selectedIndex == index
+                ? Icon(Icons.check_circle,
+                    color: AppColors.textColorLightBlue, size: 25)
+                : Icon(Icons.check_circle,
+                    color: Theme.of(context).disabledColor, size: 25),
+          ]),
+        ),
       ),
     );
   }

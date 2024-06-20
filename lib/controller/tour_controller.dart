@@ -21,23 +21,49 @@ class TourController extends GetxController implements GetxService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  Future<void> getTourList() async {
+  bool _hasNextPage = false;
+  bool get hasNextPage => _hasNextPage;
+
+  bool _isLastPage = false;
+  bool get isLastPage => _isLastPage;
+
+  Future<void> getTourList(int? paginate, int? page) async {
+    if (paginate == null) {
+      paginate = 8;
+    }
+    _isLoading = true;
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
     try {
-      Response response = await tourRepo.getTourInfor(locale: language);
+      Response response = await tourRepo.getTourInfor(
+          locale: language, paginate: paginate, page: page);
       if (response.statusCode == 200) {
         _isLoaded = true;
-        _tourList.clear();
         List<dynamic> dataList = response.body["results"];
-        dataList.forEach((tourData) {
-          Tour tour = Tour.fromJson(tourData);
-          _tourList.add(tour);
-        });
-        //print('tour created:' + _tourList[0].createdAt.toString());
+        if (dataList.isEmpty) {
+          _isLastPage = true;
+        } else {
+          if (page == 1) {
+            _tourList.clear();
+            _isLastPage = false;
+          }
+          dataList.forEach((tourData) {
+            Tour tour = Tour.fromJson(tourData);
+            _tourList.add(tour);
+          });
+
+          if (dataList.length < paginate) {
+            _isLastPage = true;
+          } else {
+            _hasNextPage = true;
+          }
+        }
+        _isLoading = false;
         update();
       } else {}
     } catch (e) {
+      _isLoading = false;
+      update(); // Cập nhật trạng thái ngay cả khi xảy ra lỗi
       // Handle exceptions or errors
       print("Error in getTourList: $e");
     }

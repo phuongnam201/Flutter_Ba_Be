@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_babe/controller/about_us_controller.dart';
 import 'package:flutter_babe/controller/auth_controller.dart';
+import 'package:flutter_babe/controller/banner_controller.dart';
 import 'package:flutter_babe/controller/book_room_controller.dart';
 import 'package:flutter_babe/controller/book_table_controller.dart';
 import 'package:flutter_babe/controller/contact_controller.dart';
@@ -23,6 +24,7 @@ import 'package:flutter_babe/controller/user_controller.dart';
 import 'package:flutter_babe/data/api/api_client.dart';
 import 'package:flutter_babe/data/repository/about_us_repo.dart';
 import 'package:flutter_babe/data/repository/auth_repo.dart';
+import 'package:flutter_babe/data/repository/banner_repo.dart';
 import 'package:flutter_babe/data/repository/book_room_repo.dart';
 import 'package:flutter_babe/data/repository/book_table_repo.dart';
 import 'package:flutter_babe/data/repository/contact_repo.dart';
@@ -53,7 +55,8 @@ Future<Map<String, Map<String, String>>> init() async {
       appBaseUrl: AppConstants.BASE_URL, sharedPreferences: Get.find()));
 
   //Repository
-  Get.lazyPut(() => SettingRepo(apiClient: Get.find()));
+  Get.lazyPut(
+      () => SettingRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => TourRepo(apiClient: Get.find()));
   Get.lazyPut(() => TouristAttractionRepo(apiClient: Get.find()));
   Get.lazyPut(() => PostRepo(apiClient: Get.find()));
@@ -73,6 +76,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => BookTableRepo(apiClient: Get.find()));
   Get.lazyPut(() => HistoryBookTableRepo(apiClient: Get.find()));
   Get.lazyPut(() => HistoryBookRoomRepo(apiClient: Get.find()));
+  Get.lazyPut(() => BannerRepo(apiClient: Get.find()));
 
   //controller
   Get.lazyPut(() => SettingController(
@@ -105,6 +109,7 @@ Future<Map<String, Map<String, String>>> init() async {
       historyBookTableRepo: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HistoryBookRoomController(
       historyBookRoomRepo: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => BannerController(bannerRepo: Get.find()));
 
   // Retrieving localized data
   Map<String, Map<String, String>> _languages = Map();

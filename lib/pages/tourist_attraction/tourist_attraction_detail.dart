@@ -3,6 +3,7 @@ import 'package:flutter_babe/controller/tourist_attraction_controller.dart';
 import 'package:flutter_babe/models/tourist_attraction_model.dart';
 import 'package:flutter_babe/pages/tourist_attraction/widgets/other_tour.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
@@ -30,10 +31,23 @@ class _TouristAttractionDetailPageState
       Get.find<TouristAttractionController>();
   TouristAttraction? touristAttraction;
 
+  ScrollController scrollController = ScrollController();
+  bool showbtn = false;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    scrollController.addListener(() {
+      double showoffset = 10.0;
+      if (scrollController.offset > showoffset) {
+        showbtn = true;
+        setState(() {});
+      } else {
+        showbtn = false;
+        setState(() {});
+      }
+    });
     touristAttractionController
         .getTourDetail(widget.tourAttractionID!)
         .then((value) {
@@ -50,9 +64,28 @@ class _TouristAttractionDetailPageState
       appBar: AppBar(
         title: Text("tourist_attraction_detail".tr),
         centerTitle: true,
+        backgroundColor: AppColors.colorAppBar,
+      ),
+      floatingActionButton: AnimatedOpacity(
+        duration: const Duration(milliseconds: 1000),
+        opacity: showbtn ? 1.0 : 0.0,
+        child: FloatingActionButton(
+          heroTag: 'searchPageFAB', // Add a unique heroTag
+          onPressed: () {
+            scrollController.animateTo(0,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.fastOutSlowIn);
+          },
+          backgroundColor: AppColors.colorAppBar!,
+          child: const Icon(
+            Icons.arrow_upward,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: touristAttraction != null
           ? SingleChildScrollView(
+              controller: scrollController,
               child: Column(
                 children: [
                   Stack(
@@ -138,10 +171,10 @@ class _TouristAttractionDetailPageState
                       children: [
                         Container(
                           margin: EdgeInsets.only(left: Dimensions.width20),
-                          padding: EdgeInsets.only(bottom: Dimensions.font20),
+                          //padding: EdgeInsets.only(bottom: Dimensions.font20),
                           child: BigText(
-                            text: "Điểm du lịch khác",
-                            color: Colors.blue[800],
+                            text: "other_tourist_attraction".tr,
+                            color: AppColors.textColorBlue800,
                           ),
                         ),
                         //other touristAttraction

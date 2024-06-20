@@ -3,9 +3,10 @@ import 'package:flutter_babe/controller/book_room_controller.dart';
 import 'package:flutter_babe/controller/places_controller.dart';
 import 'package:flutter_babe/models/book_room_model.dart';
 import 'package:flutter_babe/models/places_model.dart';
+import 'package:flutter_babe/pages/places/bookroom/list_room.dart';
 import 'package:flutter_babe/pages/places/bookroom/room_selected.dart';
-import 'package:flutter_babe/pages/places/bookroom/rooms_in_bookroom.dart';
 import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
@@ -66,6 +67,7 @@ class _BookRoomPageState extends State<BookRoomPage> {
       appBar: AppBar(
         title: Text("book_room".tr),
         centerTitle: true,
+        backgroundColor: AppColors.colorAppBar,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -98,6 +100,15 @@ class _BookRoomPageState extends State<BookRoomPage> {
                       ),
                       SizedBox(
                         height: Dimensions.height10,
+                      ),
+                      BigText(
+                        text: "room_list".tr,
+                        color: AppColors.textColorBlue800,
+                      ),
+                      ListRooms(
+                          ownerID: places!.ownerId!, pageID: "bookRoomPage"),
+                      SizedBox(
+                        height: Dimensions.height20,
                       ),
 
                       /** Room selected */
@@ -256,7 +267,7 @@ class _BookRoomPageState extends State<BookRoomPage> {
                                 height: Dimensions.height10,
                               ),
                               //number
-                              Text("Chọn số lượng"),
+                              Text("select_number".tr),
                               SizedBox(
                                 height: Dimensions.height10,
                               ),
@@ -316,9 +327,11 @@ class _BookRoomPageState extends State<BookRoomPage> {
                                                       .text.isEmpty ||
                                                   adultsController.text ==
                                                       "0") {
-                                                adultsController.text =
-                                                    controller.adults
-                                                        .toString();
+                                                controller.setQuantityAdults(
+                                                    0, context);
+                                                // adultsController.text =
+                                                //     controller.adults
+                                                //         .toString();
                                               } else {
                                                 controller.setQuantityAdults(
                                                     int.parse(
@@ -359,7 +372,7 @@ class _BookRoomPageState extends State<BookRoomPage> {
                                       width: Dimensions.width20,
                                     ),
                                     SmallText(
-                                      text: "Người lớn",
+                                      text: "adults".tr,
                                       size: Dimensions.font16,
                                       color: Colors.black87,
                                     )
@@ -425,9 +438,11 @@ class _BookRoomPageState extends State<BookRoomPage> {
                                                       .text.isEmpty ||
                                                   childrenController.text ==
                                                       "0") {
-                                                childrenController.text =
-                                                    controller.children
-                                                        .toString();
+                                                controller.setQuantityChildren(
+                                                    0, context);
+                                                // childrenController.text =
+                                                //     controller.children
+                                                //         .toString();
                                               } else {
                                                 controller.setQuantityChildren(
                                                     int.parse(childrenController
@@ -468,7 +483,7 @@ class _BookRoomPageState extends State<BookRoomPage> {
                                       width: Dimensions.width20,
                                     ),
                                     SmallText(
-                                      text: "Trẻ em",
+                                      text: "children".tr,
                                       size: Dimensions.font16,
                                       color: Colors.black87,
                                     )
@@ -487,7 +502,7 @@ class _BookRoomPageState extends State<BookRoomPage> {
                                     print("you have just clicked on Đặt phòng");
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.amber[700],
+                                    backgroundColor: AppColors.colorButton,
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 60, vertical: 10),
                                   ),
@@ -496,7 +511,7 @@ class _BookRoomPageState extends State<BookRoomPage> {
                             ],
                           )),
                       //list room of hotel
-                      RoomInBookRoom(owner_id: places!.ownerId!),
+                      // RoomInBookRoom(owner_id: places!.ownerId!),
                     ],
                   ),
                 ),
@@ -511,12 +526,12 @@ class _BookRoomPageState extends State<BookRoomPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Vui lòng chọn lại ngày tháng'),
+          title: Text('select_datetime_valid'.tr),
           content: isCheckIn
               ? Text(
-                  'Ngày nhận phòng không thể trước ngày hôm nay',
+                  'checkin_validate'.tr,
                 )
-              : Text('Ngày trả phòng không thể trước ngày nhận'),
+              : Text('checkout_validate'.tr),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
@@ -538,17 +553,21 @@ class _BookRoomPageState extends State<BookRoomPage> {
     String phone = phoneController.text.trim();
     String checkIn = checkInController.text.trim();
     String checkOut = checkOutController.text.trim();
-    String numberOfAdults = adultsController.text.trim();
-    String numberOfChildren = childrenController.text.trim();
+    String numberOfAdults = bookRoomController.adults.toString();
+    String numberOfChildren = bookRoomController.children.toString();
     List<RoomsSelected> roomsSelectedList =
         bookRoomController.roomsSelectedList;
 
     if (name.isEmpty) {
-      CustomSnackBar("Please enter your name!", title: "Name");
+      CustomSnackBar("enter_your_name".tr, title: "fullname".tr);
     } else if (phone.isEmpty) {
-      CustomSnackBar("Please enter your phone!", title: "Phone");
+      CustomSnackBar("enter_your_phone".tr, title: "phone".tr);
+    } else if (!phone.isPhoneNumber) {
+      CustomSnackBar("enter_your_valid_phone".tr, title: "phone".tr);
     } else if (roomsSelectedList.isEmpty) {
-      CustomSnackBar("Please select at least a room", title: "room".tr);
+      CustomSnackBar("at_least_a_room".tr, title: "room".tr);
+    } else if (numberOfAdults.isEmpty || numberOfAdults == "0") {
+      CustomSnackBar("adults_validate".tr, title: "adults".tr);
     } else {
       BookRoomModel bookRoomModel = BookRoomModel(
           name: name,
@@ -563,7 +582,8 @@ class _BookRoomPageState extends State<BookRoomPage> {
       bookRoomController.bookRoom(bookRoomModel).then((status) {
         if (status.isSuccess) {
           print("ok");
-          Get.snackbar("Success", "Thanks for your booking!");
+          CustomSnackBar("thanks_for_your_booking".tr,
+              isError: false, title: "success".tr);
           bookRoomController.clearRoomsSelected();
           Get.offNamed(RouteHelper.getMenuPage());
         } else {

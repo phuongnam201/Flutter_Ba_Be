@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/room_controller.dart';
 import 'package:flutter_babe/models/room_model.dart';
 import 'package:flutter_babe/pages/places/roomDetail/gallery_room.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
@@ -40,6 +41,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
       appBar: AppBar(
         title: Text("room_detail".tr),
         centerTitle: true,
+        backgroundColor: AppColors.colorAppBar,
       ),
       body: room != null
           ? SingleChildScrollView(

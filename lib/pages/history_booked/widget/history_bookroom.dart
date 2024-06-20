@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/history_book_room_controller.dart';
+import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
@@ -38,92 +40,114 @@ class _HistoryBookRoomWidgetState extends State<HistoryBookRoomWidget> {
             ),
           );
         } else {
-          return Container(
-            child: ListView.builder(
-              itemCount: controller.historyBookRoomList.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                      //color: Colors.amber,
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      border:
-                          Border.all(color: Theme.of(context).disabledColor)),
-                  margin: EdgeInsets.only(
-                      left: Dimensions.width10,
-                      right: Dimensions.width10,
-                      bottom: Dimensions.height10),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SmallText(
-                                text: "Mã đơn đặt: " +
-                                    controller.historyBookRoomList[index].id!
-                                        .toString()),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
-                              text: "Tên khách đặt: " +
-                                  controller.historyBookRoomList[index].name!,
-                            ),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
-                                text: "Ngày nhận: " +
-                                    controller
-                                        .historyBookRoomList[index].checkin!),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
-                                text: "Ngày trả: " +
-                                    controller
-                                        .historyBookRoomList[index].checkout!),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
-                                text: "Số lượng phòng: " +
-                                    controller
-                                        .historyBookRoomList[index].numberRoom!
-                                        .toString()),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            // SmallText(
-                            //     text: "Số lượng người: " +
-                            //         controller
-                            //             .historyBookRoomList[index].people!
-                            //             .toString()),
-                          ],
-                        ),
-                        Container(
-                          child: ElevatedButton(
-                            child: SmallText(
-                              text: "View detail",
-                              color: Colors.white,
-                            ),
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber[700],
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                            ),
+          return SingleChildScrollView(
+            child: Container(
+              child: ListView.builder(
+                itemCount: controller.historyBookRoomList.length,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        //color: Colors.amber,
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        border:
+                            Border.all(color: Theme.of(context).disabledColor)),
+                    margin: EdgeInsets.only(
+                        left: Dimensions.width10,
+                        right: Dimensions.width10,
+                        bottom: Dimensions.height10),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SmallText(
+                                  color: AppColors.textColorBlack,
+                                  size: Dimensions.font16 - 2,
+                                  text: "Mã đơn đặt: " +
+                                      controller.historyBookRoomList[index].id!
+                                          .toString()),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
+                                color: AppColors.textColorBlack,
+                                size: Dimensions.font16 - 2,
+                                text: "Tên khách đặt: " +
+                                    controller.historyBookRoomList[index].name!,
+                              ),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
+                                  color: AppColors.textColorBlack,
+                                  size: Dimensions.font16 - 2,
+                                  text: "Ngày nhận: " +
+                                      controller
+                                          .historyBookRoomList[index].checkin!),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
+                                  color: AppColors.textColorBlack,
+                                  size: Dimensions.font16 - 2,
+                                  text: "Ngày trả: " +
+                                      controller.historyBookRoomList[index]
+                                          .checkout!),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
+                                  color: AppColors.textColorBlack,
+                                  size: Dimensions.font16 - 2,
+                                  text: "Số lượng phòng: " +
+                                      controller.historyBookRoomList[index]
+                                          .numberRoom!
+                                          .toString()),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
+                                  color: AppColors.textColorBlack,
+                                  size: Dimensions.font16 - 2,
+                                  text: "Số lượng người lớn: " +
+                                      controller
+                                          .historyBookRoomList[index].adults!
+                                          .toString()),
+                            ],
                           ),
-                        )
-                      ],
+                          Container(
+                            child: ElevatedButton(
+                              child: SmallText(
+                                text: "view_detail".tr,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                Get.toNamed(
+                                    RouteHelper.getDetailHistoryBookRoom(
+                                        controller
+                                            .historyBookRoomList[index].id!,
+                                        "history_bookRoom"));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.colorButton,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 5),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           );
         }

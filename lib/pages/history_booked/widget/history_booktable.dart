@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/history_table_controller.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
@@ -38,92 +39,114 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
             ),
           );
         } else {
-          return Container(
-            child: ListView.builder(
-              itemCount: controller.historyBookTableList.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                      //color: Colors.amber,
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      border:
-                          Border.all(color: Theme.of(context).disabledColor)),
-                  margin: EdgeInsets.only(
-                      left: Dimensions.width10,
-                      right: Dimensions.width10,
-                      bottom: Dimensions.height10),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SmallText(
+          return SingleChildScrollView(
+            child: Container(
+              child: ListView.builder(
+                itemCount: controller.historyBookTableList.length,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        //color: Colors.amber,
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        border:
+                            Border.all(color: Theme.of(context).disabledColor)),
+                    margin: EdgeInsets.only(
+                        left: Dimensions.width10,
+                        right: Dimensions.width10,
+                        bottom: Dimensions.height10),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SmallText(
                                 text: "Mã đơn đặt: " +
                                     controller.historyBookTableList[index].id!
-                                        .toString()),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
-                              text: "Tên khách đặt: " +
-                                  controller.historyBookTableList[index].name!,
-                            ),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
+                                        .toString(),
+                                color: AppColors.textColorBlack,
+                                size: Dimensions.font16 - 2,
+                              ),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
+                                text: "Tên khách đặt: " +
+                                    controller
+                                        .historyBookTableList[index].name!,
+                                color: AppColors.textColorBlack,
+                                size: Dimensions.font16 - 2,
+                              ),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
                                 text: "Ngày đặt: " +
                                     controller
-                                        .historyBookTableList[index].date!),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
+                                        .historyBookTableList[index].date!,
+                                color: AppColors.textColorBlack,
+                                size: Dimensions.font16 - 2,
+                              ),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
                                 text: "Thời gian đặt: " +
                                     controller
-                                        .historyBookTableList[index].time!),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
-                                text: "Số lượng bán: " +
+                                        .historyBookTableList[index].time!,
+                                color: AppColors.textColorBlack,
+                                size: Dimensions.font16 - 2,
+                              ),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
+                                text: "Số lượng bàn: " +
                                     controller.historyBookTableList[index]
                                         .numberTable!
-                                        .toString()),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            SmallText(
+                                        .toString(),
+                                size: Dimensions.font16 - 2,
+                                color: AppColors.textColorBlack,
+                              ),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              SmallText(
                                 text: "Số lượng người: " +
                                     controller
                                         .historyBookTableList[index].people!
-                                        .toString()),
-                          ],
-                        ),
-                        Container(
-                          child: ElevatedButton(
-                            child: SmallText(
-                              text: "View detail",
-                              color: Colors.white,
-                            ),
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber[700],
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                            ),
+                                        .toString(),
+                                size: Dimensions.font16 - 2,
+                                color: AppColors.textColorBlack,
+                              ),
+                            ],
                           ),
-                        )
-                      ],
+                          Container(
+                            child: ElevatedButton(
+                              child: SmallText(
+                                text: "view_detail".tr,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.colorButton,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 5),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           );
         }

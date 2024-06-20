@@ -1,12 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/post_controller.dart';
 import 'package:flutter_babe/models/post_model.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:flutter_babe/utils/colors.dart';
+import 'package:flutter_babe/widgets/custom_loader.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/pages/news/widgets/showNews_widget.dart';
 import 'package:flutter_babe/utils/dimension.dart';
@@ -35,9 +37,23 @@ class _NewsDetailState extends State<NewsDetail> {
   final PostController postController = Get.find<PostController>();
   Post? post;
 
+  ScrollController scrollController = ScrollController();
+  bool showbtn = false;
+
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(() {
+      double showoffset = 10.0;
+      if (scrollController.offset > showoffset) {
+        showbtn = true;
+        setState(() {});
+      } else {
+        showbtn = false;
+        setState(() {});
+      }
+    });
+
     postController.getPostDetail(widget.postID).then((value) {
       setState(() {
         post = value;
@@ -58,10 +74,29 @@ class _NewsDetailState extends State<NewsDetail> {
           appBar: AppBar(
             title: Text("news_detail".tr),
             centerTitle: true,
+            backgroundColor: AppColors.colorAppBar,
+          ),
+          floatingActionButton: AnimatedOpacity(
+            duration: const Duration(milliseconds: 1000),
+            opacity: showbtn ? 1.0 : 0.0,
+            child: FloatingActionButton(
+              heroTag: 'searchPageFAB', // Add a unique heroTag
+              onPressed: () {
+                scrollController.animateTo(0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.fastOutSlowIn);
+              },
+              backgroundColor: AppColors.colorAppBar,
+              child: const Icon(
+                Icons.arrow_upward,
+                color: Colors.white,
+              ),
+            ),
           ),
           backgroundColor: Colors.white,
           body: post != null
               ? SingleChildScrollView(
+                  controller: scrollController,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -70,21 +105,32 @@ class _NewsDetailState extends State<NewsDetail> {
                           Container(
                             height: Dimensions.height200,
                             width: Dimensions.screenWidth,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft:
-                                    Radius.circular(Dimensions.radius20),
-                                bottomRight:
-                                    Radius.circular(Dimensions.radius20),
-                              ),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  AppConstants.BASE_URL +
-                                      "storage/" +
-                                      post!.image!,
+                            child: CachedNetworkImage(
+                              imageUrl: AppConstants.BASE_URL +
+                                  "storage/" +
+                                  post!.image!,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft:
+                                        Radius.circular(Dimensions.radius20),
+                                    bottomRight:
+                                        Radius.circular(Dimensions.radius20),
+                                  ),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                                fit: BoxFit.cover,
                               ),
+                              placeholder: (context, url) => Container(
+                                  width: 30,
+                                  height: 30,
+                                  child: Center(
+                                      child: CircularProgressIndicator())),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
                             ),
                           ),
                           Positioned(
@@ -117,7 +163,7 @@ class _NewsDetailState extends State<NewsDetail> {
                                     child: Icon(
                                       Icons.favorite,
                                       color: isFavorite
-                                          ? Colors.amber[700]
+                                          ? AppColors.textColorBlue800
                                           : Colors.white,
                                     ),
                                   ),
@@ -151,7 +197,7 @@ class _NewsDetailState extends State<NewsDetail> {
                               ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.amber[600],
+                                color: AppColors.colorButton,
                               ),
                               child: Center(
                                 child: BigText(
@@ -166,7 +212,7 @@ class _NewsDetailState extends State<NewsDetail> {
                             ),
                             BigText(
                               text: post!.title!,
-                              color: Colors.blue[800],
+                              color: AppColors.textColorBlue800,
                               size: Dimensions.font20,
                               maxLines: 4,
                             ),
@@ -212,24 +258,6 @@ class _NewsDetailState extends State<NewsDetail> {
                         child: HtmlWidget(post!.body!),
                       ),
                       Container(
-                        width: Dimensions.screenWidth,
-                        margin: EdgeInsets.all(Dimensions.height20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            BigText(
-                              text: "comment".tr,
-                              color: Colors.blue[800],
-                              size: Dimensions.font20,
-                            ),
-                            SizedBox(
-                              height: Dimensions.height10,
-                            ),
-                            feedBack(),
-                          ],
-                        ),
-                      ),
-                      Container(
                         color: Colors.grey[200],
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +266,7 @@ class _NewsDetailState extends State<NewsDetail> {
                               margin: EdgeInsets.all(Dimensions.height20),
                               child: BigText(
                                 text: "highlight_tour".tr,
-                                color: Colors.blue[800],
+                                color: AppColors.textColorBlue800,
                                 size: Dimensions.font20,
                               ),
                             ),
@@ -259,115 +287,10 @@ class _NewsDetailState extends State<NewsDetail> {
                   ),
                 )
               : Center(
-                  child: CircularProgressIndicator(),
+                  child: CustomLoader(),
                 ),
         );
       },
     );
   }
-}
-
-Widget feedBack() {
-  DateTime now = DateTime.now();
-  String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-  return Container(
-    width: Dimensions.screenWidth,
-    child: ListView.builder(
-        itemCount: 4,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Container(
-            width: Dimensions.screenWidth,
-            height: Dimensions.height10 * 8,
-            decoration: BoxDecoration(
-              //color: Colors.amber,
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey, // Màu sắc của đường border
-                  width: 1.0, // Độ dày của đường border
-                ),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  height: 60,
-                  margin: EdgeInsets.all(Dimensions.height10),
-                  //color: Colors.red,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.grey,
-                      ),
-                      Container(
-                        width: 100,
-                        child: BigText(
-                          text: "Nguyen Phuong Nam",
-                          maxLines: 2,
-                          size: Dimensions.font16,
-                          color: Colors.grey,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.all(Dimensions.height10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 3, top: 2, right: 3, bottom: 2),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.amber[600],
-                            ),
-                            child: Center(
-                              child: SmallText(
-                                text: "10",
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: Dimensions.width10,
-                          ),
-                          BigText(
-                            text: "Tuyệt vời",
-                            size: Dimensions.font16,
-                            color: Colors.grey[600],
-                          ),
-                          SizedBox(
-                            width: Dimensions.width10 * 3.5,
-                          ),
-                          SmallText(text: formattedDate),
-                        ],
-                      ),
-                      SizedBox(
-                        height: Dimensions.height10 / 2,
-                      ),
-                      Container(
-                        //color: Colors.blue,
-                        width: Dimensions.width10 * 20,
-                        child: SmallText(
-                          text:
-                              "good good good very. That is the first time i have been there.",
-                          maxLines: 2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
-  );
 }

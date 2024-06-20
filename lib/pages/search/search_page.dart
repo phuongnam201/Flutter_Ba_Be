@@ -1,11 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/controller/search_controller.dart';
 import 'package:flutter_babe/models/places_model.dart';
 import 'package:flutter_babe/models/post_model.dart';
 import 'package:flutter_babe/models/tour_modal.dart';
+import 'package:flutter_babe/pages/home/widgets/banner_widget.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/app_text_filed.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
@@ -54,12 +57,13 @@ class _SearchPageState extends State<SearchPage> {
         appBar: AppBar(
           title: Text("search".tr),
           centerTitle: true,
+          backgroundColor: AppColors.colorAppBar,
         ),
         floatingActionButton: AnimatedOpacity(
           duration: const Duration(milliseconds: 1000),
           opacity: showbtn ? 1.0 : 0.0,
           child: FloatingActionButton(
-            heroTag: 'searchPageFAB', // Add a unique heroTag
+            heroTag: 'news', // Add a unique heroTag
             onPressed: () {
               scrollController.animateTo(0,
                   duration: const Duration(milliseconds: 500),
@@ -72,16 +76,15 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
+        backgroundColor: Colors.grey[200],
         body: SingleChildScrollView(
           controller: scrollController,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image.asset(
-                'assets/images/banner.png',
-                fit: BoxFit.cover,
-              ),
+              BannerWidget(),
               Container(
-                height: Dimensions.screenHeight,
+                //height: Dimensions.screenHeight,
                 decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.only(
@@ -203,34 +206,34 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: Dimensions.height20,
-                    ),
-                    Expanded(
-                      child: GetBuilder<SearchResultController>(
-                        builder: (controller) {
-                          if (!controller.isLoaded) {
-                            return Container(
-                                child: SmallText(
-                              text: "Không có kết quả tìm kiếm",
-                              size: Dimensions.font16,
-                            ));
-                          }
-                          if (_selectedOption == RadioOptions.tours) {
-                            return showResults(controller.tours);
-                          } else if (_selectedOption == RadioOptions.news) {
-                            return showResults(controller.post);
-                          } else {
-                            return showResults(controller.places);
-                          }
-                        },
-                      ),
-                    ),
                   ],
                 ),
               ),
+              Container(
+                child: GetBuilder<SearchResultController>(
+                  builder: (controller) {
+                    if (!controller.isLoaded) {
+                      return Container(
+                          margin: EdgeInsets.only(top: Dimensions.height20),
+                          child: Center(
+                            child: SmallText(
+                              text: "there_is_no_result".tr,
+                              size: Dimensions.font16,
+                            ),
+                          ));
+                    }
+                    if (_selectedOption == RadioOptions.tours) {
+                      return showResults(controller.tours);
+                    } else if (_selectedOption == RadioOptions.news) {
+                      return showResults(controller.post);
+                    } else {
+                      return showResults(controller.places);
+                    }
+                  },
+                ),
+              ),
               SizedBox(
-                height: 10,
+                height: Dimensions.height10,
               )
             ],
           ),
@@ -241,15 +244,16 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 Widget showResults(List<dynamic> results) {
-  return Container(
-    //height: Dimensions.screenHeight,
-    child: ListView.builder(
-      itemCount: results.length,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return _buildItem(results[index]);
-      },
+  return SingleChildScrollView(
+    child: Container(
+      child: ListView.builder(
+        itemCount: results.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return _buildItem(results[index]);
+        },
+      ),
     ),
   );
 }
@@ -303,14 +307,26 @@ Widget _buildItem(dynamic item) {
           Container(
             height: Dimensions.height10 * 12,
             width: Dimensions.screenWidth * 0.3,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(Dimensions.radius10),
-                  bottomLeft: Radius.circular(Dimensions.radius10)),
-              image: DecorationImage(
-                  image:
-                      NetworkImage(AppConstants.BASE_URL + "storage/" + image),
-                  fit: BoxFit.cover),
+            child: CachedNetworkImage(
+              imageUrl: AppConstants.BASE_URL + "storage/" + image!,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    Dimensions.radius10,
+                  ),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              placeholder: (context, url) => Center(
+                child: Container(
+                    width: 30,
+                    height: 30,
+                    child: Center(child: CircularProgressIndicator())),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
           Container(

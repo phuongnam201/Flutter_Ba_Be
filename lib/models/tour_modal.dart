@@ -103,7 +103,7 @@ class Locations {
   String? content;
   String? address;
   String? googleMap;
-  Null? phone;
+  String? phone;
   String? status;
   int? featured;
   String? metaDescription;

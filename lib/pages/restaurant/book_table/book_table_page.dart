@@ -5,7 +5,9 @@ import 'package:flutter_babe/models/book_table_model.dart';
 import 'package:flutter_babe/models/restaurant_model.dart';
 import 'package:flutter_babe/pages/restaurant/book_table/dish_selected.dart';
 import 'package:flutter_babe/pages/restaurant/book_table/food_in_booktable.dart';
+import 'package:flutter_babe/pages/restaurant/book_table/list_dishes.dart';
 import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
@@ -68,6 +70,15 @@ class _BookTablePageState extends State<BookTablePage> {
       appBar: AppBar(
         title: Text("book_table".tr),
         centerTitle: true,
+        backgroundColor: AppColors.colorAppBar,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            //clear data in room selected list
+            bookTableController.clearDishesSelected();
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: restaurant != null
           ? GetBuilder<BookTableController>(builder: (controller) {
@@ -91,6 +102,12 @@ class _BookTablePageState extends State<BookTablePage> {
                       ),
                       SizedBox(
                         height: Dimensions.height10,
+                      ),
+                      ListDishes(
+                          ownerID: restaurant!.ownerId!,
+                          pageID: "bookTablePage"),
+                      SizedBox(
+                        height: Dimensions.height20,
                       ),
                       DishSelected(),
                       SizedBox(
@@ -331,10 +348,10 @@ class _BookTablePageState extends State<BookTablePage> {
                                                     .text.isEmpty ||
                                                 numberTableController.text ==
                                                     "0") {
-                                              numberTableController.text =
-                                                  controller.table.toString();
+                                              // numberTableController.text =
+                                              //     controller.table.toString();
                                             } else {
-                                              controller.updateQuantityTable(
+                                              controller.setQuantityTable(
                                                   int.parse(
                                                       numberTableController
                                                           .text),
@@ -438,8 +455,8 @@ class _BookTablePageState extends State<BookTablePage> {
                                                     .text.isEmpty ||
                                                 numberOfPeopleController.text ==
                                                     "0") {
-                                              numberOfPeopleController.text =
-                                                  controller.people.toString();
+                                              controller.setQuantityPeople(
+                                                  0, context);
                                             } else {
                                               controller.updateQuantityPeople(
                                                   int.parse(
@@ -508,7 +525,7 @@ class _BookTablePageState extends State<BookTablePage> {
                           ],
                         ),
                       ),
-                      FoodInBookTable(owner_id: restaurant!.ownerId!)
+                      //FoodInBookTable(owner_id: restaurant!.ownerId!)
                     ],
                   ),
                 ),
@@ -523,12 +540,12 @@ class _BookTablePageState extends State<BookTablePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Vui lòng chọn lại thời gian hợp lệ'),
+          title: Text('select_datetime_valid'.tr),
           content: isCheckIn
               ? Text(
-                  'Ngày nhận phòng không thể trước ngày hôm nay',
+                  'checkin_validate'.tr,
                 )
-              : Text('Vui lòng chọn thời gian đặt sau thời gian hiện tại '),
+              : Text('checkout_validate'.tr),
           actions: <Widget>[
             TextButton(
               style: TextButton.styleFrom(
@@ -556,11 +573,17 @@ class _BookTablePageState extends State<BookTablePage> {
         bookTableController.dishesSelectedList;
 
     if (name.isEmpty) {
-      CustomSnackBar("Please enter your name!", title: "Name");
+      CustomSnackBar("enter_your_name".tr, title: "fullname".tr);
     } else if (phone.isEmpty) {
-      CustomSnackBar("Please enter your phone!", title: "Phone");
+      CustomSnackBar("enter_your_phone".tr, title: "phone".tr);
+    } else if (!phone.isPhoneNumber) {
+      CustomSnackBar("enter_your_valid_phone".tr, title: "phone".tr);
     } else if (dishesSelectedList.isEmpty) {
-      CustomSnackBar("Please select at least a dish!", title: "Dishes");
+      CustomSnackBar("at_least_a_dish".tr, title: "dish".tr);
+    } else if (numberOfTable.isEmpty || numberOfTable == "0") {
+      CustomSnackBar("number_of_table_greater_0".tr, title: "table".tr);
+    } else if (numberOfPeople.isEmpty || numberOfPeople == "0") {
+      CustomSnackBar("number_of_people_greater_0".tr, title: "people".tr);
     } else {
       BookTableModel bookTableModel = BookTableModel(
           name: name,
@@ -574,7 +597,8 @@ class _BookTablePageState extends State<BookTablePage> {
       bookTableController.bookTable(bookTableModel).then((status) {
         if (status.isSuccess) {
           print("ok");
-          Get.snackbar("Success", "Thanks for your booking!");
+          CustomSnackBar("thanks_for_your_booking".tr,
+              isError: false, title: "success".tr);
           bookTableController.clearDishesSelected();
           Get.offNamed(RouteHelper.getMenuPage());
         } else {

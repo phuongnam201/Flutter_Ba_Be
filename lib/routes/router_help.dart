@@ -2,6 +2,7 @@ import 'package:flutter_babe/pages/about/about_us_page.dart';
 import 'package:flutter_babe/pages/auth/sign_in_page.dart';
 import 'package:flutter_babe/pages/auth/sign_up_page.dart';
 import 'package:flutter_babe/pages/contact/contact_page.dart';
+import 'package:flutter_babe/pages/history_booked/detail/history_bookroom_detail.dart';
 import 'package:flutter_babe/pages/history_booked/history_booked.dart';
 import 'package:flutter_babe/pages/home/home_page.dart';
 import 'package:flutter_babe/pages/home/menu_page.dart';
@@ -11,16 +12,18 @@ import 'package:flutter_babe/pages/news/news_page.dart';
 import 'package:flutter_babe/pages/notification/notification_page.dart';
 import 'package:flutter_babe/pages/places/bookroom/book_room_page.dart';
 import 'package:flutter_babe/pages/places/place_detail.dart';
+import 'package:flutter_babe/pages/places/place_page.dart';
 import 'package:flutter_babe/pages/places/roomDetail/room_detail_page.dart';
 import 'package:flutter_babe/pages/profile/profile_page.dart';
 import 'package:flutter_babe/pages/restaurant/book_table/book_table_page.dart';
 import 'package:flutter_babe/pages/restaurant/dishes_detail/dish_detail_page.dart';
 import 'package:flutter_babe/pages/restaurant/restaurant_detail.dart';
+import 'package:flutter_babe/pages/restaurant/restaurant_page.dart';
 import 'package:flutter_babe/pages/search/search_page.dart';
 import 'package:flutter_babe/pages/splash/splash_page.dart';
 import 'package:flutter_babe/pages/tour/tour_detail/tour_detail.dart';
 import 'package:flutter_babe/pages/tour/tour_page.dart';
-import 'package:flutter_babe/pages/tourist_attraction/tourist_attraction.dart';
+import 'package:flutter_babe/pages/tourist_attraction/tourist_attraction_page.dart';
 import 'package:flutter_babe/pages/tourist_attraction/tourist_attraction_detail.dart';
 import 'package:get/get.dart';
 
@@ -43,14 +46,17 @@ class RouteHelper {
   static const String touristAttractionPage = "/touristAttraction-page";
   static const String touristAttractionDetailPage =
       "/touristAttractionDetail-page";
-  static const String placeDetail = "/place-page";
-  static const String restaurantDetail = "/restaurant-page";
+  static const String placeDetail = "/placeDatail-page";
+  static const String restaurantDetail = "/restaurantDetail-page";
   static const String profile = "/profile-page";
   static const String roomDetail = "/roomDetail-page";
   static const String dishDetail = "/dishDetail-page";
   static const String bookRoom = "/bookRoom-page";
   static const String bookTable = "/bookTable-page";
   static const String history_book = "/historyBook-page";
+  static const String detail_history_book_room = "/detailHistoryBookRoom-page";
+  static const String place_page = "/place-page";
+  static const String restaurant_page = "/restaurant_page";
 
   static String getSplashPage() => '$splashPage';
   static String getMenuPage() => '$menuPage';
@@ -58,12 +64,15 @@ class RouteHelper {
   static String getSignInPage() => '$signInPage';
   static String getSignUpPage() => '$signUpPage';
   static String getNotificationPage() => '$notificationPage';
-  static String getLanguageRoute() => '$language';
+  static String getLanguageRoute(bool displayAppBar) =>
+      '$language?display=$displayAppBar';
   static String getAboutUsPage() => '$aboutUsPage';
   static String getNewsPage() => '$newsPage';
   static String getSearchPage() => '$searchPage';
   static String getTourPage() => '$tourPage';
   static String getContactPage() => '$contactPage';
+  static String getPlacePage() => '$place_page';
+  static String getRestaurantPage() => '$restaurant_page';
   static String getTourDetailPage(int tourID, String pageID) =>
       '$tourDetailPage?tourID=$tourID&pageID=$pageID';
   static String getNewsDetailPage(int postID, String pageID) =>
@@ -86,6 +95,8 @@ class RouteHelper {
   static String getBookTablePage(int restaurantID, String pageID) =>
       '$bookTable?restaurantID=$restaurantID&pageID=$pageID';
   static String getHistoryBook() => '$history_book';
+  static String getDetailHistoryBookRoom(int bookRoomID, String pageID) =>
+      '$detail_history_book_room?bookRoomID=$bookRoomID&pageID=$pageID';
 
   static List<GetPage> routes = [
     GetPage(name: splashPage, page: () => SplashScreen()),
@@ -101,12 +112,22 @@ class RouteHelper {
     GetPage(name: contactPage, page: () => ContactPage()),
     GetPage(name: profile, page: () => ProfilePage()),
     GetPage(name: history_book, page: () => HistoryBooked()),
+    GetPage(name: place_page, page: () => PlacePage()),
+    GetPage(name: restaurant_page, page: () => RestaurantPage()),
     GetPage(
         name: bookRoom,
         page: () {
           var placeID = Get.parameters['placeID'];
           var pageID = Get.parameters['pageID'];
           return BookRoomPage(placeID: int.parse(placeID!), pageID: pageID!);
+        }),
+    GetPage(
+        name: detail_history_book_room,
+        page: () {
+          var bookRoomID = Get.parameters['bookRoomID'];
+          var pageID = Get.parameters['pageID'];
+          return HistoryBookRoomDetail(
+              bookRoomID: int.parse(bookRoomID!), pageID: pageID!);
         }),
     GetPage(
         name: bookTable,
@@ -178,7 +199,10 @@ class RouteHelper {
     GetPage(
         name: language,
         page: () {
-          return LanguagePage();
+          var display = Get.parameters['display'];
+          return LanguagePage(
+            appBarDisplay: bool.parse(display!),
+          );
         })
   ];
 }

@@ -3,6 +3,7 @@ import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/pages/home/body_home_page.dart';
 import 'package:flutter_babe/pages/menuSlider/menu_slider.dart';
 import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatefulWidget {
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.fastOutSlowIn);
               },
-              backgroundColor: Colors.blue,
+              backgroundColor: AppColors.colorAppBar,
               child: const Icon(
                 Icons.arrow_upward,
                 color: Colors.white,
@@ -76,6 +77,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ],
+                  backgroundColor: AppColors.colorAppBar,
                   floating: true,
                   snap: true,
                   title: Text("home".tr),

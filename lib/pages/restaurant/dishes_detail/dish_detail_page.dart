@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/dishes_controller.dart';
 import 'package:flutter_babe/models/dish_model.dart';
 import 'package:flutter_babe/pages/restaurant/dishes_detail/gallery_dish.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
@@ -37,6 +38,8 @@ class _DishDetailPageState extends State<DishDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("dish_detail".tr),
+        centerTitle: true,
+        backgroundColor: AppColors.colorAppBar,
       ),
       body: dish != null
           ? SingleChildScrollView(

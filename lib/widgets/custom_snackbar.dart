@@ -19,6 +19,6 @@ void CustomSnackBar(String message,
     ),
     colorText: Colors.white,
     snackPosition: SnackPosition.TOP,
-    backgroundColor: Colors.redAccent,
+    backgroundColor: isError ? Colors.redAccent : Colors.black26,
   );
 }

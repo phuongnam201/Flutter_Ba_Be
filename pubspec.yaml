@@ -50,8 +50,11 @@ dependencies:
   number_pagination: ^1.0.6
   image_picker: ^0.8.5
   font_awesome_flutter: ^10.7.0
+  shimmer: ^3.0.0
+  cached_network_image: ^3.3.1
   #webview_flutter: ^4.0.0
   #flutter_inappwebview: ^5.8.0
+  flutter_native_splash: ^2.3.7
 
 dev_dependencies:
   flutter_test:
@@ -114,6 +117,7 @@ flutter:
   assets:
     - assets/images/
     - assets/languages/
+    - assets/icon/
   fonts:
     - family: Roboto
       fonts:

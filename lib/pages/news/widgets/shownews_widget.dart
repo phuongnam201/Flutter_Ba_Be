@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/post_controller.dart';
+import 'package:flutter_babe/models/post_model.dart';
+import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ShowNews extends StatefulWidget {
@@ -12,6 +16,15 @@ class ShowNews extends StatefulWidget {
 }
 
 class _ShowNewsState extends State<ShowNews> {
+  final PostController postController = Get.find<PostController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    postController.getFeaturePostList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return showNews();
@@ -19,20 +32,22 @@ class _ShowNewsState extends State<ShowNews> {
 }
 
 Widget showNews() {
-  return Container(
-    child: ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: 10,
-      //scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return _buildItemNews(index);
-      },
-    ),
-  );
+  return GetBuilder<PostController>(builder: (controller) {
+    return Container(
+      child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: controller.featurePostList.length,
+        //scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return _buildItemNews(controller.featurePostList[index]);
+        },
+      ),
+    );
+  });
 }
 
-Widget _buildItemNews(int index) {
+Widget _buildItemNews(Post post) {
   DateTime now = DateTime.now();
   String formattedDate = DateFormat('dd-MM-yyyy').format(now);
   return Container(
@@ -55,7 +70,8 @@ Widget _buildItemNews(int index) {
                 topLeft: Radius.circular(Dimensions.radius10),
                 bottomLeft: Radius.circular(Dimensions.radius10)),
             image: DecorationImage(
-                image: AssetImage("assets/images/ho_ba_be.jpg"),
+                image: NetworkImage(
+                    AppConstants.BASE_URL + "storage/" + post.image!),
                 fit: BoxFit.cover),
           ),
         ),
@@ -107,7 +123,7 @@ Widget _buildItemNews(int index) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   BigText(
-                    text: "This is title of the news",
+                    text: post.title!,
                     size: Dimensions.font16,
                     color: Colors.blue[600],
                   ),
@@ -115,8 +131,7 @@ Widget _buildItemNews(int index) {
                     height: 5,
                   ),
                   SmallText(
-                    text:
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce auctor metus eu turpis cursus, eget vestibulum nunc varius. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin eget convallis libero. Donec non velit a velit bibendum finibus. Nullam euismod consequat libero, eget pulvinar velit fermentum vel. Nulla eget purus at magna convallis sollicitudin. Integer id lectus eget nibh posuere sodales.",
+                    text: post.metaDescription!,
                     maxLines: 2,
                     size: Dimensions.font16,
                     color: Colors.black54,

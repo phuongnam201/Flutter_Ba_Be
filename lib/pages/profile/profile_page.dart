@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/user_controller.dart';
@@ -67,11 +67,13 @@ class _ProfilePageState extends State<ProfilePage> {
           appBar: AppBar(
             title: Text("profile".tr),
             centerTitle: true,
+            backgroundColor: AppColors.colorAppBar,
           ),
+          backgroundColor: Colors.grey[200],
           body: !controller.isLoading
-              ? Container(
-                  margin: EdgeInsets.all(20),
-                  child: SingleChildScrollView(
+              ? SingleChildScrollView(
+                  child: Container(
+                    margin: EdgeInsets.all(20),
                     child: Column(
                       children: [
                         // name & email
@@ -113,12 +115,32 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 '')) as ImageProvider,
                                     backgroundColor: Colors.transparent,
                                   ),
+
+                                  // CachedNetworkImage(
+                                  //   imageUrl: AppConstants.BASE_URL +
+                                  //       "/storage/" +
+                                  //       controller.userModel!.avatar!,
+                                  //   placeholder: (context, url) => Center(
+                                  //     child: Container(
+                                  //       width: 30,
+                                  //       height: 30,
+                                  //       child: Center(
+                                  //         child: CircularProgressIndicator(),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  //   imageBuilder: (context, image) =>
+                                  //       CircleAvatar(
+                                  //     backgroundImage: image,
+                                  //     radius: 70,
+                                  //   ),
+                                  // ),
                                   Positioned(
                                       bottom: 0,
                                       right: 0,
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            color: Colors.amber[600],
+                                            color: AppColors.colorButton,
                                             borderRadius:
                                                 BorderRadius.circular(50)),
                                         child: IconButton(
@@ -215,8 +237,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         .then((status) => {
                                               if (status.isSuccess)
                                                 {
-                                                  Get.snackbar("Update",
-                                                      "Updated Successfully")
+                                                  CustomSnackBar(
+                                                      "update_success".tr,
+                                                      isError: false,
+                                                      title: "success".tr)
                                                 }
                                               else
                                                 {
@@ -226,7 +250,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.amber[700],
+                                    backgroundColor: AppColors.colorButton,
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 60, vertical: 10),
                                   ),
@@ -371,33 +395,51 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: ElevatedButton(
                                   child: Text('save'.tr),
                                   onPressed: () {
-                                    controller
-                                        .updatePassword(
-                                            currentPasswordController.text
-                                                .trim(),
-                                            newPasswordController.text.trim(),
-                                            reEnterPasswordController.text
-                                                .trim())
-                                        .then((status) => {
-                                              if (status.isSuccess)
-                                                {
-                                                  currentPasswordController
-                                                      .clear(),
-                                                  newPasswordController.clear(),
-                                                  reEnterPasswordController
-                                                      .clear(),
-                                                  Get.snackbar("Update",
-                                                      "Updated Successfully")
-                                                }
-                                              else
-                                                {
-                                                  CustomSnackBar(
-                                                      status.message!)
-                                                }
-                                            });
+                                    if (currentPasswordController.text
+                                        .trim()
+                                        .isEmpty) {
+                                      CustomSnackBar("enter_your_password".tr,
+                                          title: "password".tr);
+                                    } else if (newPasswordController.text
+                                        .trim()
+                                        .isEmpty) {
+                                      CustomSnackBar("enter_new_password".tr,
+                                          title: "password".tr);
+                                    } else if (reEnterPasswordController.text
+                                        .trim()
+                                        .isEmpty) {
+                                      CustomSnackBar("re_enter_new_password".tr,
+                                          title: "password".tr);
+                                    } else {
+                                      controller
+                                          .updatePassword(
+                                              currentPasswordController.text
+                                                  .trim(),
+                                              newPasswordController.text.trim(),
+                                              reEnterPasswordController.text
+                                                  .trim())
+                                          .then((status) => {
+                                                if (status.isSuccess)
+                                                  {
+                                                    currentPasswordController
+                                                        .clear(),
+                                                    newPasswordController
+                                                        .clear(),
+                                                    reEnterPasswordController
+                                                        .clear(),
+                                                    Get.snackbar("Update",
+                                                        "Updated Successfully")
+                                                  }
+                                                else
+                                                  {
+                                                    CustomSnackBar(
+                                                        status.message!)
+                                                  }
+                                              });
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.amber[700],
+                                    backgroundColor: AppColors.colorButton,
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 60, vertical: 10),
                                   ),

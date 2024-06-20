@@ -1,17 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/book_table_controller.dart';
 import 'package:flutter_babe/controller/dishes_controller.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
+import 'package:flutter_babe/widgets/custom_snackbar.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class DishesWidget extends StatefulWidget {
-  int owner_id;
-  int restaurantID;
+  final int owner_id;
+  final int restaurantID;
   DishesWidget({Key? key, required this.owner_id, required this.restaurantID})
       : super(key: key);
 
@@ -33,6 +37,7 @@ class _DishesWidgetState extends State<DishesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLogin = Get.find<AuthController>().userLoggedIn();
     return GetBuilder<DishesController>(builder: (controller) {
       if (!controller.isLoaded) {
         return CircularProgressIndicator();
@@ -67,12 +72,41 @@ class _DishesWidgetState extends State<DishesWidget> {
                             SizedBox(
                               height: Dimensions.height10,
                             ),
-                            Image.network(
-                              AppConstants.BASE_URL +
-                                  "/storage/" +
-                                  controller.dishesList[index].image!,
+                            // Image.network(
+                            //   AppConstants.BASE_URL +
+                            //       "/storage/" +
+                            //       controller.dishesList[index].image!,
+                            //   height: Dimensions.height100 * 3,
+                            //   fit: BoxFit.cover,
+                            // ),
+                            Container(
                               height: Dimensions.height100 * 3,
-                              fit: BoxFit.cover,
+                              child: CachedNetworkImage(
+                                imageUrl: AppConstants.BASE_URL +
+                                    "storage/" +
+                                    controller.dishesList[index].image!,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius10,
+                                    ),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                placeholder: (context, url) => Center(
+                                  child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Center(
+                                          child: CircularProgressIndicator())),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
                             ),
                             SizedBox(
                               height: Dimensions.height20,
@@ -116,16 +150,29 @@ class _DishesWidgetState extends State<DishesWidget> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                bookTableController.addDishToSelection(
-                                    controller.dishesList[index].id.toString());
-                                Get.toNamed(RouteHelper.getBookTablePage(
-                                    widget.restaurantID, "restaurantDetail"));
+                                // bookTableController.addDishToSelection(
+                                //     controller.dishesList[index].id.toString());
+
+                                // Get.toNamed(RouteHelper.getBookTablePage(
+                                //     widget.restaurantID, "restaurantDetail"));
+                                if (isLogin) {
+                                  Get.toNamed(RouteHelper.getBookTablePage(
+                                      widget.restaurantID, "restaurantDetail"));
+                                } else {
+                                  CustomSnackBar("please_login".tr,
+                                      isError: false, title: "login".tr);
+                                  ;
+                                  Get.toNamed(RouteHelper.getSignInPage(),
+                                      arguments: RouteHelper.getBookTablePage(
+                                          widget.restaurantID,
+                                          "restaurantDetail"));
+                                }
                               },
                               child: Container(
                                 height: Dimensions.height10 * 5,
                                 width: Dimensions.screenWidth,
                                 decoration: BoxDecoration(
-                                    color: Colors.amber[600],
+                                    color: AppColors.colorButton,
                                     borderRadius: BorderRadius.circular(
                                         Dimensions.radius10)),
                                 child: Center(

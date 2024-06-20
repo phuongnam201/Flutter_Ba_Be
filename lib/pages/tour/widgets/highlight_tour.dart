@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/controller/tour_controller.dart';
@@ -44,17 +45,33 @@ class _HighLightTourState extends State<HighLightTour> {
                   height: 280,
                   width: 230,
                   margin: EdgeInsets.only(left: 5, right: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.radius10),
-                    image: DecorationImage(
-                      image: NetworkImage(AppConstants.BASE_URL +
-                          "storage/" +
-                          tourController.tourList[index].image!),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
                   child: Stack(
                     children: [
+                      CachedNetworkImage(
+                        imageUrl: AppConstants.BASE_URL +
+                            "storage/" +
+                            tourController.tourList[index].image!,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius10,
+                            ),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) => Center(
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
                       Positioned(
                         bottom: Dimensions.height10,
                         left: 0,
@@ -82,9 +99,9 @@ class _HighLightTourState extends State<HighLightTour> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  print(
-                                      "You just clicked on book now with Tour ID: " +
-                                          index.toString());
+                                  Get.toNamed(RouteHelper.getTourDetailPage(
+                                      tourController.tourList[index].id!,
+                                      "tourPage"));
                                 },
                                 style: ButtonStyle(
                                   foregroundColor:

@@ -4,6 +4,8 @@ import 'package:flutter_babe/models/response_model.dart';
 import 'package:flutter_babe/models/update_password_model.dart';
 import 'package:flutter_babe/models/update_user_model.dart';
 import 'package:flutter_babe/models/user_model.dart';
+import 'package:flutter_babe/routes/router_help.dart';
+import 'package:flutter_babe/widgets/custom_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -25,19 +27,27 @@ class UserController extends GetxController implements GetxService {
 
   Future<ResponseModel> getUserInfo() async {
     late ResponseModel responseModel;
-    Response response = await userRepo.getUserInformation();
+    try {
+      Response response = await userRepo.getUserInformation();
 
-    print("code: " + response.statusCode.toString());
-    if (response.statusCode == 200) {
-      _isLoading = true;
-      _userModel = UserModel.fromJson(response.body["results"]);
-      responseModel = ResponseModel(true, "Successfully");
-    } else {
-      print("false at usercontroller");
-      responseModel = ResponseModel(false, response.statusText!);
+      print("code: " + response.statusCode.toString());
+      if (response.statusCode == 200) {
+        _isLoading = true;
+        _userModel = UserModel.fromJson(response.body["results"]);
+        responseModel = ResponseModel(true, "Successfully");
+      } else {
+        print("false at usercontroller");
+        responseModel = ResponseModel(false, response.statusText!);
+      }
+      _isLoading = false;
+      update();
+    } catch (e) {
+      print("error at user controller: ${e}");
+      responseModel = ResponseModel(false, e.toString());
+      CustomSnackBar("please_login_again".tr,
+          isError: false, title: "login".tr);
+      Get.offNamed(RouteHelper.getSignInPage());
     }
-    _isLoading = false;
-    update();
     return responseModel;
   }
 

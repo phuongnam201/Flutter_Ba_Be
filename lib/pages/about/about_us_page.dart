@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/about_us_controller.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
+import 'package:flutter_babe/widgets/custom_loader.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +56,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.fastOutSlowIn);
               },
-              backgroundColor: Colors.blue,
+              backgroundColor: AppColors.colorAppBar,
               child: const Icon(
                 Icons.arrow_upward,
                 color: Colors.white,
@@ -131,7 +133,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                     ],
                   ),
                 )
-              : Center(child: CircularProgressIndicator()));
+              : Center(child: CustomLoader()));
     });
   }
 }

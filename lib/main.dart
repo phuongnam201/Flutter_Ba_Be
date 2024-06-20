@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/banner_controller.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/controller/places_controller.dart';
 import 'package:flutter_babe/controller/post_controller.dart';
 import 'package:flutter_babe/controller/restaurant_controller.dart';
-import 'package:flutter_babe/controller/setting_controller.dart';
 import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/controller/tourist_attraction_controller.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/messages.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/helper/dependencies.dart' as dep;
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Future.delayed(Duration(seconds: 3));
   //await dep.init();
   Map<String, Map<String, String>> _languages = await dep.init();
   runApp(MyApp(languages: _languages));
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
@@ -28,12 +32,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    Get.find<PostController>().getAllPostList();
+    Get.find<PostController>().getAllPostList(null, null);
     Get.find<PostController>().getFeaturePostList();
-    Get.find<RestaurantController>().getAllRestaurantList();
-    Get.find<PlacesController>().getAllPlacesList();
-    Get.find<TourController>().getTourList();
-    Get.find<SettingController>().getSetting();
+    Get.find<RestaurantController>().getAllRestaurantList(null, null);
+    Get.find<PlacesController>().getSomePlaces();
+    Get.find<BannerController>().getBannerList();
+    Get.find<TourController>().getTourList(null, 1);
     Get.find<TouristAttractionController>()
         .getTouristAttractionList(null, null);
     return GetBuilder<LocalizationController>(

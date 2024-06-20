@@ -3,11 +3,14 @@ import 'package:flutter_babe/controller/restaurant_controller.dart';
 import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/controller/tourist_attraction_controller.dart';
 import 'package:flutter_babe/models/tour_modal.dart';
+import 'package:flutter_babe/pages/home/widgets/banner_widget.dart';
 import 'package:flutter_babe/pages/home/widgets/news_pageview_widget.dart';
 import 'package:flutter_babe/pages/home/widgets/restaurant_pageview_widget.dart';
 import 'package:flutter_babe/pages/home/widgets/tour_pageview_widget.dart';
 import 'package:flutter_babe/pages/home/widgets/tourist_attraction_widget.dart';
 import 'package:flutter_babe/pages/news/widgets/news_widget.dart';
+import 'package:flutter_babe/pages/skelton/pageview_skelton.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
@@ -44,26 +47,32 @@ class _BodyHomePageState extends State<BodyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //banner
-              Image.asset(
-                'assets/images/banner.png',
-                fit: BoxFit.cover,
-              ),
-
+              BannerWidget(),
               //tour
-              SizedBox(height: Dimensions.height30),
+              SizedBox(height: Dimensions.height10),
               _buildSection(
                   "the_tour_is_of_most_interest".tr, "book_quickly".tr),
               SizedBox(height: Dimensions.height10),
-              TourPageview(tourList: tourController.tourList),
+              !tourController.isLoading
+                  ? TourPageview(tourList: tourController.tourList)
+                  : PageViewSkelton(
+                      height: Dimensions.height10 * 31,
+                      width: Dimensions.width10 * 27,
+                    ),
               SizedBox(height: Dimensions.height30),
 
               //tourist attraction
               _buildSection("attractive_tourist_destination".tr, "relax".tr),
               SizedBox(height: Dimensions.height10),
-              TouristAttractionPageview(
-                touristAttractionList:
-                    touristAttractionController.touristAttractionList,
-              ),
+              !touristAttractionController.isLoading
+                  ? TouristAttractionPageview(
+                      touristAttractionList:
+                          touristAttractionController.touristAttractionList,
+                    )
+                  : PageViewSkelton(
+                      height: Dimensions.height10 * 31,
+                      width: Dimensions.width10 * 27,
+                    ),
               SizedBox(height: Dimensions.height30),
 
               //places
@@ -103,7 +112,10 @@ class _BodyHomePageState extends State<BodyHomePage> {
         SizedBox(height: 5),
         Container(
           margin: EdgeInsets.only(left: Dimensions.width10),
-          child: SmallText(text: smallText, color: Colors.grey),
+          child: SmallText(
+              text: smallText,
+              color: AppColors.mainBlackColor,
+              size: Dimensions.font16),
         ),
       ],
     );

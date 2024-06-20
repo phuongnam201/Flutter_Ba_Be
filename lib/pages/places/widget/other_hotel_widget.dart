@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/places_controller.dart';
 import 'package:flutter_babe/routes/router_help.dart';
@@ -23,7 +24,7 @@ class _OtherHotelWidgetState extends State<OtherHotelWidget> {
     // Tạo một đối tượng PlacesController
     placesController = Get.find<PlacesController>();
     // Gọi hàm để lấy danh sách các địa điểm
-    placesController.getAllPlacesList();
+    placesController.getAllPlacesList(null, null);
   }
 
   @override
@@ -38,8 +39,11 @@ class _OtherHotelWidgetState extends State<OtherHotelWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: Dimensions.height10,
+              ),
               BigText(
-                text: "Khách sạn gần đó",
+                text: "hotels_nearby".tr,
                 color: Colors.blue[800],
               ),
               SizedBox(
@@ -66,15 +70,41 @@ class _OtherHotelWidgetState extends State<OtherHotelWidget> {
                             Container(
                               width: Dimensions.width10 * 10,
                               height: Dimensions.height10 * 10,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(Dimensions.radius10),
-                                image: DecorationImage(
-                                  image: NetworkImage(AppConstants.BASE_URL +
-                                      "/storage/" +
-                                      controller.placesList[index].image!),
-                                  fit: BoxFit.cover,
+                              // decoration: BoxDecoration(
+                              //   borderRadius:
+                              //       BorderRadius.circular(Dimensions.radius10),
+                              //   image: DecorationImage(
+                              //     image: NetworkImage(AppConstants.BASE_URL +
+                              //         "/storage/" +
+                              //         controller.placesList[index].image!),
+                              //     fit: BoxFit.cover,
+                              //   ),
+                              // ),
+                              child: CachedNetworkImage(
+                                imageUrl: AppConstants.BASE_URL +
+                                    "storage/" +
+                                    controller.placesList[index].image!,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      Dimensions.radius10,
+                                    ),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                                 ),
+                                placeholder: (context, url) => Center(
+                                  child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      child: Center(
+                                          child: CircularProgressIndicator())),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
                               ),
                             ),
                             SizedBox(
@@ -104,7 +134,6 @@ class _OtherHotelWidgetState extends State<OtherHotelWidget> {
                                 ),
                               ],
                             )
-                            // Thêm các thông tin khác của địa điểm ở đây nếu cần
                           ],
                         ),
                       ),

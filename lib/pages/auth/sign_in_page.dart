@@ -16,6 +16,7 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String previousRoute = Get.arguments ?? '/menu-page';
     var emailController = TextEditingController();
     var passwordController = TextEditingController();
 
@@ -26,19 +27,21 @@ class SignInPage extends StatelessWidget {
       String password = passwordController.text.trim();
 
       if (email.isEmpty) {
-        CustomSnackBar("Please enter your email", title: "Email");
+        CustomSnackBar("enter_your_email".tr, title: "email".tr);
       } else if (!GetUtils.isEmail(email)) {
-        CustomSnackBar("Please enter a valid email", title: "Email");
+        CustomSnackBar("enter_your_valid_email".tr, title: "email".tr);
       } else if (password.isEmpty) {
-        CustomSnackBar("Please enter your password!", title: "Password");
-      } else if (password.length <= 5) {
-        CustomSnackBar("Password must have more 6 characters!",
-            title: "Password");
+        CustomSnackBar("enter_your_password".tr, title: "password".tr);
+      } else if (password.length <= 7) {
+        CustomSnackBar("password_at_least_8".tr, title: "password".tr);
       } else {
         authController.login(email, password).then((status) {
           if (status.isSuccess) {
-            Get.snackbar("Success", "Welcome");
-            Get.offAndToNamed(RouteHelper.getMenuPage());
+            CustomSnackBar("Welcome", isError: false, title: "success".tr);
+
+            print(previousRoute.toString());
+            Get.offNamed(previousRoute);
+            // Get.back();
             print("login ok");
           } else {
             CustomSnackBar(status.message!);
@@ -50,6 +53,8 @@ class SignInPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text("login".tr),
+          backgroundColor: AppColors.colorAppBar,
+          centerTitle: true,
         ),
         backgroundColor: Colors.white,
         body: GetBuilder<AuthController>(builder: (controller) {
@@ -156,7 +161,7 @@ class SignInPage extends StatelessWidget {
                                   ..onTap = () => Get.to(() => SignUpPage()),
                                 text: "signup".tr,
                                 style: TextStyle(
-                                  color: AppColors.mainColor,
+                                  color: Colors.lightBlue,
                                   fontSize: Dimensions.font16,
                                 ),
                               ),

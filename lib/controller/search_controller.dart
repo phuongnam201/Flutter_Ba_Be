@@ -39,7 +39,8 @@ class SearchResultController extends GetxController implements GetxService {
         if (response.statusCode == 200) {
           _isLoaded = true;
           List<dynamic> dataList = response.body['results'];
-          print("check data get from seacrh controller:" + dataList.toString());
+          print("check data get from seacrh controller:" +
+              dataList.length.toString());
           if (type == 'tours') {
             _tours = dataList.map((element) => Tour.fromJson(element)).toList();
           } else if (type == 'news') {

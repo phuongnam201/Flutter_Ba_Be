@@ -68,18 +68,18 @@ class _InforDishSelectedState extends State<InforDishSelected> {
                     ),
                   ],
                 ),
-                GestureDetector(
-                  onTap: () {
-                    _showDeleteConfirmationDialog(context, bookTableController);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: FaIcon(
-                      FontAwesomeIcons.xmark,
-                      color: Colors.deepOrange,
-                    ),
-                  ),
-                )
+                // GestureDetector(
+                //   onTap: () {
+                //     _showDeleteConfirmationDialog(context, bookTableController);
+                //   },
+                //   child: Container(
+                //     padding: EdgeInsets.all(5),
+                //     child: FaIcon(
+                //       FontAwesomeIcons.xmark,
+                //       color: Colors.deepOrange,
+                //     ),
+                //   ),
+                // )
               ],
             ),
           );

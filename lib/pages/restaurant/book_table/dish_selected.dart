@@ -3,6 +3,9 @@ import 'package:flutter_babe/controller/book_table_controller.dart';
 import 'package:flutter_babe/controller/room_controller.dart';
 import 'package:flutter_babe/models/book_table_model.dart';
 import 'package:flutter_babe/pages/restaurant/book_table/widget/infor_dish_selected.dart';
+import 'package:flutter_babe/utils/colors.dart';
+import 'package:flutter_babe/utils/dimension.dart';
+import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:get/get.dart';
 
 class DishSelected extends StatefulWidget {
@@ -27,27 +30,36 @@ class _DishSelectedState extends State<DishSelected> {
       builder: (bookTableController) {
         return Container(
           child: bookTableController.dishesSelectedList.isNotEmpty
-              ? ListView.builder(
-                  itemCount: bookTableController.dishesSelectedList.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    final dishId =
-                        bookTableController.dishesSelectedList[index].dishId;
-                    return GetBuilder<RoomsController>(
-                      builder: (roomsController) {
-                        final dish =
-                            bookTableController.dishesSelectedList.firstWhere(
-                          (dish) => dish.dishId == dishId,
-                          orElse: () => DishesSelected(),
-                        );
-                        return dish.dishId != null
-                            ? InforDishSelected(id: int.parse(dish.dishId!))
-                            : SizedBox();
-                      },
-                    );
-                  },
-                )
+              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  BigText(
+                    text: "Danh sách món ăn đã chọn: ",
+                    color: AppColors.textColorBlue800,
+                  ),
+                  SizedBox(
+                    height: Dimensions.height10,
+                  ),
+                  ListView.builder(
+                    itemCount: bookTableController.dishesSelectedList.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final dishId =
+                          bookTableController.dishesSelectedList[index].dishId;
+                      return GetBuilder<RoomsController>(
+                        builder: (roomsController) {
+                          final dish =
+                              bookTableController.dishesSelectedList.firstWhere(
+                            (dish) => dish.dishId == dishId,
+                            orElse: () => DishesSelected(),
+                          );
+                          return dish.dishId != null
+                              ? InforDishSelected(id: int.parse(dish.dishId!))
+                              : SizedBox();
+                        },
+                      );
+                    },
+                  ),
+                ])
               : SizedBox(),
         );
       },

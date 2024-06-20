@@ -30,11 +30,13 @@ class HistoryBookRoomController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         _historyBookRoomList.clear();
         List<dynamic> data = response.body["results"];
-        data.forEach((element) {
+        var dataReversed = data.reversed;
+        dataReversed.forEach((element) {
           HistoryBookRoomModel historyBookRoomModel =
               HistoryBookRoomModel.fromJson(element);
           _historyBookRoomList.add(historyBookRoomModel);
         });
+
         _isLoading = false;
         update();
       }
@@ -44,7 +46,8 @@ class HistoryBookRoomController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getDetailHistoryBookTable(int id) async {
+  Future<HistoryBookRoomModel?> getDetailHistoryBookTable(int id) async {
+    HistoryBookRoomModel? historyBookRoomModel;
     _isLoading = true;
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
@@ -52,18 +55,15 @@ class HistoryBookRoomController extends GetxController implements GetxService {
       Response response = await historyBookRoomRepo.getDetailHistoryBookRoom(
           book_room_id: id, language: language);
       if (response.statusCode == 200) {
-        // _historyBookTableList.clear();
-        // List<dynamic> data = response.body["results"];
-        // data.forEach((element) {
-        //   HistoryBookTable historyBookTable =
-        //       HistoryBookTable.fromJson(element);
-        //   _historyBookTableList.add(historyBookTable);
-        // });
+        Map<String, dynamic> data = response.body["results"];
+        historyBookRoomModel = HistoryBookRoomModel.fromJson(data);
         _isLoading = false;
+
         update();
       }
     } catch (e) {
       print("fail when system is getting data at history table controller: $e");
     }
+    return historyBookRoomModel;
   }
 }

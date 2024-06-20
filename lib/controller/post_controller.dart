@@ -26,19 +26,43 @@ class PostController extends GetxController implements GetxService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  Future<void> getAllPostList() async {
+  bool _hasNextPage = false;
+  bool get hasNextPage => _hasNextPage;
+
+  bool _isLastPage = false;
+  bool get isLastPage => _isLastPage;
+
+  Future<void> getAllPostList(int? paginate, int? page) async {
+    _isLoading = true;
+    if (paginate == null) {
+      paginate = 8;
+    }
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "";
     try {
-      _postList.clear();
       Response response = await postRepo.getAllPostInfor(locale: language);
       if (response.statusCode == 200) {
         _isLoaded = true;
         List<dynamic> dataList = response.body["results"];
-        dataList.forEach((postData) {
-          Post post = Post.fromJson(postData);
-          _postList.add(post);
-        });
+        if (dataList.isEmpty) {
+          _isLastPage = true;
+        } else {
+          if (page == 1) {
+            _postList.clear();
+            _isLastPage = false;
+          }
+          dataList.forEach((postData) {
+            Post post = Post.fromJson(postData);
+            _postList.add(post);
+          });
+
+          if (dataList.length < paginate) {
+            _hasNextPage = false;
+          } else {
+            _hasNextPage = true;
+          }
+        }
+        _isLoading = false;
         update();
       } else {
         // Handle the case when the response status code is not 200

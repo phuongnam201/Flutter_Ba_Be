@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/user_controller.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
+import 'package:flutter_babe/widgets/custom_snackbar.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class MenuSlider extends StatefulWidget {
@@ -33,6 +36,8 @@ class _MenuSliderState extends State<MenuSlider> {
 
   @override
   Widget build(BuildContext context) {
+    Color? active = AppColors.colorAppBar;
+    Color? deactive = AppColors.mainBlackColor;
     return Drawer(
         child: auth
             ? ListView(
@@ -55,15 +60,32 @@ class _MenuSliderState extends State<MenuSlider> {
                             height: 90,
                             width: 90,
                             child: controller.userModel?.avatar != null
-                                ? Image.network(
-                                    AppConstants.BASE_URL +
+                                ? CachedNetworkImage(
+                                    imageUrl: AppConstants.BASE_URL +
                                         "storage/" +
                                         controller.userModel!.avatar!,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                          "assets/images/user.jpg");
-                                    },
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          Dimensions.radius10,
+                                        ),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    placeholder: (context, url) => Center(
+                                      child: Container(
+                                          width: 30,
+                                          height: 30,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator())),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
                                   )
                                 : Image.asset("assets/images/user.jpg"),
                           ),
@@ -81,12 +103,12 @@ class _MenuSliderState extends State<MenuSlider> {
                   ListTile(
                     leading: Icon(
                       Icons.home,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: 'home'.tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Navigator.pop(context);
@@ -95,12 +117,12 @@ class _MenuSliderState extends State<MenuSlider> {
                   ListTile(
                     leading: Icon(
                       Icons.person,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: 'profile'.tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Navigator.pop(context);
@@ -110,12 +132,12 @@ class _MenuSliderState extends State<MenuSlider> {
                   ListTile(
                     leading: Icon(
                       Icons.newspaper,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: "news".tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Get.toNamed(RouteHelper.getNewsPage());
@@ -124,12 +146,12 @@ class _MenuSliderState extends State<MenuSlider> {
                   ListTile(
                     leading: Icon(
                       Icons.tour_outlined,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: "tour".tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Get.toNamed(RouteHelper.getTourPage());
@@ -137,13 +159,61 @@ class _MenuSliderState extends State<MenuSlider> {
                   ),
                   ListTile(
                     leading: Icon(
+                      Icons.location_on,
+                      color: active,
+                    ),
+                    title: SmallText(
+                      text: "tourist_attraction".tr,
+                      size: Dimensions.font16,
+                      color: deactive,
+                    ),
+                    onTap: () {
+                      Get.toNamed(RouteHelper.getTouristAttractionPage());
+                    },
+                  ),
+                  ListTile(
+                    leading: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.hotel,
+                          color: Colors.blue,
+                          size: Dimensions.iconSize24,
+                        ),
+                      ],
+                    ),
+                    title: SmallText(
+                      text: "accommodation_facility".tr,
+                      size: Dimensions.font16,
+                      color: deactive,
+                    ),
+                    onTap: () {
+                      Get.toNamed(RouteHelper.getPlacePage());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.restaurant,
+                      color: active,
+                    ),
+                    title: SmallText(
+                      text: "restaurant".tr,
+                      size: Dimensions.font16,
+                      color: deactive,
+                    ),
+                    onTap: () {
+                      Get.toNamed(RouteHelper.getRestaurantPage());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
                       Icons.archive_rounded,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: "booking_history".tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Get.toNamed(RouteHelper.getHistoryBook());
@@ -155,26 +225,26 @@ class _MenuSliderState extends State<MenuSlider> {
                   ListTile(
                     leading: Icon(
                       Icons.language,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: "languages".tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
-                      Get.toNamed(RouteHelper.getLanguageRoute());
+                      Get.toNamed(RouteHelper.getLanguageRoute(true));
                     },
                   ),
                   ListTile(
                     leading: Icon(
                       Icons.info_outline,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: "about_us".tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Get.toNamed(RouteHelper.getAboutUsPage());
@@ -183,12 +253,12 @@ class _MenuSliderState extends State<MenuSlider> {
                   ListTile(
                     leading: Icon(
                       Icons.contact_support,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: "contact".tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Get.toNamed(RouteHelper.getContactPage());
@@ -198,18 +268,18 @@ class _MenuSliderState extends State<MenuSlider> {
                   ListTile(
                     leading: Icon(
                       Icons.logout,
-                      color: Colors.blue,
+                      color: active,
                     ),
                     title: SmallText(
                       text: "logout".tr,
                       size: Dimensions.font16,
-                      color: AppColors.mainBlackColor,
+                      color: deactive,
                     ),
                     onTap: () {
                       Get.find<AuthController>().clearShareData();
                       Navigator.pop(context);
-                      Get.snackbar(":((", "You logged out!, See you later",
-                          backgroundColor: Colors.amber[300]);
+                      CustomSnackBar("logout".tr,
+                          isError: false, title: "logout_success");
                     },
                   ),
                 ],

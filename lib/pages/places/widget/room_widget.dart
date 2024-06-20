@@ -1,10 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/auth_controller.dart';
 import 'package:flutter_babe/controller/book_room_controller.dart';
 import 'package:flutter_babe/controller/room_controller.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
+import 'package:flutter_babe/widgets/custom_snackbar.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -34,6 +38,7 @@ class _RoomWidgetState extends State<RoomWidget> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLogin = Get.find<AuthController>().userLoggedIn();
     return GetBuilder<RoomsController>(builder: (controller) {
       if (!controller.isLoaded) {
         return CircularProgressIndicator();
@@ -49,7 +54,7 @@ class _RoomWidgetState extends State<RoomWidget> {
               return GestureDetector(
                 onTap: () {
                   Get.toNamed(RouteHelper.getRoomDetail(
-                      controller.roomList[index].id!, "hotelDetail"));
+                      controller.roomList[index].id!, "placeDetail"));
                 },
                 child: Container(
                   //padding: EdgeInsets.all(10),
@@ -65,12 +70,40 @@ class _RoomWidgetState extends State<RoomWidget> {
                       SizedBox(
                         height: Dimensions.height10,
                       ),
-                      Image.network(
-                        AppConstants.BASE_URL +
-                            "/storage/" +
-                            controller.roomList[index].image!,
+                      // Image.network(
+                      //   AppConstants.BASE_URL +
+                      //       "/storage/" +
+                      //       controller.roomList[index].image!,
+                      //   height: Dimensions.height100 * 3,
+                      //   fit: BoxFit.cover,
+                      // ),
+                      Container(
                         height: Dimensions.height100 * 3,
-                        fit: BoxFit.cover,
+                        child: CachedNetworkImage(
+                          imageUrl: AppConstants.BASE_URL +
+                              "storage/" +
+                              controller.roomList[index].image!,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                Dimensions.radius10,
+                              ),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          placeholder: (context, url) => Center(
+                            child: Container(
+                                width: 30,
+                                height: 30,
+                                child:
+                                    Center(child: CircularProgressIndicator())),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                       ),
                       SizedBox(
                         height: Dimensions.height20,
@@ -92,14 +125,14 @@ class _RoomWidgetState extends State<RoomWidget> {
                               text: "price".tr +
                                   _formatCurrency(
                                       controller.roomList[index].price!),
-                              color: Colors.lightBlue,
+                              color: AppColors.textColorLightBlue,
                             ),
                             SizedBox(
                               height: Dimensions.height10,
                             ),
                             SmallText(
                               text: controller.roomList[index].desc!,
-                              color: Colors.blue[800],
+                              color: AppColors.textColorBlue800,
                               size: Dimensions.font16,
                             ),
                             SizedBox(
@@ -109,7 +142,7 @@ class _RoomWidgetState extends State<RoomWidget> {
                               text: "number_of_bed".tr +
                                   controller.roomList[index].numberOfBeds
                                       .toString(),
-                              color: Colors.blue[800],
+                              color: AppColors.textColorBlue800,
                               size: Dimensions.font16,
                             ),
                           ],
@@ -120,21 +153,31 @@ class _RoomWidgetState extends State<RoomWidget> {
                       ),
                       InkWell(
                         onTap: () {
-                          bookRoomController.addRoomToSelection(
-                              controller.roomList[index].id.toString(), "1");
-                          Get.toNamed(RouteHelper.getBookRoomPage(
-                              widget.placeID, "placeDetail"));
+                          // bookRoomController.addRoomToSelection(
+                          //     controller.roomList[index].id.toString(), "1");
+
+                          if (isLogin) {
+                            Get.toNamed(RouteHelper.getBookRoomPage(
+                                widget.placeID, "placeDetail"));
+                          } else {
+                            CustomSnackBar("please_login".tr,
+                                isError: false, title: "login".tr);
+                            ;
+                            Get.toNamed(RouteHelper.getSignInPage(),
+                                arguments: RouteHelper.getBookRoomPage(
+                                    widget.placeID, "placeDetail"));
+                          }
                         },
                         child: Container(
                           height: Dimensions.height10 * 5,
                           width: Dimensions.screenWidth,
                           decoration: BoxDecoration(
-                              color: Colors.amber[600],
+                              color: AppColors.colorButton,
                               borderRadius:
                                   BorderRadius.circular(Dimensions.radius10)),
                           child: Center(
                               child: BigText(
-                            text: "Đặt ngay",
+                            text: "book_room".tr,
                             color: Colors.white,
                           )),
                         ),

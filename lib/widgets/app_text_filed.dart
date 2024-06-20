@@ -69,15 +69,16 @@ class _AppTextFieldState extends State<AppTextField> {
           labelText: widget.labelText,
           prefixIcon: Icon(
             widget.icon,
-            color: AppColors.mainColor,
+            color: AppColors.colorAppBar,
             size: Dimensions.iconSize16,
           ),
           suffixIcon: widget.obscureText
               ? IconButton(
                   icon: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey,
-                  ),
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: _obscureText
+                          ? Theme.of(context).disabledColor
+                          : AppColors.colorAppBar),
                   onPressed: () {
                     setState(() {
                       _obscureText = !_obscureText;
@@ -96,7 +97,7 @@ class _AppTextFieldState extends State<AppTextField> {
             borderRadius: BorderRadius.circular(Dimensions.radius10),
             borderSide: BorderSide(
               width: 1.0,
-              color: AppColors.mainColor,
+              color: AppColors.colorAppBar!,
             ),
           ),
           border: OutlineInputBorder(

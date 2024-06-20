@@ -11,6 +11,8 @@ class PlacesController extends GetxController implements GetxService {
 
   List<Places> _placesList = [];
   List<Places> get placesList => _placesList;
+  List<Places> _somePlacesList = [];
+  List<Places> get somePlacesList => _somePlacesList;
 
   PlacesController({
     required this.placesRepo,
@@ -20,28 +22,87 @@ class PlacesController extends GetxController implements GetxService {
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
-  Future<void> getAllPlacesList() async {
+  bool _hasNextPage = false;
+  bool get hasNextPage => _hasNextPage;
+
+  bool _isLastPage = false;
+  bool get isLastPage => _isLastPage;
+
+  @override
+  void onInit() {
+    super.onInit();
+    getAllPlacesList(null, 1); // Load initial data
+  }
+
+  // Method to fetch all places list
+  Future<void> getAllPlacesList(int? paginate, int? page) async {
+    if (paginate == null) {
+      paginate = 8;
+    }
+    String? language =
+        sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
+    try {
+      Response response = await placesRepo.getAllPlaceInfor(
+          locale: language, paginate: paginate, page: page);
+      if (response.statusCode == 200) {
+        List<dynamic> dataList = response.body["results"];
+        if (dataList.isEmpty) {
+          _isLastPage = true;
+          update();
+        } else {
+          if (page == 1) {
+            _placesList.clear(); // Clear list if it's the first page
+            _isLastPage = false;
+          }
+          dataList.forEach((placesData) {
+            Places place = Places.fromJson(placesData);
+            _placesList.add(place);
+          });
+
+          if (dataList.length < paginate) {
+            _isLastPage = true;
+          } else {
+            _hasNextPage = true;
+          }
+          _isLoaded = true;
+          //_hasNextPage = response.body["results"] != null;
+          //_isLastPage = false;
+          update();
+        }
+      } else {}
+    } catch (e) {
+      // Handle exceptions or errors
+      print("Error in getAllPlacesList: $e");
+    }
+  }
+
+  Future<void> getSomePlaces() async {
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
     try {
       Response response = await placesRepo.getAllPlaceInfor(locale: language);
       if (response.statusCode == 200) {
-        _isLoaded = true;
-        _placesList.clear();
         List<dynamic> dataList = response.body["results"];
+        _somePlacesList.clear();
         dataList.forEach((placesData) {
           Places place = Places.fromJson(placesData);
-          _placesList.add(place);
+          _somePlacesList.add(place);
         });
-
+        _isLoaded = true;
+        _hasNextPage = response.body["results"] != null;
+        _isLastPage = false;
         update();
-      } else {
-        // Handle the case when the response status code is not 200
-      }
+      } else {}
     } catch (e) {
       // Handle exceptions or errors
       print("Error in getAllPlacesList: $e");
     }
+  }
+
+  // Function to reset loaded status
+  void resetLoadStatus() {
+    _isLoaded = false;
+    update();
   }
 
   Future<Places?> getPlaceDetail(int placeID) async {

@@ -52,7 +52,7 @@ class SplashScreenState extends State<SplashScreen>
     } else {
       Timer(
         Duration(seconds: 3),
-        () => Get.toNamed(RouteHelper.getLanguageRoute()),
+        () => Get.toNamed(RouteHelper.getLanguageRoute(false)),
       );
     }
   }

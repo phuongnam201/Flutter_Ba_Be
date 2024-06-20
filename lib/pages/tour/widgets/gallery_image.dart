@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:get/get.dart';
@@ -52,19 +53,44 @@ class _GalleryImageState extends State<GalleryImage> {
                     Container(
                       height: Dimensions.height100 * 2,
                       width: Dimensions.screenWidth,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.radius20),
-                        image: selectedImageIndex < images.length
-                            ? DecorationImage(
-                                image: NetworkImage(AppConstants.BASE_URL +
-                                    "storage/" +
-                                    images[selectedImageIndex]),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                      ),
+                      // decoration: BoxDecoration(
+                      //   borderRadius:
+                      //       BorderRadius.circular(Dimensions.radius20),
+                      //   image: selectedImageIndex < images.length
+                      //       ? DecorationImage(
+                      //           image: NetworkImage(AppConstants.BASE_URL +
+                      //               "storage/" +
+                      //               images[selectedImageIndex]),
+                      //           fit: BoxFit.cover,
+                      //         )
+                      //       : null,
+                      // ),
                       // Adjust the height of the large image container
+                      child: CachedNetworkImage(
+                        imageUrl: AppConstants.BASE_URL +
+                            "storage/" +
+                            images[selectedImageIndex],
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              Dimensions.radius20,
+                            ),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) => Center(
+                          child: Container(
+                              width: 30,
+                              height: 30,
+                              child:
+                                  Center(child: CircularProgressIndicator())),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
                     ),
                     SizedBox(
                       height: Dimensions.height10 / 3,
@@ -89,11 +115,29 @@ class _GalleryImageState extends State<GalleryImage> {
                               width: 60,
                               child: Padding(
                                 padding: EdgeInsets.all(2.0),
-                                child: Image.network(
-                                  AppConstants.BASE_URL +
+                                child: CachedNetworkImage(
+                                  imageUrl: AppConstants.BASE_URL +
                                       "storage/" +
-                                      images[index],
-                                  fit: BoxFit.cover,
+                                      images[index]!,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) => Center(
+                                    child: Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: Center(
+                                            child:
+                                                CircularProgressIndicator())),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
                               ),
                             ),

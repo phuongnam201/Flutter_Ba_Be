@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_babe/data/repository/book_room_repo.dart';
 import 'package:flutter_babe/models/book_room_model.dart';
 import 'package:flutter_babe/models/response_model.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:get/get.dart';
 
 class BookRoomController extends GetxController implements GetxService {
@@ -26,21 +27,28 @@ class BookRoomController extends GetxController implements GetxService {
 
   Future<ResponseModel> bookRoom(BookRoomModel bookRoomModel) async {
     _isLoading = true;
-    update();
-    Response response = await bookRoomRepo.bookRoomInRepo(bookRoomModel);
-    print("Check status code at book room controller " +
-        response.body.toString());
     late ResponseModel responseModel;
-    if (response.statusCode == 200) {
-      print("success!");
-      print(response.body);
-      responseModel = ResponseModel(true, response.body["message"]);
-    } else {
-      responseModel = ResponseModel(false, response.body[0]);
+    update();
+    try {
+      Response response = await bookRoomRepo.bookRoomInRepo(bookRoomModel);
+      print("Check status code at book room controller " +
+          response.body.toString());
+
+      if (response.statusCode == 200) {
+        print("success!");
+        print(response.body);
+        responseModel = ResponseModel(true, response.body["message"]);
+      } else {
+        responseModel = ResponseModel(false, response.body[0]);
+      }
+
+      _isLoading = false;
+      update();
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      Get.offNamed(RouteHelper.getSignInPage());
     }
 
-    _isLoading = false;
-    update();
     return responseModel;
   }
 
@@ -101,8 +109,9 @@ class BookRoomController extends GetxController implements GetxService {
   }
 
   void setQuantityAdults(int quantity, BuildContext context) {
-    if (quantity < 1) {
-      _showAlertDialog(context, "Number of adults cannot be less than 1");
+    if (quantity <= 0) {
+      _adults = 0;
+      _showAlertDialog(context, "adults_validate".tr);
     } else {
       _adults = quantity;
       update();
@@ -110,8 +119,9 @@ class BookRoomController extends GetxController implements GetxService {
   }
 
   void setQuantityChildren(int quantity, BuildContext context) {
-    if (quantity < 1) {
-      _showAlertDialog(context, "Number of children cannot be less than 1");
+    if (quantity < 0) {
+      _showAlertDialog(context, "children_validate".tr);
+      _children = 0;
     } else {
       _children = quantity;
       update();

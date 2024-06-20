@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/book_table_controller.dart';
 import 'package:flutter_babe/controller/dishes_controller.dart';
@@ -66,12 +67,30 @@ class _FoodInBookTableState extends State<FoodInBookTable> {
                           SizedBox(
                             height: Dimensions.height10,
                           ),
-                          Image.network(
-                            AppConstants.BASE_URL +
-                                "/storage/" +
+                          CachedNetworkImage(
+                            imageUrl: AppConstants.BASE_URL +
+                                "storage/" +
                                 controller.dishesList[index].image!,
-                            height: Dimensions.height100 * 3,
-                            fit: BoxFit.cover,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  Dimensions.radius10,
+                                ),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => Center(
+                              child: Container(
+                                  width: 30,
+                                  height: 30,
+                                  child: Center(
+                                      child: CircularProgressIndicator())),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
                           ),
                           SizedBox(
                             height: Dimensions.height20,

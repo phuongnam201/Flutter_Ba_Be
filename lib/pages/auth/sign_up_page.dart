@@ -38,7 +38,11 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     // Your build method code here
     return Scaffold(
-      appBar: AppBar(title: Text("signup".tr)),
+      appBar: AppBar(
+        title: Text("signup".tr),
+        backgroundColor: AppColors.colorAppBar,
+        centerTitle: true,
+      ),
       backgroundColor: Colors.white,
       body: GetBuilder<AuthController>(builder: (_authController) {
         return !_authController.isLoading
@@ -132,7 +136,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               ..onTap = () => Get.to(() => SignInPage()),
                             text: "login".tr,
                             style: TextStyle(
-                              color: AppColors.mainColor,
+                              color: AppColors.colorAppBar,
                               fontSize: Dimensions.font16,
                             ),
                           ),
@@ -190,27 +194,33 @@ class _SignUpPageState extends State<SignUpPage> {
     String rePassword = rePasswordController.text.trim();
 
     if (name.isEmpty) {
-      CustomSnackBar("Please enter your name!", title: "Name");
+      CustomSnackBar("enter_your_name".tr, title: "fullname".tr);
     } else if (email.isEmpty) {
-      CustomSnackBar("Please enter your email!", title: "Email");
+      CustomSnackBar("enter_your_email".tr, title: "email".tr);
     } else if (!GetUtils.isEmail(email)) {
-      CustomSnackBar("Please enter a valid email!",
-          title: "Email is not valid");
-      CustomSnackBar("Please enter your email!", title: "Email");
+      CustomSnackBar("enter_your_valid_email".tr, title: "email".tr);
     } else if (password.isEmpty) {
-      CustomSnackBar("Please enter your password!", title: "Password");
-    } else if (password.length <= 5) {
-      CustomSnackBar("Password must have more 6 characters!",
-          title: "Password");
+      CustomSnackBar("enter_your_password", title: "password".tr);
+    } else if (password.length <= 7) {
+      CustomSnackBar("password_at_least_8".tr, title: "password".tr);
     } else if (rePassword != password) {
-      CustomSnackBar("Password does not match!", title: "Password");
+      CustomSnackBar("password_does_not_mactch".tr, title: "password".tr);
     } else {
       SignUpModel signUpModel =
           SignUpModel(name: name, email: email, password: password);
       authController.signUp(signUpModel).then((status) {
         if (status.isSuccess) {
           print("ok");
-          Get.snackbar("Success", "Registered successfully");
+          emailController.clear();
+          nameController.clear();
+          passwordController.clear();
+          rePasswordController.clear();
+
+          CustomSnackBar(
+            "registered_successfully".tr,
+            isError: false,
+            title: "success".tr,
+          );
         } else {
           CustomSnackBar(status.message!);
         }

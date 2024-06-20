@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/pages/history_booked/widget/history_bookroom.dart';
 import 'package:flutter_babe/pages/history_booked/widget/history_booktable.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:get/get.dart';
 
@@ -35,6 +36,7 @@ class _HistoryBookedState extends State<HistoryBooked>
       appBar: AppBar(
         title: Text("booking_history".tr),
         centerTitle: true,
+        backgroundColor: AppColors.colorAppBar,
       ),
       body: Container(
         child: Column(

@@ -84,18 +84,18 @@ class _InforRoomSelectedState extends State<InforRoomSelected> {
                       SmallText(text: "No rooms selected")
                   ],
                 ),
-                GestureDetector(
-                  onTap: () {
-                    _showDeleteConfirmationDialog(context, bookRoomController);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: FaIcon(
-                      FontAwesomeIcons.xmark,
-                      color: Colors.deepOrange,
-                    ),
-                  ),
-                )
+                // GestureDetector(
+                //   onTap: () {
+                //     _showDeleteConfirmationDialog(context, bookRoomController);
+                //   },
+                //   child: Container(
+                //     padding: EdgeInsets.all(5),
+                //     child: FaIcon(
+                //       FontAwesomeIcons.xmark,
+                //       color: Colors.deepOrange,
+                //     ),
+                //   ),
+                // )
               ],
             ),
           );

@@ -1,7 +1,12 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/setting_controller.dart';
+import 'package:flutter_babe/models/setting_model.dart';
+import 'package:flutter_babe/utils/colors.dart';
+import 'package:flutter_babe/widgets/custom_loader.dart';
+import 'package:get/get.dart';
+
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:flutter_babe/utils/dimension.dart';
@@ -19,7 +24,10 @@ class VR360WebView extends StatefulWidget {
 }
 
 class _VR360WebViewState extends State<VR360WebView> {
-  late String selectedUrl;
+  final SettingController settingController = Get.find<SettingController>();
+  SettingModel? settingModel;
+
+  String? selectedUrl;
   double value = 0.0;
   bool _canRedirect = true;
   bool _isLoading = true;
@@ -30,11 +38,35 @@ class _VR360WebViewState extends State<VR360WebView> {
   @override
   void initState() {
     super.initState();
-    selectedUrl = 'https://www.babe360.kennatech.vn';
 
     if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView();
     }
+
+    // Load VR360 link initially
+    _loadVR360Link();
+  }
+
+  // Method to load VR360 link
+  Future<void> _loadVR360Link() async {
+    String link = await settingController.getLinkVr360();
+    // if (link.isNotEmpty) {
+    //   setState(() {
+    //     selectedUrl = link;
+    //     _isLoading = false;
+    //   });
+    // } else {
+    // If link is empty, fetch setting to get link and update selectedUrl
+    settingController.getSetting().then((response) {
+      if (response.isSuccess) {
+        setState(() {
+          selectedUrl = settingController.settingModel?.linkIframe ?? '';
+          _isLoading = false;
+        });
+      } else {
+        // Handle failure scenario if needed
+      }
+    });
   }
 
   @override
@@ -43,69 +75,72 @@ class _VR360WebViewState extends State<VR360WebView> {
       onWillPop: () => _exitApp(context),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Stop"),
+          title: Text("stop".tr),
+          backgroundColor: AppColors.colorAppBar,
           leading: IconButton(
             icon: Icon(Icons.pause),
-            onPressed: () => _exitApp(context),
+            onPressed: () => _handleTabExit(),
           ),
-          //backgroundColor: AppColors.mainColor,
         ),
-        body: Center(
-          child: Container(
-            width: Dimensions.screenWidth,
-            child: Stack(
-              children: [
-                WebView(
-                  javascriptMode: JavascriptMode
-                      .unrestricted, // Nếu đang tải, cho phép JavaScript, nếu không thì vô hiệu hóa
-                  initialUrl: selectedUrl,
-                  gestureNavigationEnabled: true,
-                  userAgent:
-                      'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13E233 Safari/601.1',
-                  onWebViewCreated: (WebViewController webViewController) {
-                    _controller.future
-                        .then((value) => controllerGlobal = value);
-                    _controller.complete(webViewController);
-                  },
-                  onProgress: (int progress) {
-                    print("WebView is loading (progress : $progress%)");
-                  },
-                  onPageStarted: (String url) {
-                    print('Page started loading: $url');
-                    if (widget.isTabSelected) {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                    }
-                  },
-                  onPageFinished: (String url) {
-                    print('Page finished loading: $url');
-                    setState(() {
-                      _isLoading = false;
-                    });
-                    widget.isTabSelected = false;
-                    print("test tab selected: " +
-                        widget.isTabSelected.toString());
-                  },
+        body: selectedUrl != null &&
+                selectedUrl!.isNotEmpty // Check for null and empty
+            ? Center(
+                child: Container(
+                  width: Dimensions.screenWidth,
+                  child: Stack(
+                    children: [
+                      WebView(
+                        javascriptMode: JavascriptMode.unrestricted,
+                        initialUrl: selectedUrl!,
+                        gestureNavigationEnabled: true,
+                        userAgent:
+                            'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13E233 Safari/601.1',
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.future
+                              .then((value) => controllerGlobal = value);
+                          _controller.complete(webViewController);
+                        },
+                        onProgress: (int progress) {
+                          print("uri is loading: " + selectedUrl!);
+                          print("WebView is loading (progress : $progress%)");
+                        },
+                        onPageStarted: (String url) {
+                          print('Page started loading: $url');
+                          if (widget.isTabSelected) {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                          }
+                        },
+                        onPageFinished: (String url) {
+                          print('Page finished loading: $url');
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          widget.isTabSelected = false;
+                          print("test tab selected: " +
+                              widget.isTabSelected.toString());
+                        },
+                      ),
+                      _isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Theme.of(context).primaryColor)),
+                            )
+                          : SizedBox.shrink(),
+                    ],
+                  ),
                 ),
-                _isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).primaryColor)),
-                      )
-                    : SizedBox.shrink(),
-              ],
-            ),
-          ),
-        ),
+              )
+            : Center(child: CustomLoader()),
       ),
     );
   }
 
   Future<void> _handleTabExit() async {
-    //await stopAudio();
-    await controllerGlobal.loadUrl('https://www.babe360.kennatech.vn');
+    await controllerGlobal.loadUrl(selectedUrl!);
     setState(() {
       widget.isTabSelected = false;
     });
@@ -117,7 +152,6 @@ class _VR360WebViewState extends State<VR360WebView> {
       return Future.value(false);
     } else {
       print("app exited");
-      //await stopAudio();
       await _handleTabExit();
       return true;
     }

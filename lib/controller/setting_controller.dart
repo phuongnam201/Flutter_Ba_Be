@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_babe/data/repository/setting_repo.dart';
 import 'package:flutter_babe/models/response_model.dart';
-import 'package:flutter_babe/models/setting_modal.dart';
+import 'package:flutter_babe/models/setting_model.dart';
 
 class SettingController extends GetxController implements GetxService {
   final SettingRepo settingRepo;
@@ -16,6 +16,12 @@ class SettingController extends GetxController implements GetxService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  bool _hasNextPage = false;
+  bool get hasNextPage => _hasNextPage;
+
+  bool _isLastPage = false;
+  bool get isLastPage => _isLastPage;
+
   SettingModel? _settingModel;
   SettingModel? get settingModel => _settingModel;
 
@@ -26,7 +32,8 @@ class SettingController extends GetxController implements GetxService {
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi');
     if (response.statusCode == 200) {
       _settingModel = SettingModel.fromJson(response.body["results"]);
-
+      print(_settingModel!.linkIframe!);
+      settingRepo.saveLinkVr360(_settingModel!.linkIframe!);
       responseModel = ResponseModel(true, "Success");
     } else {
       responseModel =
@@ -37,5 +44,9 @@ class SettingController extends GetxController implements GetxService {
     update();
 
     return responseModel;
+  }
+
+  Future<String> getLinkVr360() async {
+    return await settingRepo.getLinkVr360();
   }
 }

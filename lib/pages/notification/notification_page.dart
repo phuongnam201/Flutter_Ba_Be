@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
+import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,7 @@ class _NotificationPageState extends State<NotificationPage> {
         appBar: AppBar(
           title: Text("notification".tr),
           centerTitle: true,
+          backgroundColor: AppColors.colorAppBar,
           // leading: IconButton(
           //   icon: Icon(Icons.arrow_back_ios),
           //   onPressed: () => Get.back(),
@@ -62,20 +64,6 @@ class _NotificationPageState extends State<NotificationPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // Container(
-            //   height: 50,
-            //   width: 50,
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(Dimensions.radius10*5),
-            //     image: DecorationImage(
-            //       image: imageLink.isNotEmpty
-            //           ? NetworkImage(imageLink)
-            //           : AssetImage("assets/images/notification.png")
-            //               as ImageProvider,
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
             Container(
               height: Dimensions.height10 * 5,
               width: Dimensions.width10 * 5,

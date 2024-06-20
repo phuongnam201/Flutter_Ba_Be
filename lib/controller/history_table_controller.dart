@@ -30,7 +30,8 @@ class HistoryBookTableController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         _historyBookTableList.clear();
         List<dynamic> data = response.body["results"];
-        data.forEach((element) {
+        var dataReversed = data.reversed;
+        dataReversed.forEach((element) {
           HistoryBookTableModel historyBookTable =
               HistoryBookTableModel.fromJson(element);
           _historyBookTableList.add(historyBookTable);

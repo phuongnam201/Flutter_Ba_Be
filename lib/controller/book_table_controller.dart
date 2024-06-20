@@ -91,8 +91,9 @@ class BookTableController extends GetxController implements GetxService {
   }
 
   void setQuantityPeople(int quantity, BuildContext context) {
-    if (quantity < 1) {
-      _showAlertDialog(context, "Number of people cannot be less than 1");
+    if (quantity <= 0) {
+      _showAlertDialog(context, "number_of_people_greater_0".tr);
+      _people = 0;
     } else {
       _people = quantity;
       update();
@@ -100,8 +101,9 @@ class BookTableController extends GetxController implements GetxService {
   }
 
   void setQuantityTable(int quantity, BuildContext context) {
-    if (quantity < 1) {
-      _showAlertDialog(context, "Number of table cannot be less than 1");
+    if (quantity <= 0) {
+      _showAlertDialog(context, "number_of_table_greater_0".tr);
+      _table = 0;
     } else {
       _table = quantity;
       update();

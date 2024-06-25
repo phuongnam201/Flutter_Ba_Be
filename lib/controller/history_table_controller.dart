@@ -14,6 +14,13 @@ class HistoryBookTableController extends GetxController implements GetxService {
   List<HistoryBookTableModel> _historyBookTableList = [];
   List<HistoryBookTableModel> get historyBookTableList => _historyBookTableList;
 
+  List<DishesInHistoryBookTableModel> _dishesListInBookedList = [];
+  List<DishesInHistoryBookTableModel> get dishesListInBookedList =>
+      _dishesListInBookedList;
+
+  List<PivotDish> _pivotDishList = [];
+  List<PivotDish> get pivotDishList => _pivotDishList;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -45,26 +52,41 @@ class HistoryBookTableController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getDetailHistoryBookTable(int id) async {
+  Future<HistoryBookTableModel?> getDetailHistoryBookTable(int id) async {
+    HistoryBookTableModel? historyBookTableModel;
     _isLoading = true;
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
     try {
-      Response response = await historyBookTableRepo.getDetailHistoryBookTable(
-          book_table_id: id, language: language);
+      Response response =
+          await historyBookTableRepo.getDetailHistoryBookTableInRepo(
+              book_table_id: id, language: language);
+      print(response.statusCode);
       if (response.statusCode == 200) {
-        // _historyBookTableList.clear();
-        // List<dynamic> data = response.body["results"];
-        // data.forEach((element) {
-        //   HistoryBookTable historyBookTable =
-        //       HistoryBookTable.fromJson(element);
-        //   _historyBookTableList.add(historyBookTable);
-        // });
+        Map<String, dynamic> data = response.body['results'];
+
+        historyBookTableModel = HistoryBookTableModel.fromJson(data);
+
+        List<dynamic> dishesData = data['dishes'];
+        _dishesListInBookedList.clear();
+        _pivotDishList.clear();
+
+        dishesData.forEach((dishData) {
+          DishesInHistoryBookTableModel dishesInHistoryBookTableModel =
+              DishesInHistoryBookTableModel.fromJson(dishData);
+          _dishesListInBookedList.add(dishesInHistoryBookTableModel);
+
+          Map<String, dynamic> pivotData = dishData['pivot'];
+          PivotDish pivotDish = PivotDish.fromJson(pivotData);
+          _pivotDishList.add(pivotDish);
+        });
+
         _isLoading = false;
         update();
       }
     } catch (e) {
       print("fail when system is getting data at history table controller: $e");
     }
+    return historyBookTableModel;
   }
 }

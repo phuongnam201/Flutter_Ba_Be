@@ -217,9 +217,6 @@ class _MenuSliderState extends State<MenuSlider> {
                     ),
                     onTap: () {
                       Get.toNamed(RouteHelper.getHistoryBook());
-                      // Get.snackbar("Ba_Be_Tourism".tr, "coming soon!",
-                      //     colorText: Colors.white,
-                      //     backgroundColor: Colors.blue);
                     },
                   ),
                   ListTile(

@@ -32,6 +32,7 @@ class _SearchPageState extends State<SearchPage> {
   ScrollController scrollController = ScrollController();
   bool showbtn = false;
   RadioOptions _selectedOption = RadioOptions.tours;
+  int page = 1;
 
   @override
   void initState() {
@@ -44,8 +45,11 @@ class _SearchPageState extends State<SearchPage> {
         showbtn = false;
         setState(() {});
       }
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        _loadMoreResults();
+      }
     });
-
     super.initState();
   }
 
@@ -106,7 +110,10 @@ class _SearchPageState extends State<SearchPage> {
 
                         if (!value.isEmpty) {
                           await searchResultController.getResultSearch(
-                              selectedOptionValue.toString(), value.trim());
+                              selectedOptionValue.toString(),
+                              value.trim(),
+                              8,
+                              1);
                         }
                         setState(() {});
                       },
@@ -137,6 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                                   onChanged: (RadioOptions? value) {
                                     setState(() {
                                       _selectedOption = value!;
+                                      page = 1;
                                     });
                                     String selectedOptionValue = _selectedOption
                                         .toString()
@@ -145,7 +153,9 @@ class _SearchPageState extends State<SearchPage> {
                                     if (!textController.text.isEmpty) {
                                       searchResultController.getResultSearch(
                                           selectedOptionValue.toString(),
-                                          textController.text.trim());
+                                          textController.text.trim(),
+                                          8,
+                                          page);
                                     }
                                     setState(() {});
                                   },
@@ -161,6 +171,7 @@ class _SearchPageState extends State<SearchPage> {
                                   onChanged: (RadioOptions? value) {
                                     setState(() {
                                       _selectedOption = value!;
+                                      page = 1;
                                     });
                                     String selectedOptionValue = _selectedOption
                                         .toString()
@@ -169,7 +180,9 @@ class _SearchPageState extends State<SearchPage> {
                                     if (!textController.text.isEmpty) {
                                       searchResultController.getResultSearch(
                                           selectedOptionValue.toString(),
-                                          textController.text.trim());
+                                          textController.text.trim(),
+                                          8,
+                                          page);
                                     }
                                     setState(() {});
                                   },
@@ -185,6 +198,7 @@ class _SearchPageState extends State<SearchPage> {
                                   onChanged: (RadioOptions? value) {
                                     setState(() {
                                       _selectedOption = value!;
+                                      page = 1;
                                     });
                                     String selectedOptionValue = _selectedOption
                                         .toString()
@@ -193,7 +207,9 @@ class _SearchPageState extends State<SearchPage> {
                                     if (!textController.text.isEmpty) {
                                       searchResultController.getResultSearch(
                                           selectedOptionValue.toString(),
-                                          textController.text.trim());
+                                          textController.text.trim(),
+                                          8,
+                                          page);
                                     }
                                     setState(() {});
                                   },
@@ -225,7 +241,7 @@ class _SearchPageState extends State<SearchPage> {
                     if (_selectedOption == RadioOptions.tours) {
                       return showResults(controller.tours);
                     } else if (_selectedOption == RadioOptions.news) {
-                      return showResults(controller.post);
+                      return showResults(controller.posts);
                     } else {
                       return showResults(controller.places);
                     }
@@ -241,18 +257,45 @@ class _SearchPageState extends State<SearchPage> {
       );
     });
   }
+
+  void _loadMoreResults() {
+    String selectedOptionValue = _selectedOption.toString().split('.')[1];
+    page++;
+    searchResultController.getResultSearch(
+        selectedOptionValue.toString(), textController.text.trim(), 8, page);
+    //setState(() {});
+  }
 }
 
 Widget showResults(List<dynamic> results) {
+  bool loading = Get.find<SearchResultController>().isLoading;
   return SingleChildScrollView(
     child: Container(
-      child: ListView.builder(
-        itemCount: results.length,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return _buildItem(results[index]);
-        },
+      child: Column(
+        children: [
+          ListView.builder(
+            itemCount: results.length,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return _buildItem(results[index]);
+            },
+          ),
+          SizedBox(
+            height: Dimensions.height10,
+          ),
+          if (loading)
+            Center(child: CircularProgressIndicator())
+          else
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(bottom: Dimensions.height10),
+              child: BigText(
+                text: "all_of_list".tr,
+                size: Dimensions.font16,
+              ),
+            ),
+        ],
       ),
     ),
   );

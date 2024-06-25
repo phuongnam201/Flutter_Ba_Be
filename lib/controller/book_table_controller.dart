@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_babe/data/repository/book_table_repo.dart';
 import 'package:flutter_babe/models/book_table_model.dart';
 import 'package:flutter_babe/models/response_model.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:get/get.dart';
 
 class BookTableController extends GetxController implements GetxService {
@@ -27,20 +28,27 @@ class BookTableController extends GetxController implements GetxService {
   Future<ResponseModel> bookTable(BookTableModel bookTableModel) async {
     _isLoading = true;
     update();
-    Response response = await bookTableRepo.bookTableInRepo(bookTableModel);
-    print("Check status code at book room controller " +
-        response.body.toString());
     late ResponseModel responseModel;
-    if (response.statusCode == 200) {
-      print("success!");
-      print(response.body);
-      responseModel = ResponseModel(true, response.body["message"]);
-    } else {
-      responseModel = ResponseModel(false, response.body["message"]);
+    try {
+      Response response = await bookTableRepo.bookTableInRepo(bookTableModel);
+      print("Check status code at book room controller " +
+          response.body.toString());
+      if (response.statusCode == 200) {
+        print("success!");
+        print(response.body);
+        responseModel = ResponseModel(true, response.body["message"]);
+      } else {
+        responseModel = ResponseModel(false, response.body["message"]);
+      }
+
+      _isLoading = false;
+      update();
+    } catch (e) {
+      responseModel = ResponseModel(false, e.toString());
+      _isLoading = false;
+      Get.offNamed(RouteHelper.getSignInPage());
     }
 
-    _isLoading = false;
-    update();
     return responseModel;
   }
 

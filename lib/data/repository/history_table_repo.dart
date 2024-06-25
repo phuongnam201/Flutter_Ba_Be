@@ -31,11 +31,11 @@ class HistoryBookTableRepo {
     return await apiClient.getData(url);
   }
 
-  Future<Response> getDetailHistoryBookTable(
+  Future<Response> getDetailHistoryBookTableInRepo(
       {int? book_table_id, String? language}) async {
     language ??= "";
 
-    String url = AppConstants.DISH_URL + "/${book_table_id}";
+    String url = AppConstants.BOOK_TABLE_URL + "/${book_table_id}";
     if (language != null && language.isNotEmpty) {
       url += "?language=" + language;
     }

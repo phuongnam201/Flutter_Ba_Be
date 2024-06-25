@@ -20,13 +20,4 @@ class SettingRepo {
       AppConstants.SETTING_URL + languageCode,
     );
   }
-
-  Future<String> getLinkVr360() async {
-    return await sharedPreferences.getString(AppConstants.URL_VR360) ?? "";
-  }
-
-  Future<void> saveLinkVr360(String url) async {
-    print("link url in repo:" + url);
-    await sharedPreferences.setString(AppConstants.URL_VR360, url);
-  }
 }

@@ -14,6 +14,12 @@ class HistoryBookRoomController extends GetxController implements GetxService {
   List<HistoryBookRoomModel> _historyBookRoomList = [];
   List<HistoryBookRoomModel> get historyBookRoomList => _historyBookRoomList;
 
+  List<RoomsInHistoryBook> _roomsListInBookedList = [];
+  List<RoomsInHistoryBook> get roomsListInBookedList => _roomsListInBookedList;
+
+  List<PivotBookedRoom> _pivotList = [];
+  List<PivotBookedRoom> get pivotList => _pivotList;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -48,6 +54,7 @@ class HistoryBookRoomController extends GetxController implements GetxService {
 
   Future<HistoryBookRoomModel?> getDetailHistoryBookTable(int id) async {
     HistoryBookRoomModel? historyBookRoomModel;
+
     _isLoading = true;
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? 'vi';
@@ -57,12 +64,28 @@ class HistoryBookRoomController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         Map<String, dynamic> data = response.body["results"];
         historyBookRoomModel = HistoryBookRoomModel.fromJson(data);
-        _isLoading = false;
 
+        // Handle rooms data
+        List<dynamic> roomsData = data['rooms'];
+        _roomsListInBookedList.clear();
+        _pivotList.clear(); // Clear pivot list before adding new data
+
+        roomsData.forEach((roomData) {
+          RoomsInHistoryBook roomsInHistoryBook =
+              RoomsInHistoryBook.fromJson(roomData);
+          _roomsListInBookedList.add(roomsInHistoryBook);
+
+          Map<String, dynamic> pivotData = roomData['pivot'];
+          PivotBookedRoom pivotBookedRoom = PivotBookedRoom.fromJson(pivotData);
+          _pivotList.add(pivotBookedRoom);
+        });
+
+        _isLoading = false;
         update();
       }
     } catch (e) {
-      print("fail when system is getting data at history table controller: $e");
+      print(
+          "fail when system is getting data detail at history table controller: $e");
     }
     return historyBookRoomModel;
   }

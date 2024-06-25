@@ -32,7 +32,7 @@ class _DishSelectedState extends State<DishSelected> {
           child: bookTableController.dishesSelectedList.isNotEmpty
               ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   BigText(
-                    text: "Danh sách món ăn đã chọn: ",
+                    text: "selected_dishes_list".tr,
                     color: AppColors.textColorBlue800,
                   ),
                   SizedBox(

@@ -33,7 +33,7 @@ class SettingController extends GetxController implements GetxService {
     if (response.statusCode == 200) {
       _settingModel = SettingModel.fromJson(response.body["results"]);
       print(_settingModel!.linkIframe!);
-      settingRepo.saveLinkVr360(_settingModel!.linkIframe!);
+
       responseModel = ResponseModel(true, "Success");
     } else {
       responseModel =
@@ -44,9 +44,5 @@ class SettingController extends GetxController implements GetxService {
     update();
 
     return responseModel;
-  }
-
-  Future<String> getLinkVr360() async {
-    return await settingRepo.getLinkVr360();
   }
 }

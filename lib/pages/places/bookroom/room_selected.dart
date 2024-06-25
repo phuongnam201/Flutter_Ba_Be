@@ -33,7 +33,7 @@ class _RoomSelectedState extends State<RoomSelected> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BigText(
-                      text: "Danh sách phòng bạn đã chọn: ",
+                      text: "selected_room_list".tr,
                       color: AppColors.textColorBlue800,
                     ),
                     SizedBox(

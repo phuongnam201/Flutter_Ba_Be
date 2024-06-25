@@ -97,7 +97,7 @@ class RoomsInHistoryBook {
   String? updatedAt;
   int? price;
   int? ownerId;
-  Pivot? pivot;
+  PivotBookedRoom? pivot;
 
   RoomsInHistoryBook(
       {this.id,
@@ -131,7 +131,9 @@ class RoomsInHistoryBook {
     updatedAt = json['updated_at'];
     price = json['price'];
     ownerId = json['owner_id'];
-    pivot = json['pivot'] != null ? new Pivot.fromJson(json['pivot']) : null;
+    pivot = json['pivot'] != null
+        ? new PivotBookedRoom.fromJson(json['pivot'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -157,14 +159,14 @@ class RoomsInHistoryBook {
   }
 }
 
-class Pivot {
+class PivotBookedRoom {
   int? bookRoomId;
   int? roomId;
   int? number;
 
-  Pivot({this.bookRoomId, this.roomId, this.number});
+  PivotBookedRoom({this.bookRoomId, this.roomId, this.number});
 
-  Pivot.fromJson(Map<String, dynamic> json) {
+  PivotBookedRoom.fromJson(Map<String, dynamic> json) {
     bookRoomId = json['book_room_id'];
     roomId = json['room_id'];
     number = json['number'];

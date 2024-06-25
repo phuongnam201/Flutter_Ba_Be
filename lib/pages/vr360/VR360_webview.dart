@@ -49,14 +49,6 @@ class _VR360WebViewState extends State<VR360WebView> {
 
   // Method to load VR360 link
   Future<void> _loadVR360Link() async {
-    String link = await settingController.getLinkVr360();
-    // if (link.isNotEmpty) {
-    //   setState(() {
-    //     selectedUrl = link;
-    //     _isLoading = false;
-    //   });
-    // } else {
-    // If link is empty, fetch setting to get link and update selectedUrl
     settingController.getSetting().then((response) {
       if (response.isSuccess) {
         setState(() {

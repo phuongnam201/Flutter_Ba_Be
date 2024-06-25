@@ -101,9 +101,24 @@ class _BookRoomPageState extends State<BookRoomPage> {
                       SizedBox(
                         height: Dimensions.height10,
                       ),
-                      BigText(
-                        text: "room_list".tr,
-                        color: AppColors.textColorBlue800,
+                      Row(
+                        children: [
+                          SmallText(
+                            text: "phone".tr + ": ",
+                            size: Dimensions.font16,
+                            color: Theme.of(context).disabledColor,
+                          ),
+                          SmallText(
+                            text: places!.phone != null
+                                ? places!.phone.toString()
+                                : 'updating'.tr,
+                            size: Dimensions.font16,
+                            color: Theme.of(context).disabledColor,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: Dimensions.height10,
                       ),
                       ListRooms(
                           ownerID: places!.ownerId!, pageID: "bookRoomPage"),

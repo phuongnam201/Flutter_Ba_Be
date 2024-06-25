@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_babe/controller/banner_controller.dart';
 import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/controller/places_controller.dart';
 import 'package:flutter_babe/controller/post_controller.dart';
@@ -32,14 +31,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    Get.find<PostController>().getAllPostList(null, null);
+    Get.find<PostController>().getAllPostList(null, 1);
     Get.find<PostController>().getFeaturePostList();
-    Get.find<RestaurantController>().getAllRestaurantList(null, null);
+    Get.find<RestaurantController>().getAllRestaurantList(null, 1);
     Get.find<PlacesController>().getSomePlaces();
-    Get.find<BannerController>().getBannerList();
     Get.find<TourController>().getTourList(null, 1);
-    Get.find<TouristAttractionController>()
-        .getTouristAttractionList(null, null);
+    Get.find<TouristAttractionController>().getTouristAttractionList(null, 1);
     return GetBuilder<LocalizationController>(
         builder: (localizationController) {
       return GetBuilder<TourController>(builder: (_) {

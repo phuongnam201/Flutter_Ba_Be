@@ -118,6 +118,19 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                               height: Dimensions.height10 / 2,
                             ),
                             Container(
+                              width: Dimensions.screenWidth * 0.65,
+                              child: SmallText(
+                                  text: restaurant!.phone != null
+                                      ? "phone".tr +
+                                          ": " +
+                                          restaurant!.phone!.toString()
+                                      : "phone".tr + ": " + "updating".tr,
+                                  size: Dimensions.font16),
+                            ),
+                            SizedBox(
+                              height: Dimensions.height10 / 2,
+                            ),
+                            Container(
                               width: Dimensions.screenWidth * 0.6,
                               child: Row(
                                 mainAxisAlignment:

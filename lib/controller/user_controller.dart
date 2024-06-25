@@ -98,15 +98,21 @@ class UserController extends GetxController implements GetxService {
   Future<ResponseModel> updatePassword(
       String password, String new_password, String confirm_password) async {
     _isLoading = true;
+    late ResponseModel responseModel;
+    late UpdatePasswordModel updatePasswordModel;
     update();
-    UpdatePasswordModel updatePasswordModel = UpdatePasswordModel(
-      password: password,
-      new_password: new_password,
-      confirm_password: confirm_password,
-    );
+    if (new_password != confirm_password) {
+      _isLoading = false;
+      return responseModel = ResponseModel(false, "password_does_not_match".tr);
+    } else {
+      updatePasswordModel = UpdatePasswordModel(
+        password: password,
+        new_password: new_password,
+        confirm_password: confirm_password,
+      );
+    }
 
     var response = await userRepo.updatePassword(updatePasswordModel);
-    late ResponseModel responseModel;
     if (response.statusCode == 200) {
       responseModel = ResponseModel(true, response.body["message"].toString());
     } else {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/history_table_controller.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
@@ -33,7 +34,7 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
         if (controller.historyBookTableList.isEmpty) {
           return Center(
             child: BigText(
-              text: "Chưa có đơn đặt",
+              text: "no_orders_yet".tr,
               color: Theme.of(context).disabledColor,
               size: Dimensions.font20,
             ),
@@ -67,7 +68,7 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SmallText(
-                                text: "Mã đơn đặt: " +
+                                text: "order_code".tr +
                                     controller.historyBookTableList[index].id!
                                         .toString(),
                                 color: AppColors.textColorBlack,
@@ -77,7 +78,8 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
                                 height: Dimensions.height10,
                               ),
                               SmallText(
-                                text: "Tên khách đặt: " +
+                                text: "fullname".tr +
+                                    ": " +
                                     controller
                                         .historyBookTableList[index].name!,
                                 color: AppColors.textColorBlack,
@@ -87,7 +89,8 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
                                 height: Dimensions.height10,
                               ),
                               SmallText(
-                                text: "Ngày đặt: " +
+                                text: "check_in".tr +
+                                    ": " +
                                     controller
                                         .historyBookTableList[index].date!,
                                 color: AppColors.textColorBlack,
@@ -97,7 +100,8 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
                                 height: Dimensions.height10,
                               ),
                               SmallText(
-                                text: "Thời gian đặt: " +
+                                text: "time".tr +
+                                    ": " +
                                     controller
                                         .historyBookTableList[index].time!,
                                 color: AppColors.textColorBlack,
@@ -107,7 +111,7 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
                                 height: Dimensions.height10,
                               ),
                               SmallText(
-                                text: "Số lượng bàn: " +
+                                text: "number_of_table".tr +
                                     controller.historyBookTableList[index]
                                         .numberTable!
                                         .toString(),
@@ -118,7 +122,7 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
                                 height: Dimensions.height10,
                               ),
                               SmallText(
-                                text: "Số lượng người: " +
+                                text: "number_of_people".tr +
                                     controller
                                         .historyBookTableList[index].people!
                                         .toString(),
@@ -133,7 +137,13 @@ class _HistoryBookTableWidgetState extends State<HistoryBookTableWidget> {
                                 text: "view_detail".tr,
                                 color: Colors.white,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.toNamed(
+                                    RouteHelper.getDetailHistoryBookTable(
+                                        controller
+                                            .historyBookTableList[index].id!,
+                                        "historyBookTablePage"));
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.colorButton,
                                 padding: EdgeInsets.symmetric(

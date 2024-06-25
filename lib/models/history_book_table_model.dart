@@ -87,7 +87,7 @@ class DishesInHistoryBookTableModel {
   String? updatedAt;
   String? multiimage;
   int? ownerId;
-  Pivot? pivot;
+  PivotDish? pivot;
 
   DishesInHistoryBookTableModel(
       {this.id,
@@ -117,7 +117,8 @@ class DishesInHistoryBookTableModel {
     updatedAt = json['updated_at'];
     multiimage = json['multiimage'];
     ownerId = json['owner_id'];
-    pivot = json['pivot'] != null ? new Pivot.fromJson(json['pivot']) : null;
+    pivot =
+        json['pivot'] != null ? new PivotDish.fromJson(json['pivot']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -141,13 +142,13 @@ class DishesInHistoryBookTableModel {
   }
 }
 
-class Pivot {
+class PivotDish {
   int? bookTableId;
   int? dishId;
 
-  Pivot({this.bookTableId, this.dishId});
+  PivotDish({this.bookTableId, this.dishId});
 
-  Pivot.fromJson(Map<String, dynamic> json) {
+  PivotDish.fromJson(Map<String, dynamic> json) {
     bookTableId = json['book_table_id'];
     dishId = json['dish_id'];
   }

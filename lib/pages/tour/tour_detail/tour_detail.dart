@@ -6,7 +6,6 @@ import 'package:flutter_babe/widgets/custom_loader.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_babe/controller/tour_controller.dart';
 import 'package:flutter_babe/pages/tour/widgets/gallery_image.dart';
 import 'package:flutter_babe/pages/tour/widgets/highlight_tour.dart';

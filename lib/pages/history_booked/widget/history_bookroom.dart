@@ -19,10 +19,30 @@ class _HistoryBookRoomWidgetState extends State<HistoryBookRoomWidget> {
   final HistoryBookRoomController historyBookRoomController =
       Get.find<HistoryBookRoomController>();
 
+  ScrollController scrollController = ScrollController();
+  bool showbtn = false;
+
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(() {
+      double showoffset = 10.0;
+      if (scrollController.offset > showoffset) {
+        showbtn = true;
+        setState(() {});
+      } else {
+        showbtn = false;
+        setState(() {});
+      }
+    });
     historyBookRoomController.getDataHistoryBookRoom();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    scrollController.removeListener(() {});
   }
 
   @override
@@ -34,13 +54,14 @@ class _HistoryBookRoomWidgetState extends State<HistoryBookRoomWidget> {
         if (controller.historyBookRoomList.isEmpty) {
           return Center(
             child: BigText(
-              text: "Chưa có đơn đặt",
+              text: "no_orders_yet".tr,
               color: Theme.of(context).disabledColor,
               size: Dimensions.font20,
             ),
           );
         } else {
           return SingleChildScrollView(
+            controller: scrollController,
             child: Container(
               child: ListView.builder(
                 itemCount: controller.historyBookRoomList.length,
@@ -69,8 +90,8 @@ class _HistoryBookRoomWidgetState extends State<HistoryBookRoomWidget> {
                             children: [
                               SmallText(
                                   color: AppColors.textColorBlack,
-                                  size: Dimensions.font16 - 2,
-                                  text: "Mã đơn đặt: " +
+                                  size: Dimensions.font16,
+                                  text: "order_code".tr +
                                       controller.historyBookRoomList[index].id!
                                           .toString()),
                               SizedBox(
@@ -78,8 +99,9 @@ class _HistoryBookRoomWidgetState extends State<HistoryBookRoomWidget> {
                               ),
                               SmallText(
                                 color: AppColors.textColorBlack,
-                                size: Dimensions.font16 - 2,
-                                text: "Tên khách đặt: " +
+                                size: Dimensions.font16,
+                                text: "fullname".tr +
+                                    ": " +
                                     controller.historyBookRoomList[index].name!,
                               ),
                               SizedBox(
@@ -87,8 +109,9 @@ class _HistoryBookRoomWidgetState extends State<HistoryBookRoomWidget> {
                               ),
                               SmallText(
                                   color: AppColors.textColorBlack,
-                                  size: Dimensions.font16 - 2,
-                                  text: "Ngày nhận: " +
+                                  size: Dimensions.font16,
+                                  text: "check_in".tr +
+                                      ": " +
                                       controller
                                           .historyBookRoomList[index].checkin!),
                               SizedBox(
@@ -96,30 +119,31 @@ class _HistoryBookRoomWidgetState extends State<HistoryBookRoomWidget> {
                               ),
                               SmallText(
                                   color: AppColors.textColorBlack,
-                                  size: Dimensions.font16 - 2,
-                                  text: "Ngày trả: " +
+                                  size: Dimensions.font16,
+                                  text: "check_out".tr +
+                                      ": " +
                                       controller.historyBookRoomList[index]
                                           .checkout!),
                               SizedBox(
                                 height: Dimensions.height10,
                               ),
-                              SmallText(
-                                  color: AppColors.textColorBlack,
-                                  size: Dimensions.font16 - 2,
-                                  text: "Số lượng phòng: " +
-                                      controller.historyBookRoomList[index]
-                                          .numberRoom!
-                                          .toString()),
-                              SizedBox(
-                                height: Dimensions.height10,
+                              Row(
+                                children: [
+                                  SmallText(
+                                    text: "accommodation_facility".tr + ": ",
+                                    size: Dimensions.font16,
+                                  ),
+                                  SmallText(
+                                    text: controller.historyBookRoomList[index]
+                                                .namePlace !=
+                                            null
+                                        ? controller
+                                            .historyBookRoomModel!.namePlace!
+                                        : "updating".tr,
+                                    size: Dimensions.font16,
+                                  ),
+                                ],
                               ),
-                              SmallText(
-                                  color: AppColors.textColorBlack,
-                                  size: Dimensions.font16 - 2,
-                                  text: "Số lượng người lớn: " +
-                                      controller
-                                          .historyBookRoomList[index].adults!
-                                          .toString()),
                             ],
                           ),
                           Container(

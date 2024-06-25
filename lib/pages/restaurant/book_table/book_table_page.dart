@@ -4,7 +4,6 @@ import 'package:flutter_babe/controller/restaurant_controller.dart';
 import 'package:flutter_babe/models/book_table_model.dart';
 import 'package:flutter_babe/models/restaurant_model.dart';
 import 'package:flutter_babe/pages/restaurant/book_table/dish_selected.dart';
-import 'package:flutter_babe/pages/restaurant/book_table/food_in_booktable.dart';
 import 'package:flutter_babe/pages/restaurant/book_table/list_dishes.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/colors.dart';
@@ -99,6 +98,25 @@ class _BookTablePageState extends State<BookTablePage> {
                         text: "address".tr + ": " + restaurant!.address!,
                         size: Dimensions.font16,
                         color: Theme.of(context).disabledColor,
+                      ),
+                      SizedBox(
+                        height: Dimensions.height10,
+                      ),
+                      Row(
+                        children: [
+                          SmallText(
+                            text: "phone".tr + ": ",
+                            size: Dimensions.font16,
+                            color: Theme.of(context).disabledColor,
+                          ),
+                          SmallText(
+                            text: restaurant!.phone != null
+                                ? restaurant!.phone.toString()
+                                : 'updating'.tr,
+                            size: Dimensions.font16,
+                            color: Theme.of(context).disabledColor,
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: Dimensions.height10,

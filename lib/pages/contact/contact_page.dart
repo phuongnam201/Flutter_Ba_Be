@@ -63,8 +63,8 @@ class _ContactPageState extends State<ContactPage> {
             emailController.clear();
             phoneController.clear();
             messageController.clear();
-            Get.snackbar("success".tr, "message_was_sent".tr,
-                backgroundColor: Colors.grey[300]);
+            CustomSnackBar("message_was_sent".tr,
+                isError: false, title: "success".tr);
           } else {
             CustomSnackBar(status.message!);
           }

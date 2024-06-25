@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_babe/controller/history_book_room_controller.dart';
-import 'package:flutter_babe/models/history_book_room_model.dart';
+import 'package:flutter_babe/controller/history_table_controller.dart';
+import 'package:flutter_babe/models/history_book_table_model.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
@@ -11,45 +11,45 @@ import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class HistoryBookRoomDetail extends StatefulWidget {
-  int bookRoomID;
+class HistoryBookTableDetail extends StatefulWidget {
+  int bookTableId;
   String pageID;
-  HistoryBookRoomDetail(
-      {super.key, required this.bookRoomID, required this.pageID});
+  HistoryBookTableDetail(
+      {super.key, required this.bookTableId, required this.pageID});
 
   @override
-  State<HistoryBookRoomDetail> createState() => _HistoryBookRoomDetailState();
+  State<HistoryBookTableDetail> createState() => _HistoryBookTableDetailState();
 }
 
-class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
-  final HistoryBookRoomController historyBookRoomController =
-      Get.find<HistoryBookRoomController>();
+class _HistoryBookTableDetailState extends State<HistoryBookTableDetail> {
+  final HistoryBookTableController historyBookTableController =
+      Get.find<HistoryBookTableController>();
 
-  HistoryBookRoomModel? historyBookRoomModel;
+  HistoryBookTableModel? historyBookTableModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    historyBookRoomController
-        .getDetailHistoryBookTable(widget.bookRoomID)
+    historyBookTableController
+        .getDetailHistoryBookTable(widget.bookTableId)
         .then((value) {
       setState(() {
-        historyBookRoomModel = value!;
+        historyBookTableModel = value!;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HistoryBookRoomController>(builder: (controller) {
+    return GetBuilder<HistoryBookTableController>(builder: (controller) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("booking_detail".tr),
+          title: Text("booking_table_detail".tr),
           centerTitle: true,
           backgroundColor: AppColors.colorAppBar,
         ),
-        body: historyBookRoomModel != null
+        body: historyBookTableModel != null
             ? SingleChildScrollView(
                 child: Container(
                   //height: Dimensions.screenHeight,
@@ -68,7 +68,7 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                             SmallText(
                               text: "fullname".tr +
                                   ": " +
-                                  historyBookRoomModel!.name!,
+                                  historyBookTableModel!.name!,
                               size: Dimensions.font16,
                             ),
                             SizedBox(
@@ -77,7 +77,7 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                             SmallText(
                               text: "phone".tr +
                                   ": " +
-                                  historyBookRoomModel!.phone!.toString(),
+                                  historyBookTableModel!.phone!.toString(),
                               size: Dimensions.font16,
                             ),
                             SizedBox(
@@ -86,7 +86,8 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                             SmallText(
                               text: "adults".tr +
                                   ": " +
-                                  historyBookRoomModel!.adults!.toString(),
+                                  historyBookTableModel!.numberTable!
+                                      .toString(),
                               size: Dimensions.font16,
                             ),
                             SizedBox(
@@ -95,7 +96,7 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                             SmallText(
                               text: "children".tr +
                                   ": " +
-                                  historyBookRoomModel!.children!.toString(),
+                                  historyBookTableModel!.people!.toString(),
                               size: Dimensions.font16,
                             ),
                             SizedBox(
@@ -104,13 +105,14 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                             Row(
                               children: [
                                 SmallText(
-                                  text: "accommodation_facility".tr + ": ",
+                                  text: "restaurant".tr + ": ",
                                   size: Dimensions.font16,
                                 ),
                                 SmallText(
-                                  text: historyBookRoomModel!.namePlace != null
+                                  text: historyBookTableModel!.nameRestaurant !=
+                                          null
                                       ? controller
-                                          .historyBookRoomModel!.namePlace!
+                                          .historyBookTable!.nameRestaurant!
                                       : "updating".tr,
                                   size: Dimensions.font16,
                                 ),
@@ -122,16 +124,16 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                             SmallText(
                               text: "check_in".tr +
                                   ": " +
-                                  historyBookRoomModel!.checkin!,
+                                  historyBookTableModel!.date!,
                               size: Dimensions.font16,
                             ),
                             SizedBox(
                               height: Dimensions.height10,
                             ),
                             SmallText(
-                              text: "check_out".tr +
+                              text: "time".tr +
                                   ": " +
-                                  historyBookRoomModel!.checkout!,
+                                  historyBookTableModel!.time!,
                               size: Dimensions.font16,
                             ),
                           ],
@@ -140,30 +142,30 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                       SizedBox(
                         height: Dimensions.height10,
                       ),
-                      BigText(text: "list_of_booked_rooms".tr),
+                      BigText(text: "list_of_booked_dishes".tr),
                       SizedBox(
                         height: Dimensions.height10,
                       ),
                       ListView.builder(
-                        itemCount: controller.roomsListInBookedList.length,
+                        itemCount: controller.dishesListInBookedList.length,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Container(
                             margin:
                                 EdgeInsets.only(bottom: Dimensions.height10),
-                            height: Dimensions.height20 * 7,
+                            height: Dimensions.height20 * 5,
                             width: Dimensions.screenWidth,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Container(
-                                  height: Dimensions.height20 * 7,
-                                  width: Dimensions.width20 * 6,
+                                  height: Dimensions.height20 * 5,
+                                  width: Dimensions.width20 * 5,
                                   child: CachedNetworkImage(
                                     imageUrl: AppConstants.BASE_URL +
                                         "storage/" +
-                                        controller.roomsListInBookedList[index]
+                                        controller.dishesListInBookedList[index]
                                             .image!,
                                     imageBuilder: (context, imageProvider) =>
                                         Container(
@@ -200,7 +202,7 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                                     children: [
                                       BigText(
                                         text: controller
-                                            .roomsListInBookedList[index]
+                                            .dishesListInBookedList[index]
                                             .title!,
                                         color: AppColors.colorAppBar,
                                       ),
@@ -210,26 +212,8 @@ class _HistoryBookRoomDetailState extends State<HistoryBookRoomDetail> {
                                       SmallText(
                                         text: "price".tr +
                                             _formatCurrency(controller
-                                                .roomsListInBookedList[index]
+                                                .dishesListInBookedList[index]
                                                 .price!),
-                                        size: Dimensions.font16,
-                                      ),
-                                      SizedBox(
-                                        height: Dimensions.height10 / 2,
-                                      ),
-                                      SmallText(
-                                        text: controller
-                                            .roomsListInBookedList[index].desc!
-                                            .toString(),
-                                        size: Dimensions.font16,
-                                      ),
-                                      SizedBox(
-                                        height: Dimensions.height10 / 2,
-                                      ),
-                                      SmallText(
-                                        text: "number_of_rooms".tr +
-                                            controller.pivotList[index].number!
-                                                .toString(),
                                         size: Dimensions.font16,
                                       ),
                                     ],

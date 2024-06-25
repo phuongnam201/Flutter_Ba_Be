@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_babe/controller/restaurant_controller.dart';
 import 'package:flutter_babe/models/restaurant_model.dart';
 import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
@@ -10,11 +11,8 @@ import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:get/get.dart';
 
 class RestaurantPageview extends StatefulWidget {
-  final List<Restaurant> restaurantList;
-
   const RestaurantPageview({
     Key? key,
-    required this.restaurantList,
   }) : super(key: key);
 
   @override
@@ -22,27 +20,39 @@ class RestaurantPageview extends StatefulWidget {
 }
 
 class _RestaurantPageviewState extends State<RestaurantPageview> {
+  final RestaurantController restaurantController =
+      Get.find<RestaurantController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    restaurantController.getAllRestaurantList(8, 1);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: Dimensions.height10 * 31,
-      margin: EdgeInsets.only(left: Dimensions.width10),
-      child: ListView.builder(
-        itemCount: widget.restaurantList.length >= 8
-            ? 9
-            : widget.restaurantList.length +
-                1, // Thêm một phần tử cho nút "See more"
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: false,
-        itemBuilder: (context, index) {
-          if (index == 8) {
-            return _buildSeeMoreButton();
-          } else {
-            return _buildPageItem(widget.restaurantList[index], index);
-          }
-        },
-      ),
-    );
+    return GetBuilder<RestaurantController>(builder: (controller) {
+      return Container(
+        height: Dimensions.height10 * 31,
+        margin: EdgeInsets.only(left: Dimensions.width10),
+        child: ListView.builder(
+          itemCount: controller.restaurantList.length >= 8
+              ? 9
+              : controller.restaurantList.length +
+                  1, // Thêm một phần tử cho nút "See more"
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: false,
+          itemBuilder: (context, index) {
+            if (index == 8) {
+              return _buildSeeMoreButton();
+            } else {
+              return _buildPageItem(controller.restaurantList[index], index);
+            }
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildSeeMoreButton() {

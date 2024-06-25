@@ -198,43 +198,45 @@ class _NewPageState extends State<NewPage> with SingleTickerProviderStateMixin {
 
 Widget PictureWidget(PageController pageController, var _currentPageValue,
     List<Post> postFeatureList) {
-  return Stack(
-    children: [
-      Container(
-        height: Dimensions.height200,
-        width: Dimensions.screenWidth,
-        child: PageView.builder(
-          itemCount: postFeatureList.length,
-          controller: pageController,
-          scrollDirection: Axis.horizontal,
-          padEnds: false,
-          itemBuilder: (context, index) {
-            return _buildPageItem(postFeatureList[index]);
-          },
-        ),
-      ),
-      Positioned(
-        bottom: Dimensions.height10,
-        left: 0,
-        right: 0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+  return postFeatureList.length > 0
+      ? Stack(
           children: [
-            DotsIndicator(
-              dotsCount: postFeatureList.length,
-              position: _currentPageValue,
-              decorator: const DotsDecorator(
-                color: Colors.white, // Inactive color
-                activeColor: Colors.amber,
-                size: Size.square(6.0),
-                activeSize: Size(15.0, 6.0),
+            Container(
+              height: Dimensions.height200,
+              width: Dimensions.screenWidth,
+              child: PageView.builder(
+                itemCount: postFeatureList.length,
+                controller: pageController,
+                scrollDirection: Axis.horizontal,
+                padEnds: false,
+                itemBuilder: (context, index) {
+                  return _buildPageItem(postFeatureList[index]);
+                },
+              ),
+            ),
+            Positioned(
+              bottom: Dimensions.height10,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DotsIndicator(
+                    dotsCount: postFeatureList.length,
+                    position: _currentPageValue,
+                    decorator: const DotsDecorator(
+                      color: Colors.white, // Inactive color
+                      activeColor: Colors.amber,
+                      size: Size.square(6.0),
+                      activeSize: Size(15.0, 6.0),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
-        ),
-      ),
-    ],
-  );
+        )
+      : SizedBox();
 }
 
 Widget _buildPageItem(Post post) {

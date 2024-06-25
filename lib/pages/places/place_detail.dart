@@ -108,8 +108,16 @@ class _PlaceDetailState extends State<PlaceDetail> {
                             Container(
                               width: Dimensions.screenWidth * 0.65,
                               child: SmallText(
-                                  color: AppColors.textColorBlue800,
                                   text: "address".tr + ": " + places!.address!,
+                                  size: Dimensions.font16),
+                            ),
+                            SizedBox(
+                              height: Dimensions.height10 / 2,
+                            ),
+                            Container(
+                              width: Dimensions.screenWidth * 0.65,
+                              child: SmallText(
+                                  text: "phone".tr + ": " + places!.phone!,
                                   size: Dimensions.font16),
                             ),
                             SizedBox(
@@ -123,7 +131,7 @@ class _PlaceDetailState extends State<PlaceDetail> {
                                 children: [
                                   BigText(
                                     text: "share".tr + ": ",
-                                    color: AppColors.mainBlackColor,
+                                    color: Colors.grey,
                                   ),
                                   FaIcon(
                                     FontAwesomeIcons.facebook,
@@ -185,7 +193,7 @@ class _PlaceDetailState extends State<PlaceDetail> {
                       height: Dimensions.height10,
                     ),
                     GalleryImagePlace(
-                        placeID: widget.placeID!, pageID: widget.pageID),
+                        placeID: widget.placeID, pageID: widget.pageID),
                     HtmlWidget(places!.content!),
 
                     //room

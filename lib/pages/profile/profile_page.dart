@@ -427,8 +427,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                                         .clear(),
                                                     reEnterPasswordController
                                                         .clear(),
-                                                    Get.snackbar("Update",
-                                                        "Updated Successfully")
+                                                    CustomSnackBar(
+                                                        "update_success".tr,
+                                                        isError: false,
+                                                        title: "success".tr),
                                                   }
                                                 else
                                                   {

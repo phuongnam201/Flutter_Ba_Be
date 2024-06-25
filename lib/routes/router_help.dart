@@ -3,6 +3,7 @@ import 'package:flutter_babe/pages/auth/sign_in_page.dart';
 import 'package:flutter_babe/pages/auth/sign_up_page.dart';
 import 'package:flutter_babe/pages/contact/contact_page.dart';
 import 'package:flutter_babe/pages/history_booked/detail/history_bookroom_detail.dart';
+import 'package:flutter_babe/pages/history_booked/detail/history_booktable_detail.dart';
 import 'package:flutter_babe/pages/history_booked/history_booked.dart';
 import 'package:flutter_babe/pages/home/home_page.dart';
 import 'package:flutter_babe/pages/home/menu_page.dart';
@@ -55,6 +56,8 @@ class RouteHelper {
   static const String bookTable = "/bookTable-page";
   static const String history_book = "/historyBook-page";
   static const String detail_history_book_room = "/detailHistoryBookRoom-page";
+  static const String detail_history_book_table =
+      "/detailHistoryBookTable-page";
   static const String place_page = "/place-page";
   static const String restaurant_page = "/restaurant_page";
 
@@ -97,6 +100,8 @@ class RouteHelper {
   static String getHistoryBook() => '$history_book';
   static String getDetailHistoryBookRoom(int bookRoomID, String pageID) =>
       '$detail_history_book_room?bookRoomID=$bookRoomID&pageID=$pageID';
+  static String getDetailHistoryBookTable(int bookTableID, String pageID) =>
+      '$detail_history_book_table?bookTableID=$bookTableID&pageID=$pageID';
 
   static List<GetPage> routes = [
     GetPage(name: splashPage, page: () => SplashScreen()),
@@ -136,6 +141,14 @@ class RouteHelper {
           var pageID = Get.parameters['pageID'];
           return BookTablePage(
               restaurantID: int.parse(restaurantID!), pageID: pageID!);
+        }),
+    GetPage(
+        name: detail_history_book_table,
+        page: () {
+          var bookTableID = Get.parameters['bookTableID'];
+          var pageID = Get.parameters['pageID'];
+          return HistoryBookTableDetail(
+              bookTableId: int.parse(bookTableID!), pageID: pageID!);
         }),
     GetPage(
         name: roomDetail,

@@ -49,15 +49,17 @@ class RestaurantController extends GetxController implements GetxService {
         //print("Data length received: ${dataList.length} on page $page");
         if (dataList.isEmpty) {
           _isLastPage = true;
+          update();
         } else {
           if (page == 1) {
             _restaurantList.clear();
+            update();
           }
           dataList.forEach((restaurantData) {
             Restaurant restaurant = Restaurant.fromJson(restaurantData);
             _restaurantList.add(restaurant);
           });
-
+          update();
           if (dataList.length < paginate) {
             _isLastPage = true;
           } else {
@@ -67,11 +69,11 @@ class RestaurantController extends GetxController implements GetxService {
         _isLoaded = true;
         update();
       } else {}
-      update();
+      //update();
     } catch (e) {
       print("Error in get Restaurant List: $e");
       _isLoaded = false;
-      update();
+      // update();
     }
   }
 

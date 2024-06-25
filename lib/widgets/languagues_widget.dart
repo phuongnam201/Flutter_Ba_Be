@@ -3,7 +3,6 @@ import 'package:flutter_babe/controller/localization_controller.dart';
 import 'package:flutter_babe/models/languages.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
-import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 
 import '../utils/app_constants.dart';

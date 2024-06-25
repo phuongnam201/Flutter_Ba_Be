@@ -7,6 +7,7 @@ import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
 import 'package:flutter_babe/widgets/big_text.dart';
 import 'package:flutter_babe/widgets/custom_loader.dart';
+import 'package:flutter_babe/widgets/gallery_image_widget.dart';
 import 'package:flutter_babe/widgets/small_text.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
@@ -30,6 +31,8 @@ class _TouristAttractionDetailPageState
   final TouristAttractionController touristAttractionController =
       Get.find<TouristAttractionController>();
   TouristAttraction? touristAttraction;
+
+  late Future<List<String>> imageListFuture;
 
   ScrollController scrollController = ScrollController();
   bool showbtn = false;
@@ -55,6 +58,8 @@ class _TouristAttractionDetailPageState
         touristAttraction = value;
       });
     });
+    imageListFuture =
+        touristAttractionController.getImageList(widget.tourAttractionID);
   }
 
   var selectedPageNumber = 1;
@@ -70,7 +75,7 @@ class _TouristAttractionDetailPageState
         duration: const Duration(milliseconds: 1000),
         opacity: showbtn ? 1.0 : 0.0,
         child: FloatingActionButton(
-          heroTag: 'searchPageFAB', // Add a unique heroTag
+          heroTag: 'touristAttraction', // Add a unique heroTag
           onPressed: () {
             scrollController.animateTo(0,
                 duration: const Duration(milliseconds: 500),
@@ -155,6 +160,10 @@ class _TouristAttractionDetailPageState
                           text: touristAttraction!.title!,
                           color: Colors.blue[800],
                         ),
+                        SizedBox(
+                          height: Dimensions.height10,
+                        ),
+                        GalleryImageWidget(imageListFuture: imageListFuture),
                         SizedBox(
                           height: Dimensions.height10,
                         ),

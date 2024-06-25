@@ -168,4 +168,29 @@ class TouristAttractionController extends GetxController
       print("Error in getTourAttractListPGN: $e");
     }
   }
+
+  Future<List<String>> getImageList(int touristAttractionID) async {
+    List<String> images = [];
+    try {
+      TouristAttraction? touristAttraction =
+          await getTourDetail(touristAttractionID);
+
+      if (touristAttraction != null) {
+        String? multiimage = touristAttraction.multiimage;
+        if (multiimage != null) {
+          multiimage = multiimage.substring(1, multiimage.length - 1);
+          List<String> imageUrls = multiimage.split("\",\"");
+          for (String imageUrl in imageUrls) {
+            imageUrl = imageUrl.replaceAll('"', '');
+            images.add(imageUrl);
+          }
+        } else {
+          images.add(touristAttraction.image!);
+        }
+      }
+    } catch (e) {
+      print("Error in getImageList: $e");
+    }
+    return images;
+  }
 }

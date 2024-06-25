@@ -65,10 +65,7 @@ class _BodyHomePageState extends State<BodyHomePage> {
               _buildSection("attractive_tourist_destination".tr, "relax".tr),
               SizedBox(height: Dimensions.height10),
               !touristAttractionController.isLoading
-                  ? TouristAttractionPageview(
-                      touristAttractionList:
-                          touristAttractionController.touristAttractionList,
-                    )
+                  ? TouristAttractionPageview()
                   : PageViewSkelton(
                       height: Dimensions.height10 * 31,
                       width: Dimensions.width10 * 27,
@@ -84,9 +81,7 @@ class _BodyHomePageState extends State<BodyHomePage> {
               //explore cuisine
               _buildSection("explore_cuisine".tr, "countless_etc".tr),
               SizedBox(height: Dimensions.height10),
-              RestaurantPageview(
-                restaurantList: restaurantController.restaurantList,
-              ),
+              RestaurantPageview(),
               SizedBox(height: Dimensions.height30),
 
               //news

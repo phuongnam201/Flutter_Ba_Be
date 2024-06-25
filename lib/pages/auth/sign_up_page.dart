@@ -222,7 +222,7 @@ class _SignUpPageState extends State<SignUpPage> {
             title: "success".tr,
           );
         } else {
-          CustomSnackBar(status.message!);
+          CustomSnackBar(status.message);
         }
       });
     }

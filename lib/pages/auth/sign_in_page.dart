@@ -37,7 +37,8 @@ class SignInPage extends StatelessWidget {
       } else {
         authController.login(email, password).then((status) {
           if (status.isSuccess) {
-            CustomSnackBar("Welcome", isError: false, title: "success".tr);
+            CustomSnackBar("login_successfully".tr,
+                isError: false, title: "success".tr);
 
             print(previousRoute.toString());
             Get.offNamed(previousRoute);

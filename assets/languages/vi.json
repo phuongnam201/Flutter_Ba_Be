@@ -153,5 +153,8 @@
   "no_orders_yet": "Bạn chưa có đơn đặt",
   "booking_detail": "Chi tiết đặt phòng",
   "booking_table_detail": "Chi tiết đặt bàn",
-  "order_code": "Mã đơn đặt: "
+  "order_code": "Mã đơn đặt: ",
+  "there_is_no_news": "Không có tin tức",
+  "login_successfully": "Đăng nhập thành công",
+  "logout_successfully": "Đăng xuất thành công"
 }

@@ -113,7 +113,7 @@
   "checkin_validate": "Check-in date cannot be before today",
   "checkout_validate": "Check-out date cannot be before check-in date",
   "room_list": "Room list",
-  "dish_list": "Dishes list",
+  "dishes_list": "Dishes list",
   "adults_validate": "Number of adults cannot be less than 1",
   "children_validate": "Number of children cannot be less than 0",
   "selected_room_list": "Selected room list",
@@ -153,5 +153,8 @@
   "no_orders_yet": "No orders yet",
   "booking_detail": "Booking detail",
   "booking_table_detail": "Table reservation details",
-  "order_code": "Order code: "
+  "order_code": "Order code: ",
+  "there_is_no_news": "There is no news",
+  "login_successfully": "Successfully logged in",
+  "logout_successfully": "Successfully logged out"
 }

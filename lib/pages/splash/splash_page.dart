@@ -46,7 +46,7 @@ class SplashScreenState extends State<SplashScreen>
 
     if (language == "vi" || language == "en") {
       Timer(
-        Duration(seconds: 3),
+        Duration(seconds: 5),
         () => Get.offNamed(RouteHelper.getMenuPage()),
       );
     } else {

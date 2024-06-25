@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_babe/controller/history_table_controller.dart';
 import 'package:flutter_babe/models/history_book_table_model.dart';
+import 'package:flutter_babe/routes/router_help.dart';
 import 'package:flutter_babe/utils/app_constants.dart';
 import 'package:flutter_babe/utils/colors.dart';
 import 'package:flutter_babe/utils/dimension.dart';
@@ -151,75 +152,91 @@ class _HistoryBookTableDetailState extends State<HistoryBookTableDetail> {
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return Container(
-                            margin:
-                                EdgeInsets.only(bottom: Dimensions.height10),
-                            height: Dimensions.height20 * 5,
-                            width: Dimensions.screenWidth,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: Dimensions.height20 * 5,
-                                  width: Dimensions.width20 * 5,
-                                  child: CachedNetworkImage(
-                                    imageUrl: AppConstants.BASE_URL +
-                                        "storage/" +
-                                        controller.dishesListInBookedList[index]
-                                            .image!,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          Dimensions.radius10,
+                          return GestureDetector(
+                            onTap: () {
+                              Get.toNamed(RouteHelper.getDishDetail(
+                                  controller.dishesListInBookedList[index].id!,
+                                  "historyBookTable"));
+                            },
+                            child: Container(
+                              //color: AppColors.colorAppBar,
+                              margin:
+                                  EdgeInsets.only(bottom: Dimensions.height10),
+                              height: Dimensions.height20 * 5,
+                              width: Dimensions.screenWidth,
+
+                              // decoration: BoxDecoration(
+                              //   borderRadius: BorderRadius.circular(
+                              //     Dimensions.radius10,
+                              //   ),
+                              //   //color: Colors.white,
+                              // ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: Dimensions.height20 * 5,
+                                    width: Dimensions.width20 * 5,
+                                    child: CachedNetworkImage(
+                                      imageUrl: AppConstants.BASE_URL +
+                                          "storage/" +
+                                          controller
+                                              .dishesListInBookedList[index]
+                                              .image!,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            Dimensions.radius10,
+                                          ),
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover,
+                                      ),
+                                      placeholder: (context, url) => Center(
+                                        child: Container(
+                                            width: 30,
+                                            height: 30,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator())),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: Dimensions.width10,
+                                  ),
+                                  Container(
+                                    width: Dimensions.screenWidth * 0.6,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        BigText(
+                                          text: controller
+                                              .dishesListInBookedList[index]
+                                              .title!,
+                                          color: AppColors.colorAppBar,
                                         ),
-                                      ),
+                                        SizedBox(
+                                          height: Dimensions.height10 / 2,
+                                        ),
+                                        SmallText(
+                                          text: "price".tr +
+                                              _formatCurrency(controller
+                                                  .dishesListInBookedList[index]
+                                                  .price!),
+                                          size: Dimensions.font16,
+                                        ),
+                                      ],
                                     ),
-                                    placeholder: (context, url) => Center(
-                                      child: Container(
-                                          width: 30,
-                                          height: 30,
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator())),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: Dimensions.width10,
-                                ),
-                                Container(
-                                  width: Dimensions.screenWidth * 0.6,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      BigText(
-                                        text: controller
-                                            .dishesListInBookedList[index]
-                                            .title!,
-                                        color: AppColors.colorAppBar,
-                                      ),
-                                      SizedBox(
-                                        height: Dimensions.height10 / 2,
-                                      ),
-                                      SmallText(
-                                        text: "price".tr +
-                                            _formatCurrency(controller
-                                                .dishesListInBookedList[index]
-                                                .price!),
-                                        size: Dimensions.font16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },

@@ -40,7 +40,8 @@ class PostController extends GetxController implements GetxService {
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "";
     try {
-      Response response = await postRepo.getAllPostInfor(locale: language);
+      Response response = await postRepo.getAllPostInfor(
+          locale: language, paginate: paginate, page: page);
       if (response.statusCode == 200) {
         _isLoaded = true;
         List<dynamic> dataList = response.body["results"];
@@ -73,23 +74,44 @@ class PostController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getPostListByFilter(String filter) async {
+  Future<void> getPostListByFilter(
+      String filter, int? paginate, int? page) async {
+    if (paginate == null) {
+      paginate = 8;
+    }
     _isLoading = true;
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
     try {
-      Response response =
-          await postRepo.getAllPostInfor(locale: language, filter: filter);
+      Response response = await postRepo.getAllPostInfor(
+          locale: language, filter: filter, paginate: paginate, page: page);
       if (response.statusCode == 200) {
-        _postListFilter.clear();
-        update();
+        _isLoaded = true;
         List<dynamic> dataList = response.body["results"];
-        dataList.forEach((postData) async {
-          Post post = Post.fromJson(postData);
-          _postListFilter.add(post);
-        });
+        if (dataList.isEmpty) {
+          //_postListFilter.clear();
+          _isLastPage = true;
+        } else {
+          if (page == 1) {
+            _postListFilter.clear();
+            _isLastPage = false;
+          }
+          dataList.forEach((postData) {
+            Post post = Post.fromJson(postData);
+            _postListFilter.add(post);
+          });
+
+          if (dataList.length < paginate) {
+            _hasNextPage = false;
+          } else {
+            _hasNextPage = true;
+          }
+        }
+        _isLoading = false;
         update();
-      } else {}
+      } else {
+        // Handle the case when the response status code is not 200
+      }
     } catch (e) {
       // Handle exceptions or errors
       print("Error in getPostListByFilter: $e");
@@ -98,12 +120,17 @@ class PostController extends GetxController implements GetxService {
     update();
   }
 
+  void clearFutureList() {
+    _postListFilter.clear();
+  }
+
   Future<void> getFeaturePostList() async {
     _isLoading = true;
     String? language =
         sharedPreferences.getString(AppConstants.LANGUAGE_CODE) ?? "vi";
     try {
-      Response response = await postRepo.getAllPostInfor(locale: language);
+      Response response =
+          await postRepo.getAllPostInfor(locale: language, paginate: 16);
       if (response.statusCode == 200) {
         _featurePostList.clear();
         update();

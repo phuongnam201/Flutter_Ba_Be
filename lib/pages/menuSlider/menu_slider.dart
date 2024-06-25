@@ -276,7 +276,7 @@ class _MenuSliderState extends State<MenuSlider> {
                       Get.find<AuthController>().clearShareData();
                       Navigator.pop(context);
                       CustomSnackBar("logout".tr,
-                          isError: false, title: "logout_success");
+                          isError: false, title: "logout_successfully".tr);
                     },
                   ),
                 ],

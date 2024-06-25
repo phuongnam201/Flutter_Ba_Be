@@ -23,6 +23,7 @@ class _NewsContentTabBarState extends State<NewsContentTabBar>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isLoading = true;
+  int page = 1;
 
   @override
   void initState() {
@@ -66,7 +67,7 @@ class _NewsContentTabBarState extends State<NewsContentTabBar>
       _isLoading = true;
     });
     String filter = _getFilterByIndex(index);
-    await Get.find<PostController>().getPostListByFilter(filter);
+    await Get.find<PostController>().getPostListByFilter(filter, 8, page);
     setState(() {
       _isLoading = false;
     });
@@ -75,7 +76,8 @@ class _NewsContentTabBarState extends State<NewsContentTabBar>
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PostController>(builder: (postController) {
-      return SingleChildScrollView(
+      return Container(
+        height: Dimensions.screenHeight * 0.9,
         child: Column(
           children: [
             //SizedBox(height: Dimensions.height20),
@@ -92,11 +94,11 @@ class _NewsContentTabBarState extends State<NewsContentTabBar>
               labelColor: Colors.blue,
               unselectedLabelColor: Colors.grey,
               unselectedLabelStyle: TextStyle(color: Colors.black),
-              tabs: const [
-                Tab(text: 'Theo ngày'),
-                Tab(text: 'Theo tuần'),
-                Tab(text: 'Theo tháng'),
-                Tab(text: 'Tất cả'),
+              tabs: [
+                Tab(text: '_day'.tr),
+                Tab(text: '_week'.tr),
+                Tab(text: '_month'.tr),
+                Tab(text: '_all'.tr),
               ],
               controller: _tabController,
             ),
@@ -110,7 +112,9 @@ class _NewsContentTabBarState extends State<NewsContentTabBar>
                         _buildNewsList(postController.postListFilter),
                         _buildNewsList(postController.postListFilter),
                         _buildNewsList(postController.postListFilter),
-                        _buildNewsList(postController.postListFilter),
+                        Expanded(
+                            child:
+                                _buildNewsList(postController.postListFilter)),
                       ],
                     ),
             ),
@@ -121,13 +125,17 @@ class _NewsContentTabBarState extends State<NewsContentTabBar>
   }
 
   Widget _buildNewsList(List<Post> posts) {
-    return ListView.builder(
-      itemCount: posts.length,
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return _buildItemNews(posts[index]);
-      },
+    return Container(
+      margin:
+          EdgeInsets.only(left: Dimensions.width15, right: Dimensions.width15),
+      child: ListView.builder(
+        itemCount: posts.length,
+        physics: PageScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return _buildItemNews(posts[index]);
+        },
+      ),
     );
   }
 
